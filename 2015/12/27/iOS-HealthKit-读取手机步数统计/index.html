@@ -1,0 +1,693 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="IOS,HealthKit," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="如果你是个iOS开发者，同时也再开发健康相关的应用你必然会使用到HealthKit。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS HealthKit 读取手机计步数统计">
+<meta property="og:url" content="http://yoursite.com/2015/12/27/iOS-HealthKit-读取手机步数统计/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="如果你是个iOS开发者，同时也再开发健康相关的应用你必然会使用到HealthKit。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/B4EDCEC0-98BB-4BBA-946C-05232ACDACEB.png">
+<meta property="og:updated_time" content="2016-06-22T14:15:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS HealthKit 读取手机计步数统计">
+<meta name="twitter:description" content="如果你是个iOS开发者，同时也再开发健康相关的应用你必然会使用到HealthKit。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/B4EDCEC0-98BB-4BBA-946C-05232ACDACEB.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> iOS HealthKit 读取手机计步数统计 | Sim 's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS HealthKit 读取手机计步数统计
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-27T15:53:02+08:00" content="2015-12-27">
+              2015-12-27
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2015/12/27/iOS-HealthKit-读取手机步数统计/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/27/iOS-HealthKit-读取手机步数统计/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>众所周知，Apple在从IOS 8.0开始就加入了健康框架，而iPhone也默认的自带了计步功能。接下来我就和大家分享一下我近期对HealthKit的学习。废话少说直接进入正题。。。</p>
+<h2 id="获取授权"><a href="#获取授权" class="headerlink" title="获取授权"></a>获取授权</h2><p>由于HealthKit 采集的数据可能涉及用户的敏感数据，所以我们需要在获得授权。依然是在Target栏中，打开Capabilities菜单，将HealthKit这一部分的开关设为ON的状态，如屏幕截图中显示那样：</p>
+<p><img src="../../../../../images/B4EDCEC0-98BB-4BBA-946C-05232ACDACEB.png" alt=""></p>
+<h2 id="获取许可"><a href="#获取许可" class="headerlink" title="获取许可"></a>获取许可</h2><p>同时APP在使用HealthKit时，我们需要向用户获得读写数据的许可。接下来介绍APP如何获取用户许可。</p>
+<h3 id="导入HealthKit框架"><a href="#导入HealthKit框架" class="headerlink" title="导入HealthKit框架"></a>导入HealthKit框架</h3><p>我们使用HealthKit就需要导入HealthKit。导入HealthKit框架只需要下面一行代码即可：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@import</span> HealthKit;</div></pre></td></tr></table></figure>
+<p>HealthKit框架的核心是HKHealthStore类，因此你也需要这个类的一个实例：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) HKHealthStore *healthStore;</div><div class="line"></div><div class="line"><span class="keyword">self</span>.healthStore =[[HKHealthStore alloc] init];</div></pre></td></tr></table></figure>
+<h3 id="注册读写数据请求"><a href="#注册读写数据请求" class="headerlink" title="注册读写数据请求"></a>注册读写数据请求</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">-(<span class="keyword">void</span>)viewDidAppear:(<span class="built_in">BOOL</span>)animated</div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> ([HKHealthStore isHealthDataAvailable]) &#123;</div><div class="line">        <span class="built_in">NSSet</span> *readDataTypes =  [<span class="keyword">self</span> dateTypesToRead];</div><div class="line">        <span class="built_in">NSSet</span> *writeDataTypes = [<span class="keyword">self</span> dateTypesToWrite];</div><div class="line"></div><div class="line">        [<span class="keyword">self</span>.healthStore requestAuthorizationToShareTypes:writeDataTypes readTypes:readDataTypes completion:^(<span class="built_in">BOOL</span> success, <span class="built_in">NSError</span> * _Nullable error) &#123;</div><div class="line">            <span class="keyword">if</span> (success) &#123;</div><div class="line">                <span class="built_in">NSLog</span>(<span class="string">@"HealthStore success"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  读取Health数据</div><div class="line"> *</div><div class="line"> *  @return</div><div class="line"> */</div><div class="line">- (<span class="built_in">NSSet</span> *) dateTypesToRead &#123;</div><div class="line"></div><div class="line">    HKQuantityType *stepType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount];</div><div class="line">    HKQuantityType *distanceType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDistanceWalkingRunning];</div><div class="line"></div><div class="line">    <span class="keyword">return</span> [<span class="built_in">NSSet</span> setWithObjects:stepType, distanceType, <span class="literal">nil</span>];</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> *  写Health数据</div><div class="line"> *</div><div class="line"> *  @return</div><div class="line"> */</div><div class="line">- (<span class="built_in">NSSet</span> *) dateTypesToWrite &#123;</div><div class="line"></div><div class="line">    HKQuantityType *stepType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount];</div><div class="line">    HKQuantityType *distanceType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDistanceWalkingRunning];</div><div class="line"></div><div class="line">    <span class="keyword">return</span> [<span class="built_in">NSSet</span> setWithObjects:stepType, distanceType, <span class="literal">nil</span>];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>首先我们使用isHealthDataAvailable判断设备是否支持HealthKit</li>
+<li>我们通过requestAuthorizationToShareTypes 注册请求我们需要读写的数据</li>
+<li>使用requestAuthorizationToShareTypes我们需要创建NSSet对象，所以我这里定义了dateTypesToRead和dateTypesToWrite用于返回注册读取的NSSet对象</li>
+<li>基本上所有的类型时间都是继承与HKObjectType，HealthKit定义了许多<a href="https://developer.apple.com/library/ios/documentation/HealthKit/Reference/HealthKit_Constants/index.html#//apple_ref/doc/uid/TP40014710" target="_blank" rel="external">Identifier</a>,我这边主要使用了计步和行走的距离。</li>
+</ol>
+<h2 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> *  查询步数</div><div class="line"> *</div><div class="line"> *  <span class="doctag">@param</span> startDate 开始时间</div><div class="line"> *  <span class="doctag">@param</span> endDate   结束时间</div><div class="line"> *  <span class="doctag">@param</span> complete  回调</div><div class="line"> */</div><div class="line">+(<span class="keyword">void</span>)<span class="string">queryStepCount:</span>(NSDate *)startDate <span class="string">endDate:</span>(NSDate *)endDate <span class="string">complete:</span> (<span class="keyword">void</span> (^)(<span class="keyword">double</span> stepCount, BOOL succeed))complete &#123;</div><div class="line"></div><div class="line">    HKQuantityType *stepType = [HKObjectType <span class="string">quantityTypeForIdentifier:</span>HKQuantityTypeIdentifierStepCount];</div><div class="line"></div><div class="line">    NSPredicate *predicate = [HKQuery <span class="string">predicateForSamplesWithStartDate:</span>startDate <span class="string">endDate:</span>endDate <span class="string">options:</span>HKQueryOptionNone];</div><div class="line"></div><div class="line">    HKSampleQuery *query = [[HKSampleQuery alloc] <span class="string">initWithSampleType:</span>stepType <span class="string">predicate:</span>predicate <span class="string">limit:</span>HKObjectQueryNoLimit <span class="string">sortDescriptors:</span>nil <span class="string">resultsHandler:</span>^(HKSampleQuery * _Nonnull query, NSArray&lt;__kindof HKSample *&gt; * _Nullable results, NSError * _Nullable error) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!results) &#123;</div><div class="line">            complete(<span class="number">0</span>, NO);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">double</span> stepCount = <span class="number">0</span>;</div><div class="line"></div><div class="line">        <span class="keyword">for</span>(HKQuantitySample *stepSample <span class="keyword">in</span> results) &#123;</div><div class="line"></div><div class="line">            HKQuantity *step = [stepSample quantity];</div><div class="line">            stepCount += [step <span class="string">doubleValueForUnit:</span>[HKUnit countUnit]];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        dispatch_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">            complete(stepCount, YES);</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">    &#125;];</div><div class="line"></div><div class="line">    [healthStore <span class="string">executeQuery:</span>query];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我需要查询一段时间的步数,我需要：</p>
+<ul>
+<li>告诉HealthKit我需要查询什么数据，所以我需要有一个HKQuantityType对象，<a href="https://developer.apple.com/library/ios/documentation/HealthKit/Reference/HKQuantityType/index.html#//apple_ref/doc/uid/TP40014746" target="_blank" rel="external">HKQuantityType</a>其实<a href="https://developer.apple.com/library/ios/documentation/HealthKit/Reference/HKObjectType_Class/index.html#//apple_ref/occ/cl/HKObjectType" target="_blank" rel="external">HKObjectType</a>的子类</li>
+<li>我们使用<a href="https://developer.apple.com/library/ios/documentation/HealthKit/Reference/HKSampleQuery_Class/index.html#//apple_ref/doc/uid/TP40014753" target="_blank" rel="external">HKSampleQuery</a> 的 <a href="https://developer.apple.com/library/ios/documentation/HealthKit/Reference/HKSampleQuery_Class/index.html#//apple_ref/occ/instm/HKSampleQuery/initWithSampleType:predicate:limit:sortDescriptors:resultsHandler:" target="_blank" rel="external">initWithSampleType:predicate:limit:sortDescriptors:resultsHandler:</a></li>
+<li>我们通过initWithSampleType:predicate:limit:sortDescriptors:resultsHandler:的回调获取到我们指定时间段的采样数据。这里我通过遍历的方式获取到指定时间段的总步数。</li>
+</ul>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span>(HKQuantitySample *stepSample <span class="keyword">in</span> results) &#123;</div><div class="line"></div><div class="line">	HKQuantity *<span class="keyword">step</span> = [stepSample quantity]<span class="comment">;</span></div><div class="line">	stepCount += [<span class="keyword">step</span> doubleValueForUnit:[HKUnit countUnit]]<span class="comment">;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><p><a href="https://developer.apple.com/library/ios/documentation/HealthKit/Reference/HKUnit_Class/index.html#//apple_ref/doc/uid/TP40014727" target="_blank" rel="external">HKUnit</a>是查询采样数据的单位，HKUnit定义了多种单位供我们数据使用</p>
+</li>
+<li><p>最后我们通过<code>[healthStore executeQuery:query];</code>开始查询采样数据</p>
+</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IOS/" rel="tag">#IOS</a>
+          
+            <a href="/tags/HealthKit/" rel="tag">#HealthKit</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/21/Travis-CI-蒲公英自动编译发布持续集成/" rel="next" title="Travis CI + 蒲公英自动编译发布持续集成">
+                <i class="fa fa-chevron-left"></i> Travis CI + 蒲公英自动编译发布持续集成
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/30/使用SnapKit实现动画效果/" rel="prev" title="使用SnapKit实现动画效果">
+                使用SnapKit实现动画效果 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取授权"><span class="nav-number">1.</span> <span class="nav-text">获取授权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取许可"><span class="nav-number">2.</span> <span class="nav-text">获取许可</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入HealthKit框架"><span class="nav-number">2.1.</span> <span class="nav-text">导入HealthKit框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册读写数据请求"><span class="nav-number">2.2.</span> <span class="nav-text">注册读写数据请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取数据"><span class="nav-number">3.</span> <span class="nav-text">读取数据</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2015/12/27/iOS-HealthKit-读取手机步数统计/';
+      var disqus_title = 'iOS HealthKit 读取手机计步数统计';
+      var disqus_url = 'http://yoursite.com/2015/12/27/iOS-HealthKit-读取手机步数统计/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

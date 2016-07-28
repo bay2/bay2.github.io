@@ -1,0 +1,841 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Swift," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="写解释器就是如此的简单。一起跳坑函数式编程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="swift-纯函数式的解释器设计学习总结">
+<meta property="og:url" content="http://yoursite.com/2016/06/21/2016-06-21/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="写解释器就是如此的简单。一起跳坑函数式编程。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/Parser.png">
+<meta property="og:updated_time" content="2016-06-21T13:54:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="swift-纯函数式的解释器设计学习总结">
+<meta name="twitter:description" content="写解释器就是如此的简单。一起跳坑函数式编程。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/Parser.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> swift-纯函数式的解释器设计学习总结 | Sim 's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                swift-纯函数式的解释器设计学习总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-06-21T07:50:05+08:00" content="2016-06-21">
+              2016-06-21
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/06/21/2016-06-21/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/21/2016-06-21/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我在知道函数式编程之后,就对这种编程范式相当着迷。但函数式编程的学习曲线比较陡峭,加自己有非骨骼惊奇之辈只能一直在此死磕。最近看了一个《纯函数式的解释器设计》感触很深,于是我把视频看了2~3遍(资质有限只能死磕)。写下了这篇总结，也希望这篇总结对和我一样对函数编程感兴趣的同学在学习函数编程上有一定的帮助。</p>
+<h1 id="解释器组成"><a href="#解释器组成" class="headerlink" title="解释器组成"></a>解释器组成</h1><ul>
+<li>AST(Abstract Syntax Tree)</li>
+<li>Frontend</li>
+<li>Backend</li>
+</ul>
+<p><img src="../../../../../images/Parser.png" alt="解析器"></p>
+<h1 id="AST"><a href="#AST" class="headerlink" title="AST"></a>AST</h1><ul>
+<li>表达式</li>
+<li>命令</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">indirect</span> <span class="class"><span class="keyword">enum</span> <span class="title">Exp</span></span>&#123;</div><div class="line">  <span class="keyword">case</span> <span class="type">Constant</span> (<span class="type">Int</span>)       <span class="comment">// 常量</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Var</span> (<span class="type">String</span>)         <span class="comment">// 变量</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Add</span> (<span class="type">Exp</span>,<span class="type">Exp</span>)        <span class="comment">// 加法</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Times</span> (<span class="type">Exp</span>,<span class="type">Exp</span>)      <span class="comment">// 乘法</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Equal</span> (<span class="type">Exp</span>,<span class="type">Exp</span>)      <span class="comment">// 等于</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Greater</span> (<span class="type">Exp</span>,<span class="type">Exp</span>)    <span class="comment">// 大于</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Less</span> (<span class="type">Exp</span>,<span class="type">Exp</span>)       <span class="comment">// 小于</span></div><div class="line"></div><div class="line">  <span class="keyword">var</span> pConstant : <span class="type">Int</span> &#123;</div><div class="line">      <span class="keyword">switch</span> <span class="keyword">self</span>&#123;</div><div class="line">      <span class="keyword">case</span> <span class="keyword">let</span> .<span class="type">Constant</span>(x):</div><div class="line">          <span class="keyword">return</span> x</div><div class="line">      <span class="keyword">default</span>:</div><div class="line">          <span class="keyword">return</span> <span class="number">0</span></div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">indirect</span> <span class="class"><span class="keyword">enum</span> <span class="title">Com</span></span>&#123;</div><div class="line">  <span class="keyword">case</span> <span class="type">Assign</span> (<span class="type">String</span>,<span class="type">Exp</span>)  <span class="comment">// 赋值</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Seq</span> (<span class="type">Com</span>,<span class="type">Com</span>)        <span class="comment">// 结果</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Cond</span> (<span class="type">Exp</span>,<span class="type">Com</span>,<span class="type">Com</span>)   <span class="comment">// if 语句</span></div><div class="line">  <span class="keyword">case</span> <span class="type">While</span> (<span class="type">Exp</span>,<span class="type">Com</span>)      <span class="comment">// 循环</span></div><div class="line">  <span class="keyword">case</span> <span class="type">Print</span> (<span class="type">Exp</span>)          <span class="comment">// 打印</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里就是一个简单的解析器的AST的定义。</p>
+<h1 id="Frontend"><a href="#Frontend" class="headerlink" title="Frontend"></a>Frontend</h1><h2 id="定义Parser"><a href="#定义Parser" class="headerlink" title="定义Parser"></a>定义Parser</h2><p>什么是Frontend？其实Frontend就是Parser。</p>
+<p>什么是Parser？</p>
+<p><code>String -&gt; AST</code></p>
+<p>将字符串转换成AST 就是<br>Parser。但是我们有可能Parser出一个AST后还有字符串没有Parser。所以我们需要把Parser定义成:</p>
+<p><code>String -&gt; (AST, String)</code></p>
+<p>这样我们就可以继续Parser后面的字符串了。在我们的Parser不一定直接Parser出AST,我们也可以Parser个Int或者其他,所以我们需要定义成:</p>
+<p><code>String -&gt; (a, String)</code></p>
+<p>我们使用一个泛型变量a,来表示任意类型,Int, Character, String, AST, etc。</p>
+<p>为了方便我们在Parser失败后,能尝试Parser其他的类型,例如我们Parser个Int,失败后我们可以尝试Parser个String。因此我们最终需要这样定义一个Parser:</p>
+<p><code>String -&gt; [(a, String)]</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Parser</span>&lt;<span class="title">a</span>&gt;</span>&#123;</div><div class="line">  <span class="keyword">let</span> p : <span class="type">String</span> -&gt; [(a,<span class="type">String</span>)]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这就是我们代码定义的一个Parser的结构,p 就是一个Parser(输入String,输出[(a, String)], a可以是Int,AST等任意类型)。其实我们, 整个Parser就是一个函数。</p>
+<h2 id="基本元素"><a href="#基本元素" class="headerlink" title="基本元素"></a>基本元素</h2><h3 id="mzero"><a href="#mzero" class="headerlink" title="mzero"></a>mzero</h3><p>这个函数很简单, 返回一个空的Parser</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">mzero</span>&lt;a&gt;<span class="params">()</span></span>-&gt;<span class="type">Parser</span>&lt;a&gt;&#123;</div><div class="line">  <span class="keyword">return</span> <span class="type">Parser</span> &#123; xs <span class="keyword">in</span> [] &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="pure"><a href="#pure" class="headerlink" title="pure"></a>pure</h3><p>完成把一个普通元素wrap进一个compulational context 的操作。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">pure</span>&lt;a&gt;<span class="params">(item : a)</span></span> -&gt; <span class="type">Parser</span>&lt;a&gt;&#123;</div><div class="line">  <span class="keyword">return</span> <span class="type">Parser</span> &#123; cs <span class="keyword">in</span> [(item,cs)] &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>或许这样解释不是太好理解,我们还是写个测试代码看看分析一下吧。</p>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">pure</span>&lt;a&gt;<span class="params">(item : a)</span></span> -&gt; <span class="type">Parser</span>&lt;a&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// puretest.p("Hello, World!"), 因此cs = "Hello, World!"</span></div><div class="line">  <span class="keyword">return</span> <span class="type">Parser</span> &#123; cs <span class="keyword">in</span> [(item,cs)] &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 最后这个Parser&lt;a&gt;,就是一个返回[("1", "Hello, World!")] 的函数</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 输入"1", item = "1", let puretest = pure("1")</span></div><div class="line"><span class="keyword">let</span> puretest = pure(<span class="string">"1"</span>)</div><div class="line"></div><div class="line"><span class="comment">// 这里的p,就是 Parser &#123; cs in [(item, cs)] &#125; </span></div><div class="line"><span class="built_in">print</span>(puretest.p(<span class="string">"Hello, World!"</span>))</div><div class="line"></div><div class="line"><span class="comment">/*</span></div><div class="line">输出结果:</div><div class="line">[("1", "Hello, World!")]</div><div class="line">*/</div></pre></td></tr></table></figure>
+<h3 id="satisfy"><a href="#satisfy" class="headerlink" title="satisfy"></a>satisfy</h3><p>这个函数入参是个闭包,这个闭包入参是个Character,返回Bool。同时这个函数本身会返回一个Parser。</p>
+<p>我们分析一下这个函数都做了些什么。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 输入一个condition (这是个闭包), 输入一个Parser&lt;Character&gt;</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">satisfy</span><span class="params">(condition : Character -&gt; Bool)</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Character</span>&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// 返回一个Parser&lt;Character&gt;</span></div><div class="line">  <span class="keyword">return</span> <span class="type">Parser</span> &#123; x <span class="keyword">in</span>      <span class="comment">// x 是个String,</span></div><div class="line">回想一下<span class="type">Parser</span>的定义,所有<span class="type">Parser</span>的入参都是<span class="type">String</span></div><div class="line"></div><div class="line">      <span class="comment">// 成功或者x的首字母,并且闭包condition true,则继续执行,否返回空数组。</span></div><div class="line">      <span class="keyword">guard</span> <span class="keyword">let</span> head = x.characters.first <span class="keyword">where</span> condition(head) <span class="keyword">else</span>&#123;</div><div class="line">          <span class="keyword">return</span> []</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 返回一个[(首字母, 删除首字母后String)]</span></div><div class="line">      <span class="keyword">return</span> [(head,<span class="type">String</span>(x.characters.<span class="built_in">dropFirst</span>()))]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> satisfytest = satisfy &#123; (<span class="built_in">c</span>) -&gt; <span class="type">Bool</span> <span class="keyword">in</span></div><div class="line">  <span class="keyword">return</span> <span class="built_in">c</span> == <span class="string">"H"</span> <span class="comment">// 如果c 等于 H,返回true</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//输出结果:[("H", "ello, World!")]</span></div><div class="line"><span class="built_in">print</span>(satisfytest.p(<span class="string">"Hello, World!"</span>))</div><div class="line"></div><div class="line"><span class="comment">//输出结果:[]</span></div><div class="line"><span class="comment">//由于首字母不为"H"所以返回空</span></div><div class="line"><span class="built_in">print</span>(satisfytest.p(<span class="string">"Say Hello, World!"</span>))</div></pre></td></tr></table></figure>
+<h3 id="parserChar"><a href="#parserChar" class="headerlink" title="parserChar"></a>parserChar</h3><p>其实这个函数,就是完成我们刚才satisfy 示例的功能。只是satisfy<br>比更加灵活点,parserChar 接受的只是个Character。</p>
+<p>我们还是分析一下这个函数吧。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 输入一个Character,输出一个Character</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">parserChar</span><span class="params">(<span class="built_in">c</span> : Character)</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Character</span>&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// 返回一个Parser&lt;Character&gt;</span></div><div class="line">  <span class="keyword">return</span> <span class="type">Parser</span> &#123; x <span class="keyword">in</span></div><div class="line">      <span class="comment">// 如果首字母等于c 则继续执行,否则返回空数组</span></div><div class="line">      <span class="keyword">guard</span> <span class="keyword">let</span> head = x.characters.first <span class="keyword">where</span> head == <span class="built_in">c</span> <span class="keyword">else</span>&#123;</div><div class="line">          <span class="keyword">return</span> []</div><div class="line">      &#125;</div><div class="line">      <span class="comment">// 返回一个[(首字母, 删除首字母后String)]</span></div><div class="line">      <span class="keyword">return</span> [(<span class="built_in">c</span>,<span class="type">String</span>(x.characters.<span class="built_in">dropFirst</span>()))]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="定义组合规则"><a href="#定义组合规则" class="headerlink" title="定义组合规则"></a>定义组合规则</h2><h3 id="gt-gt"><a href="#gt-gt" class="headerlink" title="&gt;&gt;="></a>&gt;&gt;=</h3><p>我们定义的这个运算符,在函数式编程中叫bind,实现了串联的功能。</p>
+<p>我们先来分析一下这个函数。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">infix</span> <span class="keyword">operator</span> &gt;&gt;= &#123;<span class="keyword">associativity</span> <span class="keyword">left</span> <span class="keyword">precedence</span> <span class="number">150</span>&#125;</div><div class="line"></div><div class="line"><span class="comment">// 它有两个泛型参数 a,b</span></div><div class="line"><span class="comment">// 两个入参一个是 Parser&lt;a&gt; ,另一个是个将a转换为Parser&lt;b&gt;的闭包</span></div><div class="line"><span class="comment">// 函数返回值试过 Parser&lt;b&gt;</span></div><div class="line"><span class="function"><span class="keyword">func</span> &gt;&gt;= &lt;a,b&gt;<span class="params">(p : Parser&lt;a&gt;, f : a-&gt;Parser&lt;b&gt;)</span></span> -&gt; <span class="type">Parser</span>&lt;b&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// 返回一个Parser&lt;b&gt;</span></div><div class="line">  <span class="keyword">return</span> <span class="type">Parser</span> &#123; cs <span class="keyword">in</span></div><div class="line"></div><div class="line">      <span class="comment">// parse 是用来 Parser p的。稍后我们在分析一下这个函数。我们知道p1是p Parser出来的结果就ok了</span></div><div class="line">      <span class="keyword">let</span> p1 = parse(p, input: cs)</div><div class="line"></div><div class="line">      <span class="comment">// parser 失败则返回,空数组</span></div><div class="line">      <span class="keyword">guard</span> p1.<span class="built_in">count</span>&gt;<span class="number">0</span> <span class="keyword">else</span>&#123;</div><div class="line">          <span class="keyword">return</span> []</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 取出p1 Parser出来的结果</span></div><div class="line">      <span class="keyword">let</span> p = p1[<span class="number">0</span>]</div><div class="line"></div><div class="line">      <span class="comment">// f 是 a-&gt;Parser&lt;b&gt;</span></div><div class="line">      <span class="comment">// 也就是说,我们把p Parser 出来的结果,传给f</span></div><div class="line">      <span class="comment">// f 返回个 Parser&lt;b&gt;, 我们再用Parser&lt;b&gt;去尝试Parser出一个新的结果 p2</span></div><div class="line">      <span class="keyword">let</span> p2 = parse(f(p.<span class="number">0</span>), input: p.<span class="number">1</span>)</div><div class="line"></div><div class="line">      <span class="comment">// 如果Parser 失败,则返回空数组</span></div><div class="line">      <span class="keyword">guard</span> p2.<span class="built_in">count</span> &gt; <span class="number">0</span> <span class="keyword">else</span>&#123;</div><div class="line">          <span class="keyword">return</span> []</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// 成功则返回f Parser出来的结果。</span></div><div class="line">      <span class="keyword">return</span> p2</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>了解 <code>&gt;&gt;=</code> 我们在看看 <code>&gt;&gt;=</code> 中使用到的 <code>parse</code>。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 函数入参一个Parser, 另一个是string</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">parse</span>&lt;a&gt;<span class="params">(parser : Parser&lt;a&gt; , input: String)</span></span> -&gt; [(a,<span class="type">String</span>)]&#123;</div><div class="line">  <span class="keyword">var</span> result :[(a,<span class="type">String</span>)] = []</div><div class="line"></div><div class="line">  <span class="comment">// 使用parser 去 Parser inpuA, 成功则将结果存放在数组中</span></div><div class="line">  <span class="keyword">for</span> (x,s) <span class="keyword">in</span> parser.p(input)&#123;</div><div class="line">      result.append((x,s))</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// 返回Parser 出来的结果</span></div><div class="line">  <span class="keyword">return</span> result</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>到这来我们就可以这样理解 <code>&gt;&gt;=</code></p>
+<p><code>&gt;&gt;=</code> 输入<code>Parser&lt;a&gt;</code>和<code>一个函数</code>,得到一个<code>Parser&lt;b&gt;</code>。<br>而这个<code>Parser&lt;b&gt;</code> 的结果是,<code>Parser&lt;a&gt;</code>,Parser出来的结果<code>a</code>,然后将<code>a</code>喂给<code>一个函数</code>,这个函数返回一个Parser。然后使用这个Parser继续 Parser。如果两次Parser都成功则返回Parser的结果,否则返回失败。</p>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 这里我希望Parser 一个"H" 后继续 Parser 一个 "e"</span></div><div class="line"><span class="keyword">let</span> test = parserChar(<span class="string">"H"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line">  <span class="keyword">return</span> parserChar(<span class="string">"e"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Parser成功,输出:[("e", "llo, World!")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"Hello, World!"</span>)),</div><div class="line"></div><div class="line"><span class="comment">// Parser "H"时,失败,输出:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"Say Hello, World!"</span>))</div><div class="line"></div><div class="line"><span class="comment">// Parser "e"时,失败,输出:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"H,ello, World!"</span>))</div></pre></td></tr></table></figure>
+<h3 id=""><a href="#" class="headerlink" title="+++"></a>+++</h3><p>刚刚我们定义的<code>&gt;&gt;=</code> 相当于是的 <code>&amp;&amp;</code>,也就是说<code>&gt;&gt;=</code>只有在两个Parser<br>都Parser成功才能返回结果。而我们现在定义的<code>+++</code>就是个<br><code>||</code>,<code>+++</code>输入两个Parser,第一个Parser<br>Parser成功则返回第一个Parser的结果,否则则返回第二个Parser的结果。</p>
+<p>好我们来分析一下代码。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">infix</span> <span class="keyword">operator</span> +++ &#123;<span class="keyword">associativity</span> <span class="keyword">left</span> <span class="keyword">precedence</span> <span class="number">130</span>&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这个函数有两个参数,一个左值Parser,一个右值Parser;输出一个Parser</span></div><div class="line"><span class="function"><span class="keyword">func</span> +++ &lt;a&gt;<span class="params">(l : Parser&lt;a&gt;, r:Parser&lt;a&gt;)</span></span> -&gt; <span class="type">Parser</span>&lt;a&gt;   &#123;</div><div class="line"></div><div class="line">  <span class="comment">// 这里函数直接返回一个Parser,我们接着看这个Parser做了些什么</span></div><div class="line">  <span class="keyword">return</span> <span class="type">Parser</span> &#123; x <span class="keyword">in</span></div><div class="line"></div><div class="line">      <span class="comment">// 尝试去Parser 左值</span></div><div class="line">      <span class="keyword">let</span> result = l.p(x)</div><div class="line"></div><div class="line">      <span class="keyword">if</span> result.<span class="built_in">count</span> &gt; <span class="number">0</span>&#123;</div><div class="line">    </div><div class="line">          <span class="comment">// 左值Parser成功则返回左值结果</span></div><div class="line">          <span class="keyword">return</span> result  </div><div class="line">      &#125;<span class="keyword">else</span>&#123;</div><div class="line"></div><div class="line">          <span class="comment">// 左值Parser失败,返回右值结果</span></div><div class="line">          <span class="comment">// 这里如果左右值都失败,会返回[]</span></div><div class="line">          <span class="keyword">return</span> r.p(x)</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个操作符很简单。也很容易理解,我们通过实例代码来看看整个结果吧。</p>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 这里我先尝试Parser 一个 "S",如果"S" Parser失败则去Parser "H"</span></div><div class="line"><span class="keyword">let</span> test = parserChar(<span class="string">"S"</span>) +++ parserChar(<span class="string">"H"</span>)</div><div class="line"></div><div class="line"><span class="comment">// "S" Parser失败,"H" Parser成功。输出结果:[("H", "ello, World!")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"Hello, World!"</span>))</div><div class="line"></div><div class="line"><span class="comment">// "S" Parser成功,输出结果:[("S", "ay Hello, World!")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"Say Hello, World!"</span>))</div><div class="line"></div><div class="line"><span class="comment">// "S"和"H"都Parser失败。输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"hello, World!"</span>))</div></pre></td></tr></table></figure>
+<h3 id="many-many1"><a href="#many-many1" class="headerlink" title="many, many1"></a>many, many1</h3><p>many 运算符,会尝试把同一个 parser 运行多次,直到失败。然后把每次运行的结果放在数组中返回（返回的仍然是 Parser 类型,只是参数为[a]）。many1 是 many 的变体,代表至少需要成功一次。</p>
+<p>这需要怎么理解呢？我们先看代码。</p>
+<p>在看代码之前我们先复习一下之前定义的几个函数</p>
+<ul>
+<li><code>pure</code> 输入一个item,返回一个Parser;这个Parser的返回结果是[(item, cs)],<br>cs是Parser的入参</li>
+<li><code>&gt;&gt;=</code> 输入一个Parser和一个函数,返回一个新的Parser。这个Parser就是把左值Parser<br>Parser成功将结果传给右值函数,右函数继续Parser,Parser成功结果回传处理</li>
+<li><code>+++</code> 输入两个Parser,左值Parser解析失败,则返回右值Parser得结果</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// many 输入一个Parser;输出一个Parser,结果是个a类型的数组。</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">many</span>&lt;a&gt;<span class="params">(p: Parser&lt;a&gt;)</span></span> -&gt; <span class="type">Parser</span>&lt;[a]&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// 这里调用many1</span></div><div class="line">  <span class="comment">// 如果many1返回的Parser,能够Parser成功则返回,这个Parser&lt;[a]&gt;</span></div><div class="line">  <span class="comment">// 否则返回一个空数组的Parser</span></div><div class="line">  <span class="comment">// 也就是说不管成功还是失败,返回的Parser必然能Parser成功</span></div><div class="line">  <span class="comment">// 返回pure([]),Parser的结果结果是[[], String],</span></div><div class="line">  <span class="keyword">return</span> many1(p) +++ pure([])</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// many1和many一样输入一个Parser;输出一个Parser,结果是个a类型的数组。</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">many1</span>&lt;a&gt;<span class="params">(p : Parser&lt;a&gt;)</span></span> -&gt; <span class="type">Parser</span>&lt;[a]&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// 这里返回的一个Parser</span></div><div class="line">  <span class="comment">// 这里使用了 &gt;&gt;=, 我们回想一下 &gt;&gt;= 的实现。</span></div><div class="line">  <span class="comment">// &gt;&gt;= 是把左值Parser得结果喂给右值Parser</span></div><div class="line">  <span class="comment">// 也就是说这里是的x,是左值Parser的结果</span></div><div class="line">  <span class="keyword">return</span> p &gt;&gt;= &#123; x <span class="keyword">in</span>     </div><div class="line">      </div><div class="line">      <span class="comment">// 这里调用了many,刚才说了,many无论如何都能Perser成功,所以这里必然能把值传个xs</span></div><div class="line">      many(p) &gt;&gt;= &#123; xs <span class="keyword">in</span></div><div class="line">          这里则把结果返回wrap到<span class="type">Perser</span>中,然后返回。</div><div class="line">          pure([x] + xs)</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看到这里大家或许有点蒙圈。。。没关系我们在通过测试代码进一步分析。</p>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 这个函数用于判断字符是否是数字,是数字则返回true</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">isNum</span><span class="params">(<span class="built_in">c</span>: Character)</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">  <span class="keyword">let</span> s = <span class="type">String</span>(<span class="built_in">c</span>)</div><div class="line">  <span class="keyword">return</span> <span class="type">Int</span>(s) != <span class="literal">nil</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// test1 获取many 返回的Parser</span></div><div class="line"><span class="keyword">let</span> test1 = many(satisfy(&#123; (<span class="built_in">c</span>) -&gt; <span class="type">Bool</span> <span class="keyword">in</span></div><div class="line">  <span class="keyword">return</span> isNum(<span class="built_in">c</span>)</div><div class="line">&#125;))</div><div class="line"></div><div class="line"><span class="comment">// test2 获取many1 返回的Parser</span></div><div class="line"><span class="keyword">let</span> test2 = many1(satisfy(&#123; (<span class="built_in">c</span>) -&gt; <span class="type">Bool</span> <span class="keyword">in</span></div><div class="line">  <span class="keyword">return</span> isNum(<span class="built_in">c</span>)</div><div class="line">&#125;))</div><div class="line"></div><div class="line"><span class="comment">// 输入"123" many 都能Parser成功,输出结果:[(["1", "2", "3"], "")]</span></div><div class="line"><span class="built_in">print</span>(test1.p(<span class="string">"123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输入"123a" many Parser到"a" 发现Parser失败,所以输出结果:[(["1", "2", "3"], "a")]</span></div><div class="line"><span class="built_in">print</span>(test1.p(<span class="string">"123a"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输入" 123" many Parser到" " 就失败了,输出结果:[([], " 123")]</span></div><div class="line"><span class="built_in">print</span>(test1.p(<span class="string">" 123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输入"123" many1 都能Parser成功,输出结果:[(["1", "2", "3"], "")]</span></div><div class="line"><span class="built_in">print</span>(test2.p(<span class="string">"123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输入"123a" many1 Parser到 "a" 就失败了,输出结果:[(["1", "2", "3"], "a")]</span></div><div class="line"><span class="built_in">print</span>(test1.p(<span class="string">"123a"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输入" 123" many1 Parser到 " " 就失败了,输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test2.p(<span class="string">" 123"</span>))</div></pre></td></tr></table></figure>
+<p>从测试代码输出结果可以看出来,many不论成功失败都能返回结果,我们可以拿这个结果继续Parser,而many1失败则直接返回[]结果。</p>
+<p>相信大家看到这里会有点感觉,我们在分析many和many1的时候发现这个函数是相互嵌套的,接下了我们结合测试代码来分析一下我们调用many和many1我们的代码是怎么运行的。</p>
+<p>我们再来分析下<code>print(test1.p(&quot;123&quot;))</code>的执行逻辑吧</p>
+<ul>
+<li>test1 调用 p 进行解析。</li>
+<li>p 其实是调用了many,many 的入参是 执行satisfy返回的Parser</li>
+<li>satisfy 返回的Parser,如果string中第一个字母是数字则,返回[(首字母, 删除首字母的字符串)], 如果首字母不为数字则返回[]</li>
+<li>many 接收了一个这样的Parser, 将这个Parser p传给many1, 如果p 能解析成功就返回many1 返回的 Parser, 解析时间就返回Parser []</li>
+<li>many1 如果p 能解析成功就返回个下面的一个,这里many1和many是互为递归的关系。也就是<code>many(p)</code>返回的也是这样的一个Parser,这样就相当于把p和<code>{ xs in  pure([x] + xs)}</code>串联起来了,直到p Parser失败。</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">many(p) &gt;&gt;= &#123; xs <span class="keyword">in</span></div><div class="line">  pure([x] + xs)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看到这里相信大家对many和many1理解上应该有的感觉了吧。</p>
+<h2 id="定义高级组合子"><a href="#定义高级组合子" class="headerlink" title="定义高级组合子"></a>定义高级组合子</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><p>这个函数用于解析一个字符串。是的,我们现在可以用我们之前定义的基本元素去解析字符串了。</p>
+<p>直接看代码实现吧！！</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">string</span><span class="params">(str : String)</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">String</span>&gt; &#123;</div><div class="line"></div><div class="line">  <span class="comment">// 如果解析的str为空则返回空的Parser</span></div><div class="line">  <span class="keyword">guard</span> str != <span class="string">""</span> <span class="keyword">else</span> &#123;</div><div class="line">      <span class="keyword">return</span> pure(<span class="string">""</span>)</div><div class="line">  &#125;</div><div class="line">              </div><div class="line">  <span class="comment">// 取得第一个字符</span></div><div class="line">  <span class="keyword">let</span> head = str.characters.first!</div><div class="line"></div><div class="line">  <span class="comment">// 返回一个不断Parser字符,直达Parser失败的Parser</span></div><div class="line">  <span class="keyword">return</span> parserChar(head) &gt;&gt;= &#123; <span class="built_in">c</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">      <span class="comment">// 这里递归调用string</span></div><div class="line">      string(<span class="type">String</span>(str.characters.<span class="built_in">dropFirst</span>())) &gt;&gt;= &#123; cs <span class="keyword">in</span></div><div class="line">          <span class="keyword">let</span> result = [<span class="built_in">c</span>] + cs.characters</div><div class="line">          <span class="keyword">return</span> pure(<span class="type">String</span>(result))</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>解析一个字符串就是如此的简单#^_^#</p>
+<h3 id="space"><a href="#space" class="headerlink" title="space"></a>space</h3><p>这个是很有意思的函数,吃掉空格的Parser。</p>
+<p>我们通过代码来看看它是如何实现吃掉空格的吧。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">space</span><span class="params">()</span></span>-&gt;<span class="type">Parser</span>&lt;<span class="type">String</span>&gt; &#123;</div><div class="line"></div><div class="line">  <span class="comment">// 这里用到了many,many是返回一个Parser,这个Parser会尝试0-n次的Parser,直达失败。</span></div><div class="line">  <span class="comment">// satisfy(isSpace)表示,如果是空格则Parser成功。</span></div><div class="line">  <span class="comment">// 如果空格Parser 成功,则返回一个空的Parser,实现吃掉空格</span></div><div class="line">  <span class="keyword">return</span> many(satisfy(isSpace)) &gt;&gt;= &#123; x <span class="keyword">in</span> pure(<span class="string">""</span>) &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>so easy!!</p>
+<h3 id="number"><a href="#number" class="headerlink" title="number"></a>number</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// isDigit这个方法用于判断一个字符是否是数字</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">isDigit</span><span class="params">(<span class="built_in">c</span> : Character)</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">  <span class="keyword">let</span> s = <span class="type">String</span>(<span class="built_in">c</span>)</div><div class="line">  <span class="keyword">return</span> <span class="type">Int</span>(s) != <span class="literal">nil</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// digit 这个方法判断如果该字符是数字则返回一个wrap一个常量的闭包。</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">digit</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Exp</span>&gt; &#123;</div><div class="line">  <span class="keyword">return</span> satisfy(isDigit) &gt;&gt;= &#123; x <span class="keyword">in</span></div><div class="line">      pure(<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="type">Int</span>(<span class="type">String</span>(x))!))</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这个函数返回一个解析数字的Parser</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">number</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Exp</span>&gt; &#123;</div><div class="line"></div><div class="line">  <span class="comment">// 尝试解析一个数字,如果解析失败返回空。解析成功则返回一个闭包</span></div><div class="line">  <span class="keyword">return</span> many1(digit()) &gt;&gt;= &#123; cs <span class="keyword">in</span></div><div class="line">  </div><div class="line">          <span class="comment">// 这是解析成功返回的闭包</span></div><div class="line">          <span class="comment">// 这个闭包会去吃掉空格,这里吃空格必然会成功的。</span></div><div class="line">          space() &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">              <span class="comment">// 然后将many1(digit())解析出来的结果cs,通过reduce函数进行累加。many1 解析结果是个数组</span></div><div class="line">              <span class="keyword">let</span> sum = cs.<span class="built_in">reduce</span>(<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="number">0</span>), combine: &#123; (exp1, exp2 ) -&gt; <span class="type">Exp</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">                  <span class="comment">// 这里将数组的元素拼接成一个完整的数字。如解析123,返回的结果数组应该是[1, 2, 3],</span></div><div class="line">                  <span class="comment">// 则 0 * 10 + 1, 1</span></div><div class="line">                  <span class="comment">// 1 * 10 + 2, 12</span></div><div class="line">                  <span class="comment">// 12 * 10 + 3, 123</span></div><div class="line">                  <span class="comment">// sum 的结果是123</span></div><div class="line">                  <span class="keyword">return</span> <span class="type">Exp</span>.<span class="type">Constant</span>((exp1.pConstant * <span class="number">10</span> + exp2.pConstant))</div><div class="line">          &#125;)</div><div class="line"></div><div class="line">          <span class="comment">// 这里返回123</span></div><div class="line">          <span class="keyword">return</span> pure(sum)</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = number()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"    123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"a123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Constant(123), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"123"</span>))</div></pre></td></tr></table></figure>
+<h3 id="symbol"><a href="#symbol" class="headerlink" title="symbol"></a>symbol</h3><p>这个函数用于解析一个symbol。我们通过代码可以看出来这个函数是在string基础上,组合了吃空格的Parser</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 解析symbol 返回一个 String 的Parser</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">symbol</span><span class="params">(sym : String)</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">String</span>&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// 尝试解析一个字符串, 解析成功则返回一个闭包</span></div><div class="line">  <span class="keyword">return</span> string(sym) &gt;&gt;= &#123; sym <span class="keyword">in</span></div><div class="line"></div><div class="line">      <span class="comment">// 先吃掉空格,然后weap 一个字符串</span></div><div class="line">      space() &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line">          pure(sym)</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 这里我要解析一个+号</span></div><div class="line"><span class="keyword">let</span> test = symbol(<span class="string">"+"</span>)</div><div class="line"></div><div class="line"><span class="comment">// 输出结果：[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">" +"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果：[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果：[("+", "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"+"</span>))</div></pre></td></tr></table></figure>
+<h3 id="identifier"><a href="#identifier" class="headerlink" title="identifier"></a>identifier</h3><p>这个函数用于解析一个标识符。标识符一般是首字符是字母,后面部分是数字和字母组成的字符串。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 这个函数很简单,用于判断字符是否是字母</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">isAlpha</span><span class="params">(<span class="built_in">c</span> : Character)</span></span> -&gt; <span class="type">Bool</span>&#123;</div><div class="line">  <span class="keyword">if</span> <span class="built_in">c</span> &gt;= <span class="string">"a"</span> &amp;&amp; <span class="built_in">c</span> &lt;= <span class="string">"z"</span> || <span class="built_in">c</span> &gt;= <span class="string">"A"</span> &amp;&amp; <span class="built_in">c</span> &lt;= <span class="string">"Z"</span>&#123;</div><div class="line">      <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">  &#125;<span class="keyword">else</span>&#123;</div><div class="line">      <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 函数返回一个解析标识符的闭包</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">identifier</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">String</span>&gt;&#123;</div><div class="line"></div><div class="line">  <span class="comment">// 如果首字母是字符则将结果传递给下个函数去解析</span></div><div class="line">  <span class="keyword">return</span> satisfy(isAlpha) &gt;&gt;= &#123; <span class="built_in">c</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">      <span class="comment">// 不断的解析字母或数字,解析成功则将结果传个下一个函数</span></div><div class="line">      many(satisfy(&#123; (<span class="built_in">c</span>) -&gt; <span class="type">Bool</span> <span class="keyword">in</span> isAlpha(<span class="built_in">c</span>) || isDigit(<span class="built_in">c</span>) &#125;)) &gt;&gt;= &#123; cs <span class="keyword">in</span></div><div class="line"></div><div class="line">          <span class="comment">// 吃掉空格,将所有结果拼接成一个String wrap起来</span></div><div class="line">          space() &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line">              pure(<span class="type">String</span>([<span class="built_in">c</span>] + cs))</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = identifier()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果：[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果: []</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">" 123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果: []</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"_123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果: [("aa123", "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"aa123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果: [("abc", "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"abc"</span>))</div></pre></td></tr></table></figure>
+<h3 id="variables"><a href="#variables" class="headerlink" title="variables"></a>variables</h3><p>解析一个变量。解析变量其实在identifier 的基础上,结合我们之前定义的AST<br>来表示一个变量就可以了。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">variables</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 解析标识符成功,则将标识符wrap 起来</span></div><div class="line">    <span class="keyword">return</span> identifier() &gt;&gt;= &#123; name <span class="keyword">in</span></div><div class="line">        pure(<span class="type">Exp</span>.<span class="type">Var</span>(name))</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = variables()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">" 123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"_123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Var("aa123"), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"aa123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Var("abc"), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"abc"</span>))</div></pre></td></tr></table></figure>
+<h2 id="处理表达式"><a href="#处理表达式" class="headerlink" title="处理表达式"></a>处理表达式</h2><h3 id="文法"><a href="#文法" class="headerlink" title="文法"></a>文法</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">expr : expr <span class="string">'+'</span> term</div><div class="line">| expr <span class="string">'-'</span> term</div><div class="line">| term</div><div class="line">term : term <span class="string">'*'</span> <span class="built_in">factor</span></div><div class="line">| term <span class="string">'/'</span> <span class="built_in">factor</span></div><div class="line">| <span class="built_in">factor</span></div><div class="line"><span class="built_in">factor</span> : NUMBER</div><div class="line">| <span class="string">'('</span> expr <span class="string">')'</span></div></pre></td></tr></table></figure>
+<p>这里表示是一个简单的表达式的组成部分。</p>
+<ol>
+<li><p>expr, 以下3种情况都可以组成一个expr</p>
+<ul>
+<li>expr + term</li>
+<li>expr - term</li>
+<li>term</li>
+</ul>
+</li>
+<li><p>term, 以下3种情况可以组成一个term</p>
+<ul>
+<li>term * factor</li>
+<li>term / factor</li>
+<li>factor</li>
+</ul>
+</li>
+<li><p>factor,以下3种情况可以组成一个factor</p>
+<ul>
+<li>NUMBER</li>
+<li>‘(‘ expr ‘)’</li>
+</ul>
+</li>
+</ol>
+<p>分成这三大部分其实主要是要处理运算符优先级的问题,首先factor运算符的优先级是最高的。也就是说括号括起来的表达式和数字运算符的优先级是最高的。之后的优先级就是乘和除,所以我们的term就是和factor的乘除组成。最后的优先级就是加和减。到这时候我们的通过factor已经形成了一个个的expr和term了,这时我们就可以用简单的加减来计算表达式了。</p>
+<h3 id="factor"><a href="#factor" class="headerlink" title="factor"></a>factor</h3><p>这个函数用于解析一个factor。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">factor</span><span class="params">()</span></span>-&gt;<span class="type">Parser</span>&lt;<span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 如果解析到一个变量或者是数字 或者是括号括起来的表达式则将解析结果返回。</span></div><div class="line">    <span class="comment">// 这里如果到'(' 或就解析 expr ,expr 解析成功后就继续解析),都解析成功了就将表达是结果wrap 起来返回。</span></div><div class="line">    <span class="keyword">return</span> variables() +++ number() +++ (symbol(<span class="string">"("</span>) &gt;&gt;= &#123; <span class="built_in">c</span> <span class="keyword">in</span></div><div class="line">        expr() &gt;&gt;= &#123; n <span class="keyword">in</span></div><div class="line">            symbol(<span class="string">")"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line">                pure(n)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = factor()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Constant(1123), "abc")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"1123abc"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"("</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">")"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"()"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Constant(1), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"(1)"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Add(ParserCombinator.Exp.Constant(1), ParserCombinator.Exp.Constant(2)), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"(1 + 2)"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Constant(123), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"123"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Var("adf"), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"adf"</span>))<span class="string">")"</span>))</div></pre></td></tr></table></figure>
+<h3 id="addop"><a href="#addop" class="headerlink" title="addop"></a>addop</h3><p>这个函数用于解析一个加法运算符,解析成功返回一个加法运算的Parser</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">addop</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;(<span class="type">Exp</span>,<span class="type">Exp</span>)-&gt;<span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Parser '+' ,成功则wrap 一个加法运算</span></div><div class="line">    <span class="keyword">return</span> symbol(<span class="string">"+"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">        <span class="comment">// 输入两个参数 返回一个Exp.Add</span></div><div class="line">        pure(&#123;(x,y) -&gt; <span class="type">Exp</span> <span class="keyword">in</span></div><div class="line">            <span class="type">Exp</span>.<span class="type">Add</span>(x, y)</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = addop()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"1"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"a"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:Add(ParserCombinator.Exp.Constant(1), ParserCombinator.Exp.Constant(2))</span></div><div class="line"><span class="comment">// 这里成功解析出加号</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"+"</span>)[<span class="number">0</span>].<span class="number">0</span>(<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="number">1</span>),<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="number">2</span>)))</div></pre></td></tr></table></figure>
+<h3 id="mulop"><a href="#mulop" class="headerlink" title="mulop"></a>mulop</h3><p>这个函数用于解析一个乘法运算符,解析成功返回一个乘法运算的Parser</p>
+<p>代码实际其实和加法的基本一致。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">mulop</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;(<span class="type">Exp</span>,<span class="type">Exp</span>) -&gt; <span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Parser '*', 成功则wrap 一个乘法运算</span></div><div class="line">    <span class="keyword">return</span> symbol(<span class="string">"*"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">        <span class="comment">// 输入两参数,返回一个Exp.Times</span></div><div class="line">        pure(&#123; (x,y) -&gt; <span class="type">Exp</span> <span class="keyword">in</span></div><div class="line">            <span class="type">Exp</span>.<span class="type">Times</span>(x, y)</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="gt-lt-expr-term"><a href="#gt-lt-expr-term" class="headerlink" title="&gt;=&lt;, expr, term"></a>&gt;=&lt;, expr, term</h3><p><code>&gt;=&lt;</code> 是一个辅助函数,他能让我们更简单的去解析expr 和 term。</p>
+<p>我们一起来看看 &gt;=&lt; 的实现。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 自定义操作符</span></div><div class="line"><span class="keyword">infix</span> <span class="keyword">operator</span> &gt;=&lt; &#123;<span class="keyword">associativity</span> <span class="keyword">left</span> <span class="keyword">precedence</span> <span class="number">130</span>&#125;</div><div class="line"></div><div class="line"><span class="comment">// 这个操作符 左值接受一个参数Parser,右值接受一个方法,返回一个Parser</span></div><div class="line"><span class="function"><span class="keyword">func</span> &gt;=&lt;&lt;a&gt;<span class="params">(p : Parser&lt;a&gt;, op : Parser&lt;<span class="params">(a,a)</span></span></span> -&gt; a&gt;) -&gt; <span class="type">Parser</span>&lt;a&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// p Parser成功则 将x 传给rest </span></div><div class="line">    <span class="keyword">return</span> p &gt;&gt;= &#123; x <span class="keyword">in</span></div><div class="line"></div><div class="line">        <span class="comment">// rest 接受3个参数 p,x,op</span></div><div class="line">        rest(p, x: x, op: op)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">rest</span>&lt;a&gt;<span class="params">(p : Parser&lt;a&gt;, x : a, op : Parser&lt;<span class="params">(a,a)</span></span></span> -&gt; a&gt;) -&gt; <span class="type">Parser</span>&lt;a&gt; &#123;</div><div class="line"></div><div class="line">        <span class="comment">// 尝试去Parser op ,成功则把结果f,传给下一个闭包;失败则返回 x</span></div><div class="line">        <span class="keyword">return</span> op &gt;&gt;= &#123; f <span class="keyword">in</span></div><div class="line">            <span class="comment">// 尝试去Parser p,成功则把结果 y,传给下个闭包</span></div><div class="line">            p &gt;&gt;= &#123; y <span class="keyword">in</span></div><div class="line">                <span class="comment">// 递归调用rest 传入p,op Parser出来的方法f计算出来的结果,op。</span></div><div class="line">                rest(p, x: f(x,y), op: op)</div><div class="line">            &#125;</div><div class="line">    &#125; +++ pure(x)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line">接下来我们结合解析 expr和term, 看看 &gt;=&lt; 这个操作符。</div><div class="line">**/</div><div class="line"></div><div class="line"><span class="comment">// 解析表达式</span></div><div class="line">fun expr() -&gt; <span class="type">Parser</span>&lt;<span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">/** 回顾一下我们刚才的文法</span></div><div class="line">    expr : expr '+' term</div><div class="line">        | expr '-' term</div><div class="line">        | term</div><div class="line"></div><div class="line">    这里先Parser出一个term,如果Parser 加法 失败则返回term的值。</div><div class="line">    如果Parser 加法成功则继续计算并Parser 加法。</div><div class="line">    这样我们就实现上述的文法。</div><div class="line">    **/</div><div class="line">    <span class="keyword">return</span> term() &gt;=&lt; addop()</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="comment">// 解析term</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">term</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">/** 我们在看看之前定义的term的文法</span></div><div class="line">    term : term '*' factor</div><div class="line">        | term '/' factor</div><div class="line">        | factor</div><div class="line"></div><div class="line">    这里先Parser出一个factor,factor Parser成功,再去尝试Parser一个乘法</div><div class="line">    如果Parser乘法失败,则返回factor Parser的结果</div><div class="line">    如果Parser乘法成功,在尝试继续解析下一个factor,直达解析失败返回计算结果。</div><div class="line">    **/</div><div class="line">    <span class="keyword">return</span> factor() &gt;=&lt; mulop()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = expr()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Var("aa"), "")];解析出一个变量</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"aa"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Constant(11), "")];解析出一个常量11</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"11"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Add(ParserCombinator.Exp.Constant(11), ParserCombinator.Exp.Constant(2)), "*")]; 解析出11+2,*解析不出来</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"11 + 2 *"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Add(ParserCombinator.Exp.Constant(11), ParserCombinator.Exp.Times(ParserCombinator.Exp.Constant(2), ParserCombinator.Exp.Constant(2))), "")];解析出 11+2*2</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"11 + 2 * 2"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Exp.Add(ParserCombinator.Exp.Var("aa"), ParserCombinator.Exp.Times(ParserCombinator.Exp.Constant(2), ParserCombinator.Exp.Constant(2))), "")];解析出 变量aa + 2 * 2</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"aa + 2 * 2"</span>))</div></pre></td></tr></table></figure>
+<h2 id="解析命令"><a href="#解析命令" class="headerlink" title="解析命令"></a>解析命令</h2><h3 id="assign"><a href="#assign" class="headerlink" title="assign"></a>assign</h3><p>好了,我们现在开始解析赋值。有了之前的一个高阶函数的定义,解析赋值就变得异常的简单了。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">assign</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Com</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 先解析标识,因为赋值前面必然有标识</span></div><div class="line">    <span class="keyword">return</span> identifier() &gt;&gt;= &#123; name <span class="keyword">in</span></div><div class="line"></div><div class="line">        <span class="comment">// 解析=符号</span></div><div class="line">        symbol(<span class="string">"="</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">            <span class="comment">// 解析表达式</span></div><div class="line">            expr() &gt;&gt;= &#123; exp <span class="keyword">in</span></div><div class="line"></div><div class="line">                <span class="comment">// wrap 一个赋值AST</span></div><div class="line">                pure(<span class="type">Com</span>.<span class="type">Assign</span>(name, exp))</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = assign()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"a"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"11"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Com.Assign("a", ParserCombinator.Exp.Constant(1)), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"a = 1"</span>))</div></pre></td></tr></table></figure>
+<h3 id="print"><a href="#print" class="headerlink" title="print"></a>print</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">解析<span class="built_in">print</span>命令</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">print</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Com</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 尝试Parser print</span></div><div class="line">    <span class="keyword">return</span> symbol(<span class="string">"print"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">        <span class="comment">// Parser print 成功,再尝试Parser 表达式</span></div><div class="line">        expr() &gt;&gt;= &#123; exp <span class="keyword">in</span></div><div class="line"></div><div class="line">            <span class="comment">// 都Parser成功则,wrap print命令返回</span></div><div class="line">            pure(<span class="type">Com</span>.<span class="type">Print</span>(exp))</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> test = <span class="built_in">print</span>()</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"1"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"2*2"</span>))</div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"1+2"</span>))</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 输出结果:[(ParserCombinator.Com.Print(ParserCombinator.Exp.Constant(1)), "")]</span></div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"print(1)"</span>))</div><div class="line"></div><div class="line"><span class="comment">//</span></div><div class="line">输出结果:[(<span class="type">ParserCombinator</span>.<span class="type">Com</span>.<span class="type">Print</span>(<span class="type">ParserCombinator</span>.<span class="type">Exp</span>.<span class="type">Times</span>(<span class="type">ParserCombinator</span>.<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="number">2</span>), <span class="type">ParserCombinator</span>.<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="number">2</span>))), <span class="string">""</span>)]</div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"print(2*2)"</span>))</div><div class="line"></div><div class="line"><span class="comment">//</span></div><div class="line">输出结果:[(<span class="type">ParserCombinator</span>.<span class="type">Com</span>.<span class="type">Print</span>(<span class="type">ParserCombinator</span>.<span class="type">Exp</span>.<span class="type">Add</span>(<span class="type">ParserCombinator</span>.<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="number">1</span>), <span class="type">ParserCombinator</span>.<span class="type">Exp</span>.<span class="type">Constant</span>(<span class="number">2</span>))), <span class="string">""</span>)]</div><div class="line"><span class="built_in">print</span>(test.p(<span class="string">"print(1+2)"</span>))</div></pre></td></tr></table></figure>
+<h3 id="whileloop"><a href="#whileloop" class="headerlink" title="whileloop"></a>whileloop</h3><p>接下我们来看看如果Parser一条循环语句。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">relop</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;(<span class="type">Exp</span>,<span class="type">Exp</span>) -&gt; <span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 这里Parser "&lt;"</span></div><div class="line">    <span class="keyword">return</span> symbol(<span class="string">"&lt;"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">        <span class="comment">// 成功则将条件表达式(小于),给wrap起来</span></div><div class="line">        pure(&#123;(x,y) -&gt; <span class="type">Exp</span> <span class="keyword">in</span></div><div class="line">            <span class="type">Exp</span>.<span class="type">Less</span>(x, y)</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">rexp</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Exp</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Parser 一个表达式</span></div><div class="line">    <span class="comment">// Parser成功,将结果作为左值传给 relop </span></div><div class="line">    <span class="comment">// 然后在 relop 会尝试Parser "&lt;"</span></div><div class="line">    <span class="comment">// Parser 成功,则继续Parser右值</span></div><div class="line">    <span class="comment">// 最终得出一个条件表达式,把他wrap起来</span></div><div class="line">    <span class="keyword">return</span> expr() &gt;=&lt; relop()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">whileloop</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Com</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Parser while 成功则继续</span></div><div class="line">    <span class="keyword">return</span> symbol(<span class="string">"while"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line">        </div><div class="line">        <span class="comment">// Parser 一个条件表达式</span></div><div class="line">        rexp() &gt;&gt;= &#123; cond <span class="keyword">in</span></div><div class="line"></div><div class="line">            <span class="comment">// 条件表达式Parser成功,则尝试Parser "&#123;"</span></div><div class="line">            symbol(<span class="string">"&#123;"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">                <span class="comment">// "&#123;" Parser成功,则尝试Parser一条或多条命令,com这个函数会在下面和大家一起分析</span></div><div class="line">                com() &gt;&gt;= &#123; stmt <span class="keyword">in</span></div><div class="line"></div><div class="line">                    <span class="comment">// 命令 Parser成功,则最后尝试Parser "&#125;"</span></div><div class="line">                    symbol(<span class="string">"&#125;"</span>) &gt;&gt;= &#123; <span class="number">_</span> <span class="keyword">in</span></div><div class="line"></div><div class="line">                        <span class="comment">// 全部Parser成功 则将循环语句wrap</span></div><div class="line">                        pure(<span class="type">Com</span>.<span class="type">While</span>(cond, stmt))</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>是的,解析一个循环语句就是如此的简单。分析代码是大家或许能发现这代码存在一个bug。这代码只对”&lt;”进行Parser了。其实条件表达式还有”==”和”&gt;”这里并没有Parser。大家可以尝试去解决这个bug,验证自己的理解。</p>
+<h3 id="seq-com-com1"><a href="#seq-com-com1" class="headerlink" title="seq/com/com1"></a>seq/com/com1</h3><p>seq、com、com1需要放在一起看。</p>
+<p>seq其实就像序列,用于表示我执行了一条命令后,接下来执行哪一条命令。所以我们可以看到在AST定义中seq是由2个Com组成。</p>
+<p>com、com1都是用于解析命令的。为什么定义两个呢？这也是分享者在视频中提出的问题。</p>
+<p>我们就带着这个问题一起分析一下代码吧。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">com</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Com</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 尝试Parser一个序列,Parser失败则返回一条命令</span></div><div class="line">    <span class="keyword">return</span> seq() +++ com1()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">com1</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Com</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 尝试Parser 一条赋值语句,失败则 Parser 循环语句, 失败则 Parser 打印语句</span></div><div class="line">    <span class="keyword">return</span> assign() +++ whileloop() +++ <span class="built_in">print</span>()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">seq</span><span class="params">()</span></span> -&gt; <span class="type">Parser</span>&lt;<span class="type">Com</span>&gt;&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 由于需要2个Com才能组成一个Seq,所以这里先Parser 一个 Com,成功后继续Parser 下一个Com</span></div><div class="line">    <span class="keyword">return</span> com1() &gt;&gt;= &#123; stmt <span class="keyword">in</span></div><div class="line"></div><div class="line">        <span class="comment">// 注意这里用的是com,不是com1。</span></div><div class="line">        <span class="comment">// 从刚刚的com1的代码可以看出,我们认为只有赋值、循环、打印才是一条命令。</span></div><div class="line">        <span class="comment">// com 会尝试去Parser一个Seq,失败再去Parser 一条命令。</span></div><div class="line">        <span class="comment">// 也就是说com1用于Parser一条命令,com可以Parser多条命令。这里有点像之前的many 和 many1</span></div><div class="line">        com() &gt;&gt;= &#123; stmt2 <span class="keyword">in</span></div><div class="line"></div><div class="line">            <span class="comment">// 这里就是warp 一个Seq</span></div><div class="line">            pure(<span class="type">Com</span>.<span class="type">Seq</span>(stmt, stmt2))</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看到这里大家应该和我一样理解为什么需要2个com了吧。在分享者的代码中并没有Parser我们之前在AST定义的Cond的函数。如果大家感兴趣可以尝试去定义这个函数,校验自己的学习成果。</p>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="built_in">c</span>: <span class="type">String</span> = <span class="string">" i = 0 print i sum = 0 while i&lt;100  &#123;sum=sum+i i=i+1 &#125;   print sum"</span></div><div class="line"><span class="keyword">let</span> ast = (space() &gt;&gt;= &#123;<span class="number">_</span> <span class="keyword">in</span> com()&#125;).p(<span class="built_in">c</span>)[<span class="number">0</span>].<span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment">// 输出结果: </span></div><div class="line"><span class="comment">// Seq(ParserCombinator.Com.Assign("i",</span></div><div class="line"><span class="comment">// ParserCombinator.Exp.Constant(0)),</span></div><div class="line"><span class="comment">// ParserCombinator.Com.Seq(ParserCombinator.Com.Print(ParserCombinator.Exp.Var("i")),</span></div><div class="line"><span class="comment">// ParserCombinator.Com.Seq(ParserCombinator.Com.Assign("sum",</span></div><div class="line"><span class="comment">// ParserCombinator.Exp.Constant(0)),</span></div><div class="line"><span class="comment">// ParserCombinator.Com.Seq(ParserCombinator.Com.While(ParserCombinator.Exp.Less(ParserCombinator.Exp.Var("i"),</span></div><div class="line"><span class="comment">// ParserCombinator.Exp.Constant(100)),</span></div><div class="line"><span class="comment">// ParserCombinator.Com.Seq(ParserCombinator.Com.Assign("sum",</span></div><div class="line"><span class="comment">// ParserCombinator.Exp.Add(ParserCombinator.Exp.Var("sum"),</span></div><div class="line"><span class="comment">// ParserCombinator.Exp.Var("i"))), ParserCombinator.Com.Assign("i",</span></div><div class="line"><span class="comment">// ParserCombinator.Exp.Add(ParserCombinator.Exp.Var("i"),</span></div><div class="line"><span class="comment">// ParserCombinator.Exp.Constant(1))))),</span></div><div class="line"><span class="comment">// ParserCombinator.Com.Print(ParserCombinator.Exp.Var("sum"))))))</span></div><div class="line"><span class="built_in">print</span>(ast)</div></pre></td></tr></table></figure>
+<h1 id="Backend"><a href="#Backend" class="headerlink" title="Backend"></a>Backend</h1><p>好了,最复杂的AST解析我们已经完成了。接下我们就要执行我们解析出来的AST,得到最终的运行结果。</p>
+<p>Backend 主要分成两部分：1.求表达式  2.执行命令</p>
+<h2 id="求表达式"><a href="#求表达式" class="headerlink" title="求表达式"></a>求表达式</h2><h3 id="eval"><a href="#eval" class="headerlink" title="eval"></a>eval</h3><p>这个函数用于获得AST 表达式结果。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">eval</span><span class="params">(exp : Exp)</span></span> -&gt; <span class="type">Int</span>&#123;</div><div class="line">    <span class="keyword">switch</span> exp &#123;</div><div class="line">        </div><div class="line">        <span class="comment">// 如果是常量直接返回x</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Exp</span>.<span class="type">Constant</span>(x):</div><div class="line">            <span class="keyword">return</span> x</div><div class="line">           </div><div class="line">        <span class="comment">// 变量则获取变量对应的数值</span></div><div class="line">        <span class="comment">// var varTable : [String:Int] = [:]</span></div><div class="line">        <span class="comment">// func getvar(name : String) -&gt; Int&#123;</span></div><div class="line">        <span class="comment">//    return varTable[name]!</span></div><div class="line">        <span class="comment">// &#125;</span></div><div class="line">        <span class="comment">// 我们通过varTable来存储变量和值之间的对应关系</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Exp</span>.<span class="type">Var</span>(name):</div><div class="line">            <span class="keyword">return</span> getvar(name)</div><div class="line"></div><div class="line">        <span class="comment">// 加法运算是两个表达式直接相加,所以这里继续递归调用</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Exp</span>.<span class="type">Add</span>(exp1, exp2):</div><div class="line">            <span class="keyword">return</span> eval(exp1) + eval(exp2)</div><div class="line"></div><div class="line">        <span class="comment">// 小于,两个表达式的结果进行比较,这里也需要递归调用</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Exp</span>.<span class="type">Less</span>(exp1, exp2):</div><div class="line">            <span class="keyword">let</span> a = eval(exp1)</div><div class="line">            <span class="keyword">let</span> b = eval(exp2)</div><div class="line">            <span class="keyword">if</span> a &gt; b &#123;</div><div class="line">                <span class="keyword">return</span> <span class="number">0</span></div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                <span class="keyword">return</span> <span class="number">1</span></div><div class="line">            &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 乘法,两个表达式的结果进行乘法运算</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Exp</span>.<span class="type">Times</span>(exp1, exp2):</div><div class="line">            <span class="keyword">return</span> eval(exp1) * eval(exp2)</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">return</span> <span class="number">0</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>求表达式就是如此的简单#^_^#</p>
+<p>这里一样有一些表达式没定义,大家可以尝试去定义自己想要的表达式。</p>
+<h2 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h2><p>执行命令的处理和求表达式其实是大同小异的。我只需要<code>interpreter</code>函数就能完成这个操作。</p>
+<h3 id="interpreter"><a href="#interpreter" class="headerlink" title="interpreter"></a>interpreter</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">interpreter</span><span class="params">(stmt : Com)</span></span> &#123;</div><div class="line"></div><div class="line">    <span class="comment">// 我们需要一个辅助函数loopHelper帮助我们实行循环命令</span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">loopHelper</span><span class="params">(cond : Exp,st : Com)</span></span>&#123;</div><div class="line"></div><div class="line">        <span class="comment">// 如果表达式结果等于0 则退出</span></div><div class="line">        <span class="keyword">if</span> eval(cond) == <span class="number">0</span>&#123;</div><div class="line">            <span class="keyword">return</span></div><div class="line">         &#125;<span class="keyword">else</span>&#123;</div><div class="line">            </div><div class="line">            <span class="comment">// 继续执行命令</span></div><div class="line">            interpreter(st)</div><div class="line"></div><div class="line">            <span class="comment">// 继续循环执行</span></div><div class="line">            loopHelper(cond, st: st)</div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line">                                                                    </div><div class="line">    <span class="keyword">switch</span> stmt &#123;</div><div class="line"></div><div class="line">        <span class="comment">// 赋值,将变量名存放到变量对应表中</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Com</span>.<span class="type">Assign</span>(name, exp1):</div><div class="line">            varTable[name] = eval(exp1)</div><div class="line"></div><div class="line">        <span class="comment">// 序列,一条一条的命令执行</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Com</span>.<span class="type">Seq</span>(st1, st2):</div><div class="line">            interpreter(st1)</div><div class="line">            interpreter(st2)</div><div class="line"></div><div class="line">        <span class="comment">// 循环,调用loopHelper实现循环执行</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Com</span>.<span class="type">While</span>(cond, st1):</div><div class="line">            loopHelper(cond, st: st1)</div><div class="line"></div><div class="line">        <span class="comment">// 打印,将表达式的结果打印出来</span></div><div class="line">        <span class="keyword">case</span> <span class="keyword">let</span> <span class="type">Com</span>.<span class="type">Print</span>(exp):</div><div class="line">            <span class="built_in">print</span>(eval(exp))</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>到这来我们就把解析器给完成了。虽然例子中有一些异常场景没有考虑。如解析失败的处理,变量名重复的处理。但这毕竟不是实现一个强大的功能库,只是个教学用的Dome。</p>
+<p>现在我们就来验证一些我们的代码吧。</p>
+<p><strong>测试代码</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">// 我们要实现从1累加到100</span></div><div class="line"><span class="keyword">let</span> <span class="built_in">c</span>: <span class="type">String</span> = <span class="string">" i = 0 print i sum = 0 while i&lt;100  &#123;sum=sum+i i=i+1 &#125;   print sum"</span></div><div class="line"></div><div class="line"><span class="comment">// 我们先吃掉空格,然后执行解析命令,得到我们的AST</span></div><div class="line"><span class="keyword">let</span> ast = (space() &gt;&gt;= &#123;<span class="number">_</span> <span class="keyword">in</span> com()&#125;).p(<span class="built_in">c</span>)[<span class="number">0</span>].<span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment">// 一条条的执行AST 中的命令</span></div><div class="line"><span class="comment">// 输出结果：</span></div><div class="line"><span class="comment">// 0</span></div><div class="line"><span class="comment">// 5050</span></div><div class="line">interpreter(ast)</div></pre></td></tr></table></figure>
+<p>（<em>@ο@</em>） 哇～ 完美</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>相信大家通过这个例子和我一样都感受到函数式编程的魅力了吧。例子中定义了大量的高级函数和辅助函数,然后通过这些函数的组合使用一个个复杂的功能。例子中定义的Parser和pure就是Monad的概念(ps:希望我没有理解错 呵呵),通过自定义操作符&gt;&gt;=实现了bind。</p>
+<p>感谢视频分享者,让我在函数式编程的学习道路是又进一步。</p>
+<h1 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h1><p><a href="http://www.bilibili.com/video/av4211315/" target="_blank" rel="external">视频</a></p>
+<p><a href="http://7pulfv.com1.z0.glb.clouddn.com/InterView%40SwiftGG.key" target="_blank" rel="external">keynote</a></p>
+<p><a href="https://github.com/aaaron7/swift_monadic_parser" target="_blank" rel="external">代码</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/15/2016-5-15/" rel="next" title="只是想打印个Hello World">
+                <i class="fa fa-chevron-left"></i> 只是想打印个Hello World
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/27/2015-7-27/" rel="prev" title="DZNEmptyDataSet 源码学习笔记">
+                DZNEmptyDataSet 源码学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解释器组成"><span class="nav-number">2.</span> <span class="nav-text">解释器组成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AST"><span class="nav-number">3.</span> <span class="nav-text">AST</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Frontend"><span class="nav-number">4.</span> <span class="nav-text">Frontend</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义Parser"><span class="nav-number">4.1.</span> <span class="nav-text">定义Parser</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本元素"><span class="nav-number">4.2.</span> <span class="nav-text">基本元素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mzero"><span class="nav-number">4.2.1.</span> <span class="nav-text">mzero</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pure"><span class="nav-number">4.2.2.</span> <span class="nav-text">pure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#satisfy"><span class="nav-number">4.2.3.</span> <span class="nav-text">satisfy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parserChar"><span class="nav-number">4.2.4.</span> <span class="nav-text">parserChar</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义组合规则"><span class="nav-number">4.3.</span> <span class="nav-text">定义组合规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gt-gt"><span class="nav-number">4.3.1.</span> <span class="nav-text">>>=</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">4.3.2.</span> <span class="nav-text">+++</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#many-many1"><span class="nav-number">4.3.3.</span> <span class="nav-text">many, many1</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义高级组合子"><span class="nav-number">4.4.</span> <span class="nav-text">定义高级组合子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">4.4.1.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#space"><span class="nav-number">4.4.2.</span> <span class="nav-text">space</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#number"><span class="nav-number">4.4.3.</span> <span class="nav-text">number</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#symbol"><span class="nav-number">4.4.4.</span> <span class="nav-text">symbol</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#identifier"><span class="nav-number">4.4.5.</span> <span class="nav-text">identifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variables"><span class="nav-number">4.4.6.</span> <span class="nav-text">variables</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理表达式"><span class="nav-number">4.5.</span> <span class="nav-text">处理表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文法"><span class="nav-number">4.5.1.</span> <span class="nav-text">文法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#factor"><span class="nav-number">4.5.2.</span> <span class="nav-text">factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#addop"><span class="nav-number">4.5.3.</span> <span class="nav-text">addop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mulop"><span class="nav-number">4.5.4.</span> <span class="nav-text">mulop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gt-lt-expr-term"><span class="nav-number">4.5.5.</span> <span class="nav-text">>=<, expr, term</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析命令"><span class="nav-number">4.6.</span> <span class="nav-text">解析命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#assign"><span class="nav-number">4.6.1.</span> <span class="nav-text">assign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#print"><span class="nav-number">4.6.2.</span> <span class="nav-text">print</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#whileloop"><span class="nav-number">4.6.3.</span> <span class="nav-text">whileloop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#seq-com-com1"><span class="nav-number">4.6.4.</span> <span class="nav-text">seq/com/com1</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Backend"><span class="nav-number">5.</span> <span class="nav-text">Backend</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#求表达式"><span class="nav-number">5.1.</span> <span class="nav-text">求表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eval"><span class="nav-number">5.1.1.</span> <span class="nav-text">eval</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行命令"><span class="nav-number">5.2.</span> <span class="nav-text">执行命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#interpreter"><span class="nav-number">5.2.1.</span> <span class="nav-text">interpreter</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#相关资料"><span class="nav-number">7.</span> <span class="nav-text">相关资料</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2016/06/21/2016-06-21/';
+      var disqus_title = 'swift-纯函数式的解释器设计学习总结';
+      var disqus_url = 'http://yoursite.com/2016/06/21/2016-06-21/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

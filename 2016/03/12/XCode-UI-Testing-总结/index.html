@@ -1,0 +1,693 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="IOS,测试," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="自Xcode 7.0 开始苹果提供了UI 测试的功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XCode UI Testing 总结">
+<meta property="og:url" content="http://yoursite.com/2016/03/12/XCode-UI-Testing-总结/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="自Xcode 7.0 开始苹果提供了UI 测试的功能。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/CEE24D6A-E58F-4E10-AE9C-B9F86339E1A4.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/A275BE91-3125-41DE-B060-BDE4073C63D5.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/57338768-B8FA-40C9-BC04-66D18BD73711.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/5F7FB79B-2ABD-4605-8846-8365D949A387.png">
+<meta property="og:updated_time" content="2016-06-22T14:15:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="XCode UI Testing 总结">
+<meta name="twitter:description" content="自Xcode 7.0 开始苹果提供了UI 测试的功能。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/CEE24D6A-E58F-4E10-AE9C-B9F86339E1A4.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> XCode UI Testing 总结 | Sim 's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                XCode UI Testing 总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-03-12T18:52:39+08:00" content="2016-03-12">
+              2016-03-12
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/03/12/XCode-UI-Testing-总结/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/03/12/XCode-UI-Testing-总结/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>自动化测试能为我们节省很多时间，Xcode 7.0开始苹果就提供的UI 测试的功能。在最近的项目中我也尝试去使用它，感觉挺不错的。大大减少了验证的工作量。下面分享一下我使用UI test一些经验吧。</p>
+<h2 id="开始使用UI-Testing"><a href="#开始使用UI-Testing" class="headerlink" title="开始使用UI Testing"></a>开始使用UI Testing</h2><p><img src="../../../../../images/CEE24D6A-E58F-4E10-AE9C-B9F86339E1A4.png" alt=""></p>
+<p><img src="../../../../../images/A275BE91-3125-41DE-B060-BDE4073C63D5.png" alt=""></p>
+<p><img src="../../../../../images/57338768-B8FA-40C9-BC04-66D18BD73711.png" alt=""></p>
+<p>经过以上三个步骤我们就创建了一个UI Testing的target。</p>
+<h2 id="UI-行为录制"><a href="#UI-行为录制" class="headerlink" title="UI 行为录制"></a>UI 行为录制</h2><p>这是默认为我们创建的第一个测试用例文件。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  CavyLifeBand22UITests.swift</span></div><div class="line"><span class="comment">//  CavyLifeBand22UITests</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by xuemincai on 16/3/12.</span></div><div class="line"><span class="comment">//  Copyright © 2016年 xuemincai. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> XCTest</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CavyLifeBand22UITests</span>: <span class="title">XCTestCase</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">setUp</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.setUp()</div><div class="line"></div><div class="line">        <span class="comment">// Put setup code here. This method is called before the invocation of each test method in the class.</span></div><div class="line"></div><div class="line">        <span class="comment">// In UI tests it is usually best to stop immediately when a failure occurs.</span></div><div class="line">        continueAfterFailure = <span class="literal">false</span></div><div class="line">        <span class="comment">// UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.</span></div><div class="line">        <span class="type">XCUIApplication</span>().launch()</div><div class="line"></div><div class="line">        <span class="comment">// In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">tearDown</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// Put teardown code here. This method is called after the invocation of each test method in the class.</span></div><div class="line">        <span class="keyword">super</span>.tearDown()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">testExample</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// Use recording to get started writing UI tests.</span></div><div class="line">        <span class="comment">// Use XCTAssert and related functions to verify your tests produce the correct results.</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>XCUIApplication().launch()</code>用于启动App进行测试。现在我们要开始录制UI 行为，我们希望在<code>testExample</code>中执行UI的测试。先把光标放到<code>testExample</code>测试用例方法中。</p>
+<p><img src="../../../../../images/5F7FB79B-2ABD-4605-8846-8365D949A387.png" alt=""></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">testExample</span><span class="params">()</span></span> &#123;</div><div class="line">  <span class="type">XCUIApplication</span>().buttons[<span class="string">"登录"</span>].tap()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过录制功能我们实行一个简单的测试用例点击“登录”按钮。</p>
+<h2 id="常用的操作函数"><a href="#常用的操作函数" class="headerlink" title="常用的操作函数"></a>常用的操作函数</h2><p>UI行为录制虽然很不错，当还是有很多不足的地方。我建议大家还是通过手写测试用例代码效率比较高。接下来给大家介绍一下常用的操作方法。</p>
+<ul>
+<li>tap 这是我们刚刚使用的过的点击操作的方法</li>
+<li>doubleTap 双击</li>
+<li>twoFingerTap 双指点击</li>
+<li>pressForDuration 长按</li>
+<li>swipeUp 向上滑动</li>
+<li>swipeDown 向下滑动</li>
+<li>swipeLeft 向左滑动</li>
+<li>swipeRight 向右滑动</li>
+<li>typeText 文本框输入信息</li>
+</ul>
+<h2 id="实时的UI反馈校验"><a href="#实时的UI反馈校验" class="headerlink" title="实时的UI反馈校验"></a>实时的UI反馈校验</h2><p>假设我想验证这样的一个场景：用户在没有输入用户名的情况下点击登录，我们需要弹出个对话框，告诉用户“用户名不能空”<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">testExample</span><span class="params">()</span></span> &#123;</div><div class="line"></div><div class="line">        <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()</div><div class="line">        app.buttons[<span class="string">"登录"</span>].tap()</div><div class="line">        <span class="keyword">let</span> alert = app.alerts</div><div class="line">        <span class="keyword">let</span> label = app.alerts.staticTexts[<span class="string">"用户名不能空"</span>]</div><div class="line"></div><div class="line">        <span class="keyword">let</span> alertCount = <span class="type">NSPredicate</span>(format: <span class="string">"count == 1"</span>)</div><div class="line">        <span class="keyword">let</span> labelExist = <span class="type">NSPredicate</span>(format: <span class="string">"exists == 1"</span>)</div><div class="line"></div><div class="line">        expectationForPredicate(alertCount, evaluatedWithObject: alert, handler: <span class="literal">nil</span>)</div><div class="line">        expectationForPredicate(labelExist, evaluatedWithObject: label, handler: <span class="literal">nil</span>)</div><div class="line">        waitForExpectationsWithTimeout(<span class="number">5</span>, handler: <span class="literal">nil</span>)</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>我们可以通过以上的方式判断alert是否存在，显示文本是否正确。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://www.jianshu.com/p/6cb686e5dacc/comments/642920" target="_blank" rel="external">Xcode7 UI自动化测试详解 带demo UITests</a><br><a href="https://onevcat.com/2015/09/ui-testing/" target="_blank" rel="external">WWDC15 Session笔记 - Xcode 7 UI 测试初窥</a><br><a href="https://developer.apple.com/videos/play/wwdc2015/406/" target="_blank" rel="external">UI Testing in Xcode</a></p>
+<p>感谢大虾们的文章对我学习UI Testing的帮助。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IOS/" rel="tag">#IOS</a>
+          
+            <a href="/tags/测试/" rel="tag">#测试</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/31/ios-http-https抓包教程/" rel="next" title="ios http/https抓包教程">
+                <i class="fa fa-chevron-left"></i> ios http/https抓包教程
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/17/2016-04-17-18-34-46/" rel="prev" title="iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结">
+                iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#开始使用UI-Testing"><span class="nav-number">1.</span> <span class="nav-text">开始使用UI Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UI-行为录制"><span class="nav-number">2.</span> <span class="nav-text">UI 行为录制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的操作函数"><span class="nav-number">3.</span> <span class="nav-text">常用的操作函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实时的UI反馈校验"><span class="nav-number">4.</span> <span class="nav-text">实时的UI反馈校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2016/03/12/XCode-UI-Testing-总结/';
+      var disqus_title = 'XCode UI Testing 总结';
+      var disqus_url = 'http://yoursite.com/2016/03/12/XCode-UI-Testing-总结/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

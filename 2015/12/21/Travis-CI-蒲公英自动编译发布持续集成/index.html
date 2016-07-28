@@ -1,0 +1,743 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="持续集成," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="懒是程序员的美德，作为程序员应该善用工具提高自己的工作效率。如果你和我一样觉得每次手动发布版本太麻烦了，那这篇博客无疑是对你量身定制的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Travis CI + 蒲公英自动编译发布持续集成">
+<meta property="og:url" content="http://yoursite.com/2015/12/21/Travis-CI-蒲公英自动编译发布持续集成/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="懒是程序员的美德，作为程序员应该善用工具提高自己的工作效率。如果你和我一样觉得每次手动发布版本太麻烦了，那这篇博客无疑是对你量身定制的。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/FE6EC3DE-8BA5-4AFB-8802-03F5C0DED709.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/dist_cert_keychain.jpg">
+<meta property="og:updated_time" content="2016-06-22T14:15:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Travis CI + 蒲公英自动编译发布持续集成">
+<meta name="twitter:description" content="懒是程序员的美德，作为程序员应该善用工具提高自己的工作效率。如果你和我一样觉得每次手动发布版本太麻烦了，那这篇博客无疑是对你量身定制的。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/FE6EC3DE-8BA5-4AFB-8802-03F5C0DED709.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> Travis CI + 蒲公英自动编译发布持续集成 | Sim 's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Travis CI + 蒲公英自动编译发布持续集成
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2015-12-21T20:54:16+08:00" content="2015-12-21">
+              2015-12-21
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2015/12/21/Travis-CI-蒲公英自动编译发布持续集成/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/21/Travis-CI-蒲公英自动编译发布持续集成/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>我一直都是对CI持续集成特别热爱。自从开始从事ios开发就觉得版本发布的工作太繁琐了，太浪费时间了。于是在就开始搜罗在ios下如何做自动编译发布，最终找到了两个工具一个是Jenkins，另一个是Travis。</p>
+<p>Jenkins是开源的，但你使用Jenkins那就必须搭一个苹果服务器，而且好必须忍受那丑陋的页面（我就是无法忍受那页面放弃它的）。维护一个服务器其实也是蛮烦的一件事。</p>
+<p>Travis 你则不需要搭建服务器了，Travis已经帮你搞定了。而且页面也非常漂亮。<br>缺点：</p>
+<ol>
+<li>Travis与github强关联的，你必须把代码提交到github才能使用</li>
+<li>Travis的服务器在国外，你访问页面会比较慢</li>
+</ol>
+<p>Jenkins和Travis我都使用过，最终我选择了省心漂亮的Travis。好了，现在我们就自己入正题吧！！</p>
+<h2 id="Travis配置概述"><a href="#Travis配置概述" class="headerlink" title="Travis配置概述"></a>Travis配置概述</h2><p>1.安装travis命令行（注意用于一些关键环境变量的加密）<br>2.收集配置证书、描述文件、密钥<br>3.配置导入证书、描述文件、密钥的脚本<br>4.配置编译脚本<br>5.配置打包脚本<br>6.配置ipa上传蒲公英的脚本</p>
+<h2 id="安装Travis命令行"><a href="#安装Travis命令行" class="headerlink" title="安装Travis命令行"></a>安装Travis命令行</h2><p>Travis注意用于一些重要的环境变量加密的。执行以下命令就可以完成Travis命令行的安装。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gem <span class="keyword">install</span> travis</div></pre></td></tr></table></figure>
+<h2 id="配置Travis"><a href="#配置Travis" class="headerlink" title="配置Travis"></a>配置Travis</h2><p>我们通过配置Travis告诉Travis我们需要他干什么。</p>
+<h3 id="创建-travis-yml"><a href="#创建-travis-yml" class="headerlink" title="创建.travis.yml"></a>创建.travis.yml</h3><p><strong>.travis.yml</strong>是Travis的配置文件，我们需要把这个问题创建到我们工程的根目录下。Travis会根据你在这个文件中的配置执行相应的操作，在整个build的生命周期里，你可以在不同的阶段做不同的操作。</p>
+<h3 id="最简单的编译配置项"><a href="#最简单的编译配置项" class="headerlink" title="最简单的编译配置项"></a>最简单的编译配置项</h3><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">language:</span> objective-c</div></pre></td></tr></table></figure>
+<p>Travis 编译器运行在虚拟机环境下。该编译器已经利用 Ruby，Homebrew，CocoaPods 和一些默认的编译脚本进行过预配置。上述的配置项已经足够编译你的项目了。</p>
+<h3 id="自定义编译命令"><a href="#自定义编译命令" class="headerlink" title="自定义编译命令"></a>自定义编译命令</h3><p>上述的编译工程过于简单，容易导致使用错误的证书。我们一般会使用自定义编译命令。<br>Travis提供了xcodebuild和Xctool。<br>xcodebuild是Apple提供的命令，而Xctool 是来自 Facebook 的命令行工具，它可以简化程序的编译和测试。</p>
+<p>打开终端并输入：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcodebuild <span class="comment">--help</span></div></pre></td></tr></table></figure>
+<p>上述命令会列出来xcodebuild的命令的所有参数</p>
+<p>常用的编译命令：</p>
+<figure class="highlight puppet"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcodebuild -<span class="keyword">project</span> &#123;<span class="literal">project</span>&#125;.xcodeproj -<span class="keyword">target</span> &#123;<span class="literal">target</span>&#125; -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO</div></pre></td></tr></table></figure>
+<p><strong>iphonesimulator</strong>    SDK 我们这里指定使用模拟器SDK编译是为了保证我们在没有导入证书前可以正常编译，<strong>ONLY_ACTIVE_ARCH</strong>可以确保我们是利用模拟器架构编译工程。</p>
+<p>对于使用 <strong>CocoaPods</strong> 的项目，需要用下面的命令来指定 <strong>workspace</strong> 和 <strong>scheme</strong>：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xcodebuild -<span class="class">workspace </span>&#123;workspace&#125;.xcworkspace -<span class="class">scheme </span>&#123;scheme&#125; -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO</div></pre></td></tr></table></figure>
+<p>schemes 是由 Xcode 自动生成的，但这在服务器上不会发生。确保所有的 scheme 都被设为 <strong>shared</strong> 并加入到仓库中。否则它只会在本地工作而不会被 Travis CI 识别。</p>
+<p>在Xcode中选择<strong>Product</strong> &gt; <strong>Schemes</strong> &gt; <strong>Manage Schemes</strong></p>
+<p><img src="../../../../../images/FE6EC3DE-8BA5-4AFB-8802-03F5C0DED709.png" alt=""></p>
+<h3 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h3><p>如果你需要指定特定的Xcode版本,例如我需要指定使用Xcode7.2则添加如下配置：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">osx_image:</span> xcode7<span class="number">.2</span></div></pre></td></tr></table></figure>
+<h2 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h2><p>不幸的是，xcodebuild 对于 iOS 来说，并不能正确支持 target 和应用程序的测试。不过我们可以使用 Xctool。</p>
+<h3 id="Xctool"><a href="#Xctool" class="headerlink" title="Xctool"></a>Xctool</h3><p><a href="https://github.com/facebook/xctool" target="_blank" rel="external">Xctool</a> 是来自 Facebook 的命令行工具，它可以简化程序的编译和测试。它的彩色输出信息比 <strong>xcodebuild</strong> 更加简洁直观。同时还添加了对逻辑测试，应用测试的支持。</p>
+<p>Travis 中已经预装了 xctool。要在本地测试的话，需要用 <a href="http://brew.sh" target="_blank" rel="external">Homebrew</a> 安装 xctool：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">brew </span>update</div><div class="line"><span class="keyword">brew </span><span class="keyword">install </span>xctool</div></pre></td></tr></table></figure>
+<p>xctool 用法非常简单，它使用的参数跟 xcodebuild 相同：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xctool test -<span class="class">workspace </span>&#123;workspace&#125;.xcworkspace -<span class="class">scheme </span>&#123;scheme&#125; -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO</div></pre></td></tr></table></figure>
+<p>一旦相关命令在本地能正常工作，那么就是时候把它们添加到 <strong>.travis.yml</strong> 中了：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">language:</span> objective-c</div><div class="line"><span class="symbol">script:</span></div><div class="line">  - xctool -<span class="class">workspace </span>&#123;workspace&#125;.xcworkspace -<span class="class">scheme </span>&#123;scheme&#125; -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO</div><div class="line">  - xctool test -<span class="class">workspace </span>&#123;workspace&#125;.xcworkspace -<span class="class">scheme </span>&#123;scheme&#125;Tests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO</div></pre></td></tr></table></figure>
+<p>到处为止，我们就可以使用Travis正常的编译并测试了。但是我们希望能够编译完成后发布到蒲公英上进行真机测试，所以我们需要在Travis安装我们的证书文件。</p>
+<h2 id="应用程序的签名"><a href="#应用程序的签名" class="headerlink" title="应用程序的签名"></a>应用程序的签名</h2><h3 id="iPhone-发布证书-私钥"><a href="#iPhone-发布证书-私钥" class="headerlink" title="iPhone 发布证书 + 私钥"></a>iPhone 发布证书 + 私钥</h3><p>我们可以在自己的开发环境将证书和私钥给导出来。如果还没有发布证书的话，先创建一个。登录<a href="https://developer.apple.com/account/overview.action" target="_blank" rel="external">苹果开发者账号</a>，按照步骤，创建一个新的生产环境证书 (<strong>Certificates</strong> &gt; <strong>Production</strong> &gt; <strong>Add</strong> &gt; <strong>App Store and Ad Hoc</strong>)。然后下载并安装证书。之后，可以在钥匙串中找到它。打开 Mac 中的 钥匙串 应用程序：</p>
+<p><img src="../../../../../images/dist_cert_keychain.jpg" alt=""></p>
+<p>右键单击证书，选择 Export… 将证书导出至 scripts/certs/dist.cer。然后导出私钥并保存至 scripts/certs/dist.p12。记得输入私钥的密码。</p>
+<p>由于 Travis 需要知道私钥密码，因此我们要把这个密码存储在某个地方。当然，我们不希望以明文的形式存储。我们可以用 <a href="http://about.travis-ci.org/docs/user/build-configuration/#Secure-environment-variables" target="_blank" rel="external">Travis 的安全环境变量</a>。打开终端，并定位到包含 <strong>.travis.yml</strong> 文件所在目录。首先用 <strong>gem install travis</strong> 命令安装 Travis gem。之后，用下面的命令添加密钥密码：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">travis <span class="built_in">encrypt</span> <span class="string">"KEY_PASSWORD=&#123;password&#125;"</span> <span class="comment">--add</span></div></pre></td></tr></table></figure>
+<p>上面的命令会安装一个叫做 KEY_PASSWORD 的加密环境变量到 .travis.yml 配置文件中。这样就可以在被 Travis CI 执行的脚本中使用这个变量。</p>
+<h3 id="iOS-配置文件-发布"><a href="#iOS-配置文件-发布" class="headerlink" title="iOS 配置文件 (发布)"></a>iOS 配置文件 (发布)</h3><p>如果还没有用于发布的配置文件，那么也创建一个新的。根据开发者账号类型，可以选择创建 <a href="https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/TestingYouriOSApp/TestingYouriOSApp.html" target="_blank" rel="external">Ad Hoc</a> 或 <a href="https://developer.apple.com/programs/ios/enterprise/gettingstarted/" target="_blank" rel="external">In House</a> 配置文件 (<strong>Provisioning Profiles</strong> &gt; <strong>Distribution</strong> &gt; <strong>Add</strong> &gt; <strong>Ad Hoc or In House</strong>)。然后将其下载保存至 scripts/profile/ 目录。</p>
+<p>由于 Travis 需要访问这个配置文件，所以我们需要将这个文件的名字存储为一个全局环境变量。并将其添加至 <strong>.travis.yml</strong> 文件的全局环境变量 section 中。例如，如果配置文件的名字是 <strong>TravisExample_Ad_Hoc.mobileprovision</strong>，那么按照如下进行添加：</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">env:</div><div class="line">  global:</div><div class="line">  -<span class="ruby"> APP_NAME=<span class="string">"TravisExample"</span></span></div><div class="line">  -<span class="ruby"> <span class="string">'DEVELOPER_NAME="iPhone Distribution: &#123;your_name&#125; (&#123;code&#125;)"'</span></span></div><div class="line">  -<span class="ruby"> PROFILE_NAME=<span class="string">"TravisExample_Ad_Hoc"</span></span></div></pre></td></tr></table></figure>
+<p>上述声明了三个变量：</p>
+<p><strong>APP_NAME</strong>是项目的默认名字。</p>
+<p><strong>DEVELOPER_NAME</strong>是 Xcode 中，默认 target 里面 <strong>Build Settings</strong> 的 <strong>Code Signing Identity</strong> &gt; <strong>Release</strong> 对应的名字。</p>
+<p><strong>PROFILE_NAME</strong>是配置文件的名字。</p>
+<h2 id="加密证书和配置文件"><a href="#加密证书和配置文件" class="headerlink" title="加密证书和配置文件"></a>加密证书和配置文件</h2><p>对证书和配置文件 (里面包含了敏感数据) 所以我们最好还是对这些文件进行加密，不想加密的证书和配置文件的童鞋可以直接跳过这一节。</p>
+<p>首先，我们需要一个密码来对所有的文件进行加密。<strong>{password}</strong>是你加密的密码。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">openssl aes-<span class="number">256</span>-cbc -k <span class="string">"&#123;password&#125;"</span> -<span class="keyword">in</span> scripts/profile/TravisExample_Ad_Hoc<span class="selector-class">.mobileprovision</span> -out scripts/profile/TravisExample_Ad_Hoc<span class="selector-class">.mobileprovision</span><span class="selector-class">.enc</span> -<span class="selector-tag">a</span></div><div class="line">openssl aes-<span class="number">256</span>-cbc -k <span class="string">"&#123;password&#125;"</span> -<span class="keyword">in</span> scripts/certs/dist<span class="selector-class">.cer</span> -out scripts/certs/dist<span class="selector-class">.cer</span><span class="selector-class">.enc</span> -<span class="selector-tag">a</span></div><div class="line">openssl aes-<span class="number">256</span>-cbc -k <span class="string">"&#123;password&#125;"</span> -<span class="keyword">in</span> scripts/certs/dist<span class="selector-class">.p12</span> -out scripts/certs/dist<span class="selector-class">.p12</span><span class="selector-class">.enc</span> -a</div></pre></td></tr></table></figure>
+<p>通过上面的命令，可以创建出以 <strong>.enc</strong> 结尾的加密文件。之后可以把原始文件忽略或者移除掉。</p>
+<p>接下来，我们告诉Travis如何对我们加密的文件就进行解密。解密过程，需要用到密码。具体使用方法跟之前创建的 KEY_PASSWORD 变量一样：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">travis <span class="built_in">encrypt</span> <span class="string">"ENCRYPTION_SECRET=&#123;password&#125;"</span> <span class="comment">--add</span></div></pre></td></tr></table></figure>
+<p>最后，我们需要告诉 Travis 哪些文件需要进行解密。将下面的命令添加到 <strong>.travis.yml</strong> 文件中的 <strong>before-script</strong> 部分：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">before_script:</div><div class="line">- openssl aes-<span class="number">256</span>-cbc -k <span class="string">"$ENCRYPTION_SECRET"</span> -<span class="keyword">in</span> scripts/profile/TravisExample_Ad_Hoc<span class="selector-class">.mobileprovision</span><span class="selector-class">.enc</span> -d -<span class="selector-tag">a</span> -out scripts/profile/TravisExample_Ad_Hoc<span class="selector-class">.mobileprovision</span></div><div class="line">- openssl aes-<span class="number">256</span>-cbc -k <span class="string">"$ENCRYPTION_SECRET"</span> -<span class="keyword">in</span> scripts/certs/dist<span class="selector-class">.cer</span><span class="selector-class">.enc</span> -d -<span class="selector-tag">a</span> -out scripts/certs/dist<span class="selector-class">.cer</span></div><div class="line">- openssl aes-<span class="number">256</span>-cbc -k <span class="string">"$ENCRYPTION_SECRET"</span> -<span class="keyword">in</span> scripts/certs/dist<span class="selector-class">.p12</span><span class="selector-class">.enc</span> -d -<span class="selector-tag">a</span> -out scripts/certs/dist.p12</div></pre></td></tr></table></figure>
+<p><strong>before-script</strong>是编译脚本执行之前，会执行的操作。这样Travis就回在我们执行编译脚本之前将我们的文件解密还原成原来的文件了。</p>
+<h2 id="添加脚本导入证书"><a href="#添加脚本导入证书" class="headerlink" title="添加脚本导入证书"></a>添加脚本导入证书</h2><p>现在我们需要确保证书都导入至 Travis CI 的钥匙串中。为此，我们需要在 scripts 文件夹中添加一个名为 add-key.sh 的文件：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line">security create-keychain -<span class="selector-tag">p</span> travis ios-build<span class="selector-class">.keychain</span></div><div class="line">security default-keychain -s ios-build<span class="selector-class">.keychain</span></div><div class="line"></div><div class="line">security unlock-keychain -<span class="selector-tag">p</span> travis ios-build<span class="selector-class">.keychain</span></div><div class="line">security set-keychain-settings -t <span class="number">3600</span> -l ~/Library/Keychains/ios-build<span class="selector-class">.keychain</span></div><div class="line"></div><div class="line">security import ./scripts/certs/dist<span class="selector-class">.cer</span> -k ~/Library/Keychains/ios-build<span class="selector-class">.keychain</span> -T /usr/bin/codesign</div><div class="line">security import ./scripts/certs/dist<span class="selector-class">.p12</span> -k ~/Library/Keychains/ios-build<span class="selector-class">.keychain</span> -P <span class="variable">$KEY_PASSWORD</span> -T /usr/bin/codesign</div><div class="line">mkdir -<span class="selector-tag">p</span> ~/Library/MobileDevice/Provisioning\ Profiles</div><div class="line">cp ./scripts/profile/<span class="variable">$PROFILE_NAME</span><span class="selector-class">.mobileprovision</span> ~/Library/MobileDevice/Provisioning\ Profiles/</div><div class="line"></div><div class="line">security find-identity -<span class="selector-tag">p</span> codesigning ~/Library/Keychains/ios-build<span class="selector-class">.keychain</span></div><div class="line">security list-keychain</div></pre></td></tr></table></figure>
+<p>通过上面的命令创建了一个名为 ios-build 的临时钥匙串，里面包含了所有证书。注意，这里我们使用了 <strong>$KEY_PASSWORD</strong> 来导入私钥。最后一步是将配置文件拷贝至 <strong>Library</strong> 文件夹。</p>
+<p>创建好文件之后，确保给其授予了可执行的权限：在命令行输入：chmod a+x scripts/add-key.sh 即可。为了正常使用脚本，必须要这样处理一下。</p>
+<p><strong>.travis.yml</strong> 文件中的 <strong>before-script</strong> 部分修改为：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">before_script:</div><div class="line">- openssl aes-<span class="number">256</span>-cbc -k <span class="string">"$ENCRYPTION_SECRET"</span> -<span class="keyword">in</span> scripts/profile/<span class="variable">$PROFILE_NAME</span><span class="selector-class">.mobileprovision</span><span class="selector-class">.enc</span> -d -<span class="selector-tag">a</span> -out scripts/profile/<span class="variable">$PROFILE_NAME</span><span class="selector-class">.mobileprovision</span></div><div class="line">- openssl aes-<span class="number">256</span>-cbc -k <span class="string">"$ENCRYPTION_SECRET"</span> -<span class="keyword">in</span> scripts/certs/dist<span class="selector-class">.cer</span><span class="selector-class">.enc</span> -d -<span class="selector-tag">a</span> -out scripts/certs/dist<span class="selector-class">.cer</span></div><div class="line">- openssl aes-<span class="number">256</span>-cbc -k <span class="string">"$ENCRYPTION_SECRET"</span> -<span class="keyword">in</span> scripts/certs/dist<span class="selector-class">.p12</span><span class="selector-class">.enc</span> -d -<span class="selector-tag">a</span> -out scripts/certs/dist<span class="selector-class">.p12</span></div><div class="line">- ./scripts/add-key.sh</div></pre></td></tr></table></figure>
+<h2 id="指定证书签名编译"><a href="#指定证书签名编译" class="headerlink" title="指定证书签名编译"></a>指定证书签名编译</h2><p>至此，已经导入了所有的证书和配置文件，我们可以开始给应用程序签名了。接下来我们就编译用于我们证书签名的应用程序。我建议在编译命令中使用 <strong>OBJROOT</strong> 和 <strong>SYMROOT</strong> 来指定输出目录。另外，为了创建 release 版本，还需要把 SDK 设置为 <strong>iphoneos</strong>，以及将 configuration 修改为 <strong>Release</strong>：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">xctool</span> -workspace <span class="variable">$APP_NAME</span>.xcworkspace -scheme <span class="variable">$APP_NAME</span> -sdk iphoneos  -configuration Release OBJROOT=<span class="variable">$PWD</span>/build   SYMROOT=<span class="variable">$PWD</span>/build CODE_SIGN_IDENTITY=<span class="string">"<span class="variable">$DEVELOPER_NAME</span>"</span> ONLY_ACTIVE_ARCH=NO</div></pre></td></tr></table></figure>
+<p>如果运行了上面的命令，那么编译完成之后，可以在 <strong>build/Release-iphoneos</strong> 目录找到应用程序的二进制文件。接下来我们需要打包IPA文件。</p>
+<h2 id="打包IPA文件"><a href="#打包IPA文件" class="headerlink" title="打包IPA文件"></a>打包IPA文件</h2><p>我们需要在scripts 文件夹中添加一个名为 sign-and-upload.sh 的文件,将应用程序的二进制文件打包成IPA文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line"><span class="keyword">if</span> [[ <span class="string">"<span class="variable">$TRAVIS_PULL_REQUEST</span>"</span> != <span class="string">"false"</span> ]]; <span class="keyword">then</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">"This is a pull request. No deployment will be done."</span></div><div class="line">  <span class="built_in">exit</span> 0</div><div class="line"><span class="keyword">fi</span></div><div class="line"><span class="keyword">if</span> [[ <span class="string">"<span class="variable">$TRAVIS_BRANCH</span>"</span> != <span class="string">"master"</span> ]]; <span class="keyword">then</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">"Testing on a branch other than master. No deployment will be done."</span></div><div class="line">  <span class="built_in">exit</span> 0</div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line">PROVISIONING_PROFILE=<span class="string">"<span class="variable">$HOME</span>/Library/MobileDevice/Provisioning Profiles/<span class="variable">$PROFILE_NAME</span>.mobileprovision"</span></div><div class="line">OUTPUTDIR=<span class="string">"<span class="variable">$PWD</span>/build/Release-iphoneos"</span></div><div class="line"></div><div class="line">xcrun -log -sdk iphoneos PackageApplication <span class="string">"<span class="variable">$OUTPUTDIR</span>/<span class="variable">$APP_NAME</span>.app"</span> -o <span class="string">"<span class="variable">$OUTPUTDIR</span>/<span class="variable">$APP_NAME</span>.ipa"</span></div></pre></td></tr></table></figure>
+<p>创建好文件之后，确保给其授予了可执行的权限：在命令行输入：chmod a+x scripts/sign-and-upload.sh 即可。为了正常使用脚本，必须要这样处理一下。</p>
+<h2 id="IPA文件上传蒲公英"><a href="#IPA文件上传蒲公英" class="headerlink" title="IPA文件上传蒲公英"></a>IPA文件上传蒲公英</h2><p>创建一个<a href="http://www.pgyer.com" target="_blank" rel="external">蒲公英</a>账号，并配置好应用程序。配置好应用程序后蒲公英会为每个应用程序创建一个用户Key和API Key，我们需要确保它们是加密的。执行以下命令：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">travis <span class="built_in">encrypt</span> <span class="string">"PGYER_APP_KEY=&#123;用户Key&#125;"</span> <span class="comment">--add</span></div><div class="line">travis <span class="built_in">encrypt</span> <span class="string">"PGYER_API_KEY=&#123;API Key&#125;"</span> <span class="comment">--add</span></div></pre></td></tr></table></figure>
+<p>编辑 scripts/sign-and-upload.sh 文件，增加以下脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [ ! -z <span class="string">"<span class="variable">$PGYER_APP_KEY</span>"</span> ] &amp;&amp; [ ! -z <span class="string">"<span class="variable">$PGYER_API_KEY</span>"</span> ]; <span class="keyword">then</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">""</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">"***************************"</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">"* Uploading to pgyer  *"</span></div><div class="line">  <span class="built_in">echo</span> <span class="string">"***************************"</span></div><div class="line">  curl http://www.pgyer.com/apiv1/app/upload \</div><div class="line">    -F uKey=<span class="string">"<span class="variable">$PGYER_APP_KEY</span>"</span> \</div><div class="line">    -F _api_key=<span class="string">"<span class="variable">$PGYER_API_KEY</span>"</span> \</div><div class="line">    -F file=<span class="string">"@<span class="variable">$OUTPUTDIR</span>/<span class="variable">$APP_NAME</span>.ipa"</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>这样我们就实现了IPA文件自动上传蒲公英了✌️✌️✌️</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://objccn.io/issue-6-5/" target="_blank" rel="external">为 iOS 建立 Travis CI</a></p>
+<p><a href="http://www.jianshu.com/p/08cc934387af" target="_blank" rel="external">iOS之Travis CI自动分发到蒲公英、fir</a></p>
+<p><a href="https://github.com/objcio/issue-6-travis-ci" target="_blank" rel="external">示例工程</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/持续集成/" rel="tag">#持续集成</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/17/UIViewController使用常见问题/" rel="next" title="iOS开发问题总结">
+                <i class="fa fa-chevron-left"></i> iOS开发问题总结
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/27/iOS-HealthKit-读取手机步数统计/" rel="prev" title="iOS HealthKit 读取手机计步数统计">
+                iOS HealthKit 读取手机计步数统计 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Travis配置概述"><span class="nav-number">1.</span> <span class="nav-text">Travis配置概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Travis命令行"><span class="nav-number">2.</span> <span class="nav-text">安装Travis命令行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Travis"><span class="nav-number">3.</span> <span class="nav-text">配置Travis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-travis-yml"><span class="nav-number">3.1.</span> <span class="nav-text">创建.travis.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最简单的编译配置项"><span class="nav-number">3.2.</span> <span class="nav-text">最简单的编译配置项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义编译命令"><span class="nav-number">3.3.</span> <span class="nav-text">自定义编译命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他配置"><span class="nav-number">3.4.</span> <span class="nav-text">其他配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行测试"><span class="nav-number">4.</span> <span class="nav-text">运行测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Xctool"><span class="nav-number">4.1.</span> <span class="nav-text">Xctool</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用程序的签名"><span class="nav-number">5.</span> <span class="nav-text">应用程序的签名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iPhone-发布证书-私钥"><span class="nav-number">5.1.</span> <span class="nav-text">iPhone 发布证书 + 私钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-配置文件-发布"><span class="nav-number">5.2.</span> <span class="nav-text">iOS 配置文件 (发布)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加密证书和配置文件"><span class="nav-number">6.</span> <span class="nav-text">加密证书和配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加脚本导入证书"><span class="nav-number">7.</span> <span class="nav-text">添加脚本导入证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定证书签名编译"><span class="nav-number">8.</span> <span class="nav-text">指定证书签名编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打包IPA文件"><span class="nav-number">9.</span> <span class="nav-text">打包IPA文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPA文件上传蒲公英"><span class="nav-number">10.</span> <span class="nav-text">IPA文件上传蒲公英</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">11.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2015/12/21/Travis-CI-蒲公英自动编译发布持续集成/';
+      var disqus_title = 'Travis CI + 蒲公英自动编译发布持续集成';
+      var disqus_url = 'http://yoursite.com/2015/12/21/Travis-CI-蒲公英自动编译发布持续集成/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

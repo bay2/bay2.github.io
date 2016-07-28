@@ -1,0 +1,748 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="IOS,Swift," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="这是一篇Contacts framework &amp;&amp; AddressBook framework的学习总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结">
+<meta property="og:url" content="http://yoursite.com/2016/04/17/2016-04-17-18-34-46/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="这是一篇Contacts framework &amp;&amp; AddressBook framework的学习总结。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/QQ20160514-0@2x.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/QQ20160514-1@2x.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/QQ20160514-2@2x.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/QQ20160514-3@2x.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/QQ20160514-4@2x.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/QQ20160514-5@2x.png">
+<meta property="og:updated_time" content="2016-06-22T14:15:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结">
+<meta name="twitter:description" content="这是一篇Contacts framework &amp;&amp; AddressBook framework的学习总结。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/QQ20160514-0@2x.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结 | Sim 's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-04-17T18:34:46+08:00" content="2016-04-17">
+              2016-04-17
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/04/17/2016-04-17-18-34-46/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/04/17/2016-04-17-18-34-46/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在平时开发中，或许会需要去读取通讯录的数据，在iOS9之前我们使用的是<a href="https://developer.apple.com/library/ios/documentation/AddressBook/Reference/AddressBook_iPhoneOS_Framework/index.html#//apple_ref/doc/uid/TP40007212" target="_blank" rel="external">AddressBook framework</a>，而iOS9 苹果开始使用新的<a href="https://developer.apple.com/library/ios/documentation/Contacts/Reference/Contacts_Framework/index.html#//apple_ref/doc/uid/TP40015328" target="_blank" rel="external">Contacts framework</a>代替<a href="https://developer.apple.com/library/ios/documentation/AddressBook/Reference/AddressBook_iPhoneOS_Framework/index.html#//apple_ref/doc/uid/TP40007212" target="_blank" rel="external">AddressBook framework</a>。我们开发时经常需要既要支持iOS9,又要去支持iOS9之前的版本。所以我们需要了解这两个Framework的区别。</p>
+<h2 id="读取通讯录流程"><a href="#读取通讯录流程" class="headerlink" title="读取通讯录流程"></a>读取通讯录流程</h2><ol>
+<li>校验是否有读取通讯录的权限</li>
+<li>没有权限则向用户申请权限</li>
+<li>得到权限则读取通讯录信息</li>
+</ol>
+<h2 id="权限校验"><a href="#权限校验" class="headerlink" title="权限校验"></a>权限校验</h2><h3 id="AddressBook-framework"><a href="#AddressBook-framework" class="headerlink" title="AddressBook framework"></a>AddressBook framework</h3><p><code>AddressBook framework</code> 为我们提供了<code>ABAddressBookGetAuthorizationStatus</code>方法获取你的app授权状态。此方法返回<code>ABAuthorizationStatus</code>。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">enum</span> <span class="title">ABAuthorizationStatus</span> : <span class="title">CFIndex</span> </span>&#123;</div><div class="line">    <span class="keyword">case</span> <span class="type">NotDetermined</span>    <span class="comment">//未授权</span></div><div class="line">    <span class="keyword">case</span> <span class="type">Restricted</span>       <span class="comment">//受限制</span></div><div class="line">    <span class="keyword">case</span> <span class="type">Denied</span>           <span class="comment">//用户拒绝</span></div><div class="line">    <span class="keyword">case</span> <span class="type">Authorized</span>       <span class="comment">//经授权</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Contacts-Framework"><a href="#Contacts-Framework" class="headerlink" title="Contacts Framework"></a>Contacts Framework</h3><p><code>Contacts Framework</code> 为我们通过了<code>authorizationStatusForEntityType</code>方法获取你的app授权状态。次方法返回<code>CNAuthorizationStatus</code>。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">enum</span> <span class="title">CNAuthorizationStatus</span> : <span class="title">Int</span> </span>&#123;</div><div class="line">    <span class="keyword">case</span> <span class="type">NotDetermined</span>    <span class="comment">//未授权</span></div><div class="line">    <span class="keyword">case</span> <span class="type">Restricted</span>       <span class="comment">//受限制</span></div><div class="line">    <span class="keyword">case</span> <span class="type">Denied</span>           <span class="comment">//用户拒绝</span></div><div class="line">    <span class="keyword">case</span> <span class="type">Authorized</span>       <span class="comment">//经授权</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><h4 id="AddressBook-framework-1"><a href="#AddressBook-framework-1" class="headerlink" title="AddressBook framework"></a>AddressBook framework</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">switch</span> <span class="type">ABAddressBookGetAuthorizationStatus</span>() &#123;</div><div class="line"></div><div class="line"><span class="keyword">case</span> .<span class="type">Denied</span>, .<span class="type">Restricted</span>:</div><div class="line">    <span class="built_in">print</span>(<span class="string">"用户拒绝或受限制直接返回"</span>)</div><div class="line"></div><div class="line"><span class="keyword">case</span> .<span class="type">NotDetermined</span>:</div><div class="line">    <span class="built_in">print</span>(<span class="string">"未授权，请求授权"</span>)</div><div class="line"></div><div class="line"><span class="keyword">case</span> .<span class="type">Authorized</span>:</div><div class="line">    <span class="built_in">print</span>(<span class="string">"经授权，访问通讯录"</span>)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="Contacts-Framework-1"><a href="#Contacts-Framework-1" class="headerlink" title="Contacts Framework"></a>Contacts Framework</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">switch</span> <span class="type">CNContactStore</span>.authorizationStatusForEntityType(.<span class="type">Contacts</span>) &#123;</div><div class="line"></div><div class="line"><span class="keyword">case</span> .<span class="type">Denied</span>, .<span class="type">Restricted</span>:</div><div class="line">    <span class="built_in">print</span>(<span class="string">"用户拒绝或受限制直接返回"</span>)</div><div class="line"></div><div class="line"><span class="keyword">case</span> .<span class="type">NotDetermined</span>:</div><div class="line">    <span class="built_in">print</span>(<span class="string">"未授权，请求授权"</span>)</div><div class="line"></div><div class="line"><span class="keyword">case</span> .<span class="type">Authorized</span>:</div><div class="line">    <span class="built_in">print</span>(<span class="string">"经授权，访问通讯录"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从例子看使用形式基本一样，就是函数有稍微的变更。</p>
+<h2 id="请求授权"><a href="#请求授权" class="headerlink" title="请求授权"></a>请求授权</h2><h3 id="AddressBook-framework-2"><a href="#AddressBook-framework-2" class="headerlink" title="AddressBook framework"></a>AddressBook framework</h3><p><code>AddressBook framework</code> 为我们提供了<code>ABAddressBookRequestAccessWithCompletion</code>方法进行授权请求。此方法通过闭包<code>completion</code>返回授权结果。</p>
+<h3 id="Contacts-Framework-2"><a href="#Contacts-Framework-2" class="headerlink" title="Contacts Framework"></a>Contacts Framework</h3><p><code>Contacts Framework</code> 为我们通过了<code>requestAccessForEntityType</code>方法进行授权请求。此方法通过闭包<code>completionHandler</code>返回授权结果。</p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><h4 id="AddressBookUI"><a href="#AddressBookUI" class="headerlink" title="AddressBookUI"></a>AddressBookUI</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> contact = <span class="type">ABAddressBookCreateWithOptions</span>(<span class="literal">nil</span>, <span class="literal">nil</span>).takeRetainedValue()</div><div class="line"></div><div class="line"><span class="type">ABAddressBookRequestAccessWithCompletion</span>(contact) &#123; (granted, error) <span class="keyword">in</span></div><div class="line"></div><div class="line">    <span class="keyword">guard</span> granted <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"用户拒绝授权，直接返回"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">print</span>(<span class="string">"用户允许访问，访问通讯录"</span>)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="Contacts-Framework-3"><a href="#Contacts-Framework-3" class="headerlink" title="Contacts Framework"></a>Contacts Framework</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> contact = <span class="type">CNContactStore</span>()</div><div class="line"></div><div class="line">contact.requestAccessForEntityType(.<span class="type">Contacts</span>) &#123; (granted, error) <span class="keyword">in</span></div><div class="line"></div><div class="line">    <span class="keyword">guard</span> granted <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"用户拒绝授权，直接返回"</span>)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="built_in">print</span>(<span class="string">"用户允许访问，访问通讯录"</span>)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="读取通讯录信息"><a href="#读取通讯录信息" class="headerlink" title="读取通讯录信息"></a>读取通讯录信息</h2><h3 id="AddressBook-framework-3"><a href="#AddressBook-framework-3" class="headerlink" title="AddressBook framework"></a>AddressBook framework</h3><p><code>AddressBook framework</code> 为我们提供了<code>ABAddressBookCopyArrayOfAllPeople</code>方法获取通信录所有人的记录。然后我们可以通过<code>ABRecordCopyValue</code>读取记录中属性。</p>
+<h3 id="Contacts-Framework-4"><a href="#Contacts-Framework-4" class="headerlink" title="Contacts Framework"></a>Contacts Framework</h3><p><code>Contacts Framework</code> 为我们通过了<code>enumerateContactsWithFetchRequest</code>方法获取通信录的联系人信息。我们需要同<code>CNContactFetchRequest</code>指定获取联系人信息的属性。</p>
+<p><code>ABAddressBookCopyArrayOfAllPeople</code>和<code>enumerateContactsWithFetchRequest</code>有着明显的区别：</p>
+<ol>
+<li>返回值,前者调用后直接通过数组的形式返回所有联系人的信息；后者则返回成功或失败，联系人信息则通过<code>usingBlock</code>闭包逐个返回。</li>
+<li>参数，前者需要接收一个<code>ABAddressBook</code>对象；后者则是<code>CNContactStore</code>对象中的一个成员函数，但他需要接收一个<code>CNContactFetchRequest</code>对象，告诉它我们需要获取哪些属性信息。</li>
+</ol>
+<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><h4 id="AddressBook-framework-4"><a href="#AddressBook-framework-4" class="headerlink" title="AddressBook framework"></a>AddressBook framework</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> peoples = <span class="type">ABAddressBookCopyArrayOfAllPeople</span>(addressBook).takeRetainedValue() <span class="keyword">as</span> <span class="type">NSArray</span></div><div class="line"></div><div class="line"><span class="keyword">for</span> people: <span class="type">ABRecordRef</span> <span class="keyword">in</span> peoples &#123;</div><div class="line"></div><div class="line">      <span class="keyword">var</span> firstName = <span class="string">""</span></div><div class="line">      <span class="keyword">var</span> lastName = <span class="string">""</span></div><div class="line"></div><div class="line">      <span class="keyword">if</span> <span class="keyword">let</span> firstNameUnmanaged = <span class="type">ABRecordCopyValue</span>(people, kABPersonLastNameProperty) &#123;</div><div class="line">          firstName = firstNameUnmanaged.takeRetainedValue() <span class="keyword">as</span>? <span class="type">String</span> ?? <span class="string">""</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">if</span> <span class="keyword">let</span> lastNameUnmanaged = <span class="type">ABRecordCopyValue</span>(people, kABPersonFirstNameProperty) &#123;</div><div class="line">          lastName = lastNameUnmanaged.takeRetainedValue() <span class="keyword">as</span>? <span class="type">String</span> ?? <span class="string">""</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">let</span> phoneNums: <span class="type">ABMultiValueRef</span> = <span class="type">ABRecordCopyValue</span>(people, kABPersonPhoneProperty).takeRetainedValue()</div><div class="line"></div><div class="line">      <span class="keyword">guard</span> <span class="keyword">let</span> phoneNumUnmanaged = <span class="type">ABMultiValueCopyValueAtIndex</span>(phoneNums, <span class="number">0</span>) <span class="keyword">else</span> &#123;</div><div class="line">          <span class="keyword">continue</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">var</span> phoneNum = phoneNumUnmanaged.takeRetainedValue() <span class="keyword">as</span>? <span class="type">String</span> ?? <span class="string">""</span></div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>我们先看看<code>ABAddressBookCopyArrayOfAllPeople</code>这个函数的定义。</p>
+<p><img src="../../../../../images/QQ20160514-0@2x.png" alt=""></p>
+<p>在swift中这个函数居然返回个<code>Unmanaged&lt;CFArray&gt;!</code>！！！瞬间蒙圈了。这要怎么用！！</p>
+<p>首先我们先要了解什么是<code>Unmanaged</code>？</p>
+<p>在apple文档中的定义是：</p>
+<blockquote>
+<p>A type for propagating an unmanaged object reference.<br>When you use this type, you become partially responsible for keeping the object alive.</p>
+</blockquote>
+<p>还是不懂，不是有ARC吗？于是我Google。。。</p>
+<p>原来在有了ARC后，所有的 Objective-C 和 从 Objective-C 方法返回的 Core Foundation 类型的内存都被自动管理，只剩下由 C 函数返回的 <code>Core Foundation</code> 类型还没有收编。对于后者而言，对象所有权的管理仍然停留在调用 CFRetain() 和 CFRelease()、或通过某个 __bridge 函数桥接到 Objective-C 对象的方式的层面上。</p>
+<p>但是swift只支持ARC，所以也没有地方调用 CFRelease 或 __bridge_retained。那么 Swift 是如何让这种 “在上下文中内存管理” 的哲学融入自己的内存安全体系呢？</p>
+<p>事情分两种情况。注明 的 API，Swift 能够在上下文中严格遵循注释描述对 CoreFoundation API 进行内存管理，并以同样内存安全的方式桥接到 Objective-C 或 Swift 类型上。对于没有明确注明的 API，Swift 则会通过 Unmanaged 类型把工作交给开发者。</p>
+<p>从一个 Unmanaged 实例中获取一个 Swift 值的方法有两种：</p>
+<blockquote>
+<ul>
+<li>takeRetainedValue()：返回该实例中 Swift 管理的引用，并在调用的同时减少一次引用次数，所以可以按照 Create 规则来对待其返回值。</li>
+<li>takeUnretainedValue()：返回该实例中 Swift 管理的引用而 不减少 引用次数，所以可以按照 Get 规则来对待其返回值。</li>
+</ul>
+</blockquote>
+<p>好了，对Unmanaged了解这么多久就足够了。对这一块有兴趣的同学可以看下面链接的这篇文章：<br><a href="http://nshipster.cn/unmanaged/" target="_blank" rel="external">http://nshipster.cn/unmanaged</a></p>
+<p>了解Unmanaged是什么后，接下来就简单了：</p>
+<ul>
+<li>我们通过 for in 的方式得到 <code>ABRecordRef</code>对象</li>
+<li>再通过<code>ABRecordCopyValue</code>传入对应的<a href="https://developer.apple.com/library/ios/documentation/AddressBook/Reference/ABPersonRef_iPhoneOS/index.html#//apple_ref/doc/uid/TP40007210-CH991-SW3" target="_blank" rel="external">ABPropertyID</a>获取对应的属性值。</li>
+</ul>
+<h4 id="Contacts-Framework-5"><a href="#Contacts-Framework-5" class="headerlink" title="Contacts Framework"></a>Contacts Framework</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">let</span> keysToFetch = [<span class="type">CNContactFormatter</span>.descriptorForRequiredKeysForStyle(<span class="type">CNContactFormatterStyle</span>.<span class="type">FullName</span>), <span class="type">CNContactPhoneNumbersKey</span>]</div><div class="line"></div><div class="line"><span class="keyword">try</span>! addressBook.enumerateContactsWithFetchRequest(<span class="type">CNContactFetchRequest</span>(keysToFetch: keysToFetch)) &#123;(contact, pointer) <span class="keyword">in</span></div><div class="line"></div><div class="line">      <span class="keyword">let</span> phone = contact.phoneNumbers.first</div><div class="line">      <span class="keyword">guard</span> <span class="keyword">let</span> phoneNumber = phone?.value <span class="keyword">as</span>? <span class="type">CNPhoneNumber</span> <span class="keyword">else</span> &#123;</div><div class="line">          <span class="keyword">return</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">var</span> phoneString = phoneNumber.stringValue</div><div class="line">      <span class="keyword">var</span> firstName = contact.familyName</div><div class="line">      <span class="keyword">var</span> lastName = contact.givenName</div><div class="line"></div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>iOS9 之后一切都变得简单的了，我们也看看<code>enumerateContactsWithFetchRequest</code>的接口说明吧。</p>
+<p><img src="../../../../../images/QQ20160514-1@2x.png" alt=""></p>
+<p>接口说明并没有特别难懂的地方，我们通过闭包返回的contact就能轻松的获取联系人的信息。</p>
+<h2 id="调用的系统通讯录UI获取联系人信息"><a href="#调用的系统通讯录UI获取联系人信息" class="headerlink" title="调用的系统通讯录UI获取联系人信息"></a>调用的系统通讯录UI获取联系人信息</h2><p>有的需求场景是需要我们在这两个不同的framework上又有什么区别呢？</p>
+<p>iOS9之前我们用的是 <code>AddressBookUI</code>, iOS9 apple 提供了 <code>ContactsUI</code>来替代。</p>
+<p>调用系统通信录UI需要：</p>
+<ol>
+<li>让系统通讯录UI给显示出来</li>
+<li>但我们选择联系人后获取联系人的信息</li>
+</ol>
+<h3 id="显示-UI"><a href="#显示-UI" class="headerlink" title="显示 UI"></a>显示 UI</h3><h4 id="AddressBookUI-1"><a href="#AddressBookUI-1" class="headerlink" title="AddressBookUI"></a>AddressBookUI</h4><p>我们先看看 AddressBookUI 上需要怎么做。先看<code>Address Book UI Framework</code>的定义。</p>
+<p><img src="../../../../../images/QQ20160514-2@2x.png" alt=""></p>
+<p><code>ABPeoplePickerNavigationController</code> 是我想要的。我们只需要吧它给presentViewController出来就好了。</p>
+<h4 id="ContactsUI"><a href="#ContactsUI" class="headerlink" title="ContactsUI"></a>ContactsUI</h4><p>我们再看看 <code>ContactsUI Framework</code>的定义。</p>
+<p><img src="../../../../../images/QQ20160514-3@2x.png" alt=""></p>
+<p><code>CNContactPickerViewController</code> 是我想要的。presentViewController它就好了</p>
+<p>看起来很简单嘛#^_^#</p>
+<h3 id="获取联系人信息"><a href="#获取联系人信息" class="headerlink" title="获取联系人信息"></a>获取联系人信息</h3><h4 id="AddressBookUI-2"><a href="#AddressBookUI-2" class="headerlink" title="AddressBookUI"></a>AddressBookUI</h4><p><img src="../../../../../images/QQ20160514-4@2x.png" alt=""></p>
+<p>AddressBookUI 为我们提供了<code>ABPeoplePickerNavigationControllerDelegate</code>的代理</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">peoplePickerNavigationController</span><span class="params">(<span class="number">_</span> peoplePicker: ABPeoplePickerNavigationController, didSelectPerson person: ABRecord)</span></span></div></pre></td></tr></table></figure>
+<p>此方法为我们返回选择的联系人信息。</p>
+<h4 id="ContactsUI-1"><a href="#ContactsUI-1" class="headerlink" title="ContactsUI"></a>ContactsUI</h4><p><img src="../../../../../images/QQ20160514-5@2x.png" alt=""></p>
+<p>ContactsUI 为我们提供了<code>CNContactPickerDelegate</code>的代理</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">contactPicker</span><span class="params">(<span class="number">_</span> picker: CNContactPickerViewController, didSelectContact contact: CNContact)</span></span></div></pre></td></tr></table></figure>
+<p>此方法为我们返回选择的联系人信息。</p>
+<p>AddressBookUI 和 ContactsUI 使用方法看起来基本一样，挺简单的Y^o^Y</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>不知道apple为什么决定的使用Contacts 替换 AddressBook。本人猜测估计和Unmanaged在swift中并不那么友好的使用有关吧。但在我们日常开发App是必须考虑前向兼容，所以我们了解这两个framework的使用方法和差异。</p>
+<p>为了平时使用方便于是我对这两个framework做了简单的封装统一了接口。<a href="https://github.com/bay2/SCAddressBook" target="_blank" rel="external">SCAddressBook</a>，目前这个库只是为了满足自己项目的使用场景，并没有对AddressBook和Contacts的所以功能进行封装。希望这个库对学习AddressBook和Contacts有所帮助。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IOS/" rel="tag">#IOS</a>
+          
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/12/XCode-UI-Testing-总结/" rel="next" title="XCode UI Testing 总结">
+                <i class="fa fa-chevron-left"></i> XCode UI Testing 总结
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/15/2016-5-15/" rel="prev" title="只是想打印个Hello World">
+                只是想打印个Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取通讯录流程"><span class="nav-number">2.</span> <span class="nav-text">读取通讯录流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限校验"><span class="nav-number">3.</span> <span class="nav-text">权限校验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AddressBook-framework"><span class="nav-number">3.1.</span> <span class="nav-text">AddressBook framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Contacts-Framework"><span class="nav-number">3.2.</span> <span class="nav-text">Contacts Framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AddressBook-framework-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">AddressBook framework</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Contacts-Framework-1"><span class="nav-number">3.3.2.</span> <span class="nav-text">Contacts Framework</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求授权"><span class="nav-number">4.</span> <span class="nav-text">请求授权</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AddressBook-framework-2"><span class="nav-number">4.1.</span> <span class="nav-text">AddressBook framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Contacts-Framework-2"><span class="nav-number">4.2.</span> <span class="nav-text">Contacts Framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例-1"><span class="nav-number">4.3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AddressBookUI"><span class="nav-number">4.3.1.</span> <span class="nav-text">AddressBookUI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Contacts-Framework-3"><span class="nav-number">4.3.2.</span> <span class="nav-text">Contacts Framework</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取通讯录信息"><span class="nav-number">5.</span> <span class="nav-text">读取通讯录信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AddressBook-framework-3"><span class="nav-number">5.1.</span> <span class="nav-text">AddressBook framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Contacts-Framework-4"><span class="nav-number">5.2.</span> <span class="nav-text">Contacts Framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例-2"><span class="nav-number">5.3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AddressBook-framework-4"><span class="nav-number">5.3.1.</span> <span class="nav-text">AddressBook framework</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Contacts-Framework-5"><span class="nav-number">5.3.2.</span> <span class="nav-text">Contacts Framework</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用的系统通讯录UI获取联系人信息"><span class="nav-number">6.</span> <span class="nav-text">调用的系统通讯录UI获取联系人信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#显示-UI"><span class="nav-number">6.1.</span> <span class="nav-text">显示 UI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AddressBookUI-1"><span class="nav-number">6.1.1.</span> <span class="nav-text">AddressBookUI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ContactsUI"><span class="nav-number">6.1.2.</span> <span class="nav-text">ContactsUI</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取联系人信息"><span class="nav-number">6.2.</span> <span class="nav-text">获取联系人信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AddressBookUI-2"><span class="nav-number">6.2.1.</span> <span class="nav-text">AddressBookUI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ContactsUI-1"><span class="nav-number">6.2.2.</span> <span class="nav-text">ContactsUI</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2016/04/17/2016-04-17-18-34-46/';
+      var disqus_title = 'iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结';
+      var disqus_url = 'http://yoursite.com/2016/04/17/2016-04-17-18-34-46/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+  
+  
+
+  
+  
+
+</body>
+</html>

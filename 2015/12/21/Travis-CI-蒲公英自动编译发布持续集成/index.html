@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="theme-next   use-motion ">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -77,12 +77,12 @@
   };
 </script>
 
-  <title> Travis CI + 蒲公英自动编译发布持续集成 | Sim 's Blog </title>
+  <title> Travis CI + 蒲公英自动编译发布持续集成 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  <!--[if lte IE 8]>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 8]>
   <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
     <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
       <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
@@ -259,7 +259,7 @@
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gem <span class="keyword">install</span> travis</div></pre></td></tr></table></figure>
 <h2 id="配置Travis"><a href="#配置Travis" class="headerlink" title="配置Travis"></a>配置Travis</h2><p>我们通过配置Travis告诉Travis我们需要他干什么。</p>
 <h3 id="创建-travis-yml"><a href="#创建-travis-yml" class="headerlink" title="创建.travis.yml"></a>创建.travis.yml</h3><p><strong>.travis.yml</strong>是Travis的配置文件，我们需要把这个问题创建到我们工程的根目录下。Travis会根据你在这个文件中的配置执行相应的操作，在整个build的生命周期里，你可以在不同的阶段做不同的操作。</p>
-<h3 id="最简单的编译配置项"><a href="#最简单的编译配置项" class="headerlink" title="最简单的编译配置项"></a>最简单的编译配置项</h3><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">language:</span> objective-c</div></pre></td></tr></table></figure>
+<h3 id="最简单的编译配置项"><a href="#最简单的编译配置项" class="headerlink" title="最简单的编译配置项"></a>最简单的编译配置项</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">language: objective-<span class="built_in">c</span></div></pre></td></tr></table></figure>
 <p>Travis 编译器运行在虚拟机环境下。该编译器已经利用 Ruby，Homebrew，CocoaPods 和一些默认的编译脚本进行过预配置。上述的配置项已经足够编译你的项目了。</p>
 <h3 id="自定义编译命令"><a href="#自定义编译命令" class="headerlink" title="自定义编译命令"></a>自定义编译命令</h3><p>上述的编译工程过于简单，容易导致使用错误的证书。我们一般会使用自定义编译命令。<br>Travis提供了xcodebuild和Xctool。<br>xcodebuild是Apple提供的命令，而Xctool 是来自 Facebook 的命令行工具，它可以简化程序的编译和测试。</p>
 <p>打开终端并输入：</p>
@@ -425,7 +425,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -439,7 +439,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
@@ -731,7 +731,24 @@
 
 
 
-  <script type="text/javascript" src="/js/bootstrap.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.js"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
   
   

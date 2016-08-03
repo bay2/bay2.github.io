@@ -37,7 +37,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,测试," />
+  <meta name="keywords" content="Docker," />
 
 
 
@@ -53,21 +53,18 @@
 
 
 
-<meta name="description" content="自Xcode 7.0 开始苹果提供了UI 测试的功能。">
+<meta name="description" content="最近因为在搭建一些服务器环境，一时兴起顺便学了一些docker，写此总结。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="XCode UI Testing 总结">
-<meta property="og:url" content="http://yoursite.com/2016/03/12/XCode-UI-Testing-总结/index.html">
+<meta property="og:title" content="初探Docker">
+<meta property="og:url" content="http://yoursite.com/2016/08/03/2016-08-03/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
-<meta property="og:description" content="自Xcode 7.0 开始苹果提供了UI 测试的功能。">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/CEE24D6A-E58F-4E10-AE9C-B9F86339E1A4.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/A275BE91-3125-41DE-B060-BDE4073C63D5.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/57338768-B8FA-40C9-BC04-66D18BD73711.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/5F7FB79B-2ABD-4605-8846-8365D949A387.png">
-<meta property="og:updated_time" content="2016-07-28T00:28:06.000Z">
+<meta property="og:description" content="最近因为在搭建一些服务器环境，一时兴起顺便学了一些docker，写此总结。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14702273184381.png">
+<meta property="og:updated_time" content="2016-08-03T13:24:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="XCode UI Testing 总结">
-<meta name="twitter:description" content="自Xcode 7.0 开始苹果提供了UI 测试的功能。">
-<meta name="twitter:image" content="http://yoursite.com/../../../../../images/CEE24D6A-E58F-4E10-AE9C-B9F86339E1A4.png">
+<meta name="twitter:title" content="初探Docker">
+<meta name="twitter:description" content="最近因为在搭建一些服务器环境，一时兴起顺便学了一些docker，写此总结。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/14702273184381.png">
 
 
 
@@ -79,7 +76,7 @@
   };
 </script>
 
-  <title> XCode UI Testing 总结 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 初探Docker | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -208,7 +205,7 @@
             
             
               
-                XCode UI Testing 总结
+                初探Docker
               
             
           </h1>
@@ -217,8 +214,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2016-03-12T18:52:39+08:00" content="2016-03-12">
-              2016-03-12
+            <time itemprop="dateCreated" datetime="2016-08-03T21:18:46+08:00" content="2016-08-03">
+              2016-08-03
             </time>
           </span>
 
@@ -228,8 +225,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2016/03/12/XCode-UI-Testing-总结/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/03/12/XCode-UI-Testing-总结/" itemprop="commentsCount"></span>
+              <a href="/2016/08/03/2016-08-03/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/03/2016-08-03/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -248,32 +245,90 @@
       
 
       
-        <span itemprop="articleBody"><p>自动化测试能为我们节省很多时间，Xcode 7.0开始苹果就提供的UI 测试的功能。在最近的项目中我也尝试去使用它，感觉挺不错的。大大减少了验证的工作量。下面分享一下我使用UI test一些经验吧。</p>
-<h2 id="开始使用UI-Testing"><a href="#开始使用UI-Testing" class="headerlink" title="开始使用UI Testing"></a>开始使用UI Testing</h2><p><img src="../../../../../images/CEE24D6A-E58F-4E10-AE9C-B9F86339E1A4.png" alt=""></p>
-<p><img src="../../../../../images/A275BE91-3125-41DE-B060-BDE4073C63D5.png" alt=""></p>
-<p><img src="../../../../../images/57338768-B8FA-40C9-BC04-66D18BD73711.png" alt=""></p>
-<p>经过以上三个步骤我们就创建了一个UI Testing的target。</p>
-<h2 id="UI-行为录制"><a href="#UI-行为录制" class="headerlink" title="UI 行为录制"></a>UI 行为录制</h2><p>这是默认为我们创建的第一个测试用例文件。<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  CavyLifeBand22UITests.swift</span></div><div class="line"><span class="comment">//  CavyLifeBand22UITests</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">//  Created by xuemincai on 16/3/12.</span></div><div class="line"><span class="comment">//  Copyright © 2016年 xuemincai. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> XCTest</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CavyLifeBand22UITests</span>: <span class="title">XCTestCase</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">setUp</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.setUp()</div><div class="line"></div><div class="line">        <span class="comment">// Put setup code here. This method is called before the invocation of each test method in the class.</span></div><div class="line"></div><div class="line">        <span class="comment">// In UI tests it is usually best to stop immediately when a failure occurs.</span></div><div class="line">        continueAfterFailure = <span class="literal">false</span></div><div class="line">        <span class="comment">// UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.</span></div><div class="line">        <span class="type">XCUIApplication</span>().launch()</div><div class="line"></div><div class="line">        <span class="comment">// In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">tearDown</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// Put teardown code here. This method is called after the invocation of each test method in the class.</span></div><div class="line">        <span class="keyword">super</span>.tearDown()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">testExample</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="comment">// Use recording to get started writing UI tests.</span></div><div class="line">        <span class="comment">// Use XCTAssert and related functions to verify your tests produce the correct results.</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><code>XCUIApplication().launch()</code>用于启动App进行测试。现在我们要开始录制UI 行为，我们希望在<code>testExample</code>中执行UI的测试。先把光标放到<code>testExample</code>测试用例方法中。</p>
-<p><img src="../../../../../images/5F7FB79B-2ABD-4605-8846-8365D949A387.png" alt=""></p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">testExample</span><span class="params">()</span></span> &#123;</div><div class="line">  <span class="type">XCUIApplication</span>().buttons[<span class="string">"登录"</span>].tap()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>通过录制功能我们实行一个简单的测试用例点击“登录”按钮。</p>
-<h2 id="常用的操作函数"><a href="#常用的操作函数" class="headerlink" title="常用的操作函数"></a>常用的操作函数</h2><p>UI行为录制虽然很不错，当还是有很多不足的地方。我建议大家还是通过手写测试用例代码效率比较高。接下来给大家介绍一下常用的操作方法。</p>
-<ul>
-<li>tap 这是我们刚刚使用的过的点击操作的方法</li>
-<li>doubleTap 双击</li>
-<li>twoFingerTap 双指点击</li>
-<li>pressForDuration 长按</li>
-<li>swipeUp 向上滑动</li>
-<li>swipeDown 向下滑动</li>
-<li>swipeLeft 向左滑动</li>
-<li>swipeRight 向右滑动</li>
-<li>typeText 文本框输入信息</li>
+        <span itemprop="articleBody"><h2 id="什么是Docker"><a href="#什么是Docker" class="headerlink" title="什么是Docker"></a>什么是Docker</h2><p>Docker是一个新的容器化的技术，它轻巧，且易移植，号称“build once, configure once and run anywhere“</p>
+<h3 id="Docker-特征"><a href="#Docker-特征" class="headerlink" title="Docker 特征"></a>Docker 特征</h3><ul>
+<li>速度飞快以及优雅的隔离框架</li>
+<li>物美价廉</li>
+<li>CPU/内存的低消耗</li>
+<li>快速开/关机</li>
+<li>跨云计算基础构架</li>
 </ul>
-<h2 id="实时的UI反馈校验"><a href="#实时的UI反馈校验" class="headerlink" title="实时的UI反馈校验"></a>实时的UI反馈校验</h2><p>假设我想验证这样的一个场景：用户在没有输入用户名的情况下点击登录，我们需要弹出个对话框，告诉用户“用户名不能空”<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">testExample</span><span class="params">()</span></span> &#123;</div><div class="line"></div><div class="line">        <span class="keyword">let</span> app = <span class="type">XCUIApplication</span>()</div><div class="line">        app.buttons[<span class="string">"登录"</span>].tap()</div><div class="line">        <span class="keyword">let</span> alert = app.alerts</div><div class="line">        <span class="keyword">let</span> label = app.alerts.staticTexts[<span class="string">"用户名不能空"</span>]</div><div class="line"></div><div class="line">        <span class="keyword">let</span> alertCount = <span class="type">NSPredicate</span>(format: <span class="string">"count == 1"</span>)</div><div class="line">        <span class="keyword">let</span> labelExist = <span class="type">NSPredicate</span>(format: <span class="string">"exists == 1"</span>)</div><div class="line"></div><div class="line">        expectationForPredicate(alertCount, evaluatedWithObject: alert, handler: <span class="literal">nil</span>)</div><div class="line">        expectationForPredicate(labelExist, evaluatedWithObject: label, handler: <span class="literal">nil</span>)</div><div class="line">        waitForExpectationsWithTimeout(<span class="number">5</span>, handler: <span class="literal">nil</span>)</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>我们可以通过以上的方式判断alert是否存在，显示文本是否正确。</p>
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="http://www.jianshu.com/p/6cb686e5dacc/comments/642920" target="_blank" rel="external">Xcode7 UI自动化测试详解 带demo UITests</a><br><a href="https://onevcat.com/2015/09/ui-testing/" target="_blank" rel="external">WWDC15 Session笔记 - Xcode 7 UI 测试初窥</a><br><a href="https://developer.apple.com/videos/play/wwdc2015/406/" target="_blank" rel="external">UI Testing in Xcode</a></p>
-<p>感谢大虾们的文章对我学习UI Testing的帮助。</p>
+<h3 id="Docker-组件与元素"><a href="#Docker-组件与元素" class="headerlink" title="Docker 组件与元素"></a>Docker 组件与元素</h3><p>Docker有三个组件和三个基本元素。三个组件分别是：</p>
+<ul>
+<li><code>Docker Client</code> 是用户界面，它支持用户与<code>Docker Daemon</code>之间通信。</li>
+<li><code>Docker Daemon</code>运行于主机上，处理服务请求。</li>
+<li><code>Docker Index</code>是中央registry，支持拥有公有与私有访问权限的Docker容器镜像的备份。</li>
+</ul>
+<p>三个基本要素分别是：</p>
+<ul>
+<li><code>Docker Containers</code>负责应用程序的运行，包括操作系统、用户添加的文件以及元数据。</li>
+<li><code>Docker Images</code>是一个只读模板，用来运行Docker容器。</li>
+<li><code>DockerFile</code>是文件指令集，用来说明如何自动创建Docker镜像。</li>
+</ul>
+<p><img src="../../../../../images/14702273184381.png" alt=""></p>
+<p>在讨论Docker组件和基本要素如何交互之前，让我们来谈谈Docker的支柱。Docker使用以下操作系统的功能来提高容器技术效率：</p>
+<ul>
+<li><code>Namespaces</code> 充当隔离的第一级。确保一个容器中运行一个进程而且不能看到或影响容器外的其它进程。</li>
+<li><code>Control Groups</code>是LXC的重要组成部分，具有资源核算与限制的关键功能。</li>
+<li><code>UnionFS</code>（文件系统）作为容器的构建块。为了支持Docker的轻量级以及速度快的特性，它创建了用户层。</li>
+</ul>
+<blockquote>
+<p>此章节引用于<a href="http://dockone.io/article/101" target="_blank" rel="external">Docker入门教程（一）介绍</a></p>
+</blockquote>
+<h2 id="Ubuntu-Docker-安装"><a href="#Ubuntu-Docker-安装" class="headerlink" title="Ubuntu Docker 安装"></a>Ubuntu Docker 安装</h2><p>Docker 支持以下的 Ubuntu 版本</p>
+<ul>
+<li>Ubuntu Trusty 14.04 (LTS) (64-bit)</li>
+<li>Ubuntu Precise 12.04 (LTS) (64-bit)</li>
+<li>Ubuntu Raring 13.04 and Saucy 13.10 (64 bit)</li>
+</ul>
+<p>这个页面可以指导你安装 Docker 包管理器，并了解其中的安装机制。通过下边的安装方式可以确保你获取的是最新版本的 Docker。如果你想要使用 <code>Ubuntu包管理器</code> 安装，你可以查阅你的 Ubuntu 文档。</p>
+<h3 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h3><p>Docker 需要在64位版本的Ubuntu上安装。此外，你还需要保证你的 Ubuntu 内核的最小版本不低于 3.10，其中3.10 小版本和更新维护版也是可以使用的。</p>
+<p>在低于3.10版本的内核上运行 Docker 会丢失一部分功能。在这些旧的版本上运行 Docker 会出现一些BUG，这些BUG在一定的条件里会导致数据的丢失，或者报一些严重的错误。</p>
+<p>打开控制台使用 <code>uname -r</code>命令来查看你当前的内核版本。</p>
+<pre><code>$ uname -r 
+3.11.0-15-generic
+</code></pre><blockquote>
+<p>Docker 要求 Ubuntu 系统的内核版本高于 3.10 ，查看本页面的前提条件来验证你的Ubuntu版本是否支持 Docker 。</p>
+</blockquote>
+<h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><p>首先要确认你的 Ubuntu 版本是否符合安装 Docker 的前提条件。如果没有问题，你可以通过下边的方式来安装 Docker ：</p>
+<ol>
+<li><p>使用具有<code>sudo</code>权限的用户来登录你的Ubuntu。</p>
+</li>
+<li><p>查看你是否安装了<code>wget</code></p>
+<pre><code>$ which wget
+</code></pre><p> 如果<code>wget</code>没有安装，先升级包管理器，然后再安装它。</p>
+<pre><code>$ sudo apt-get update $ sudo apt-get install wget
+</code></pre></li>
+<li><p>获取最新版本的 Docker 安装包</p>
+<pre><code>$ wget -qO- https://get.docker.com/ | sh
+</code></pre><p> 系统会提示你输入<code>sudo</code>密码，输入完成之后，就会下载脚本并且安装Docker及依赖包。</p>
+</li>
+<li><p>验证 Docker 是否被正确的安装</p>
+<pre><code>$ sudo docker run hello-world
+</code></pre><p>  上边的命令会下载一个测试镜像，并在容器内运行这个镜像。</p>
+</li>
+</ol>
+<h2 id="创建一个Image"><a href="#创建一个Image" class="headerlink" title="创建一个Image"></a>创建一个Image</h2><p>我们使用14.04版本的uBuntu系统作为镜像来运行容器。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@iZ94wel1a6lZ:</span>~# docker run -t -i <span class="attribute">ubuntu</span>:<span class="number">14.04</span> /bin/bash</div><div class="line">root<span class="variable">@9d650d3cbf82</span>:/#</div></pre></td></tr></table></figure>
+<p>此时我们就进入了容器的系统中。</p>
+<p>然后我们可以在这容器中装个<code>git</code>，我们先更新一下<code>apt-get</code>。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@9d650d3cbf82:</span>/# apt-get update</div></pre></td></tr></table></figure>
+<p>更新完成后，通过</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@9d650d3cbf82:</span>/# apt-get install git</div></pre></td></tr></table></figure>
+<p>安装git工具。</p>
+<p>安装完git后，我们退出镜像系统，保存镜像。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@9d650d3cbf82:</span>/# exit</div><div class="line">exit</div><div class="line">root<span class="variable">@iZ94wel1a6lZ</span>:~#</div></pre></td></tr></table></figure>
+<p>可以通过以下命令查询到刚刚使用的容器：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@iZ94wel1a6lZ:</span>~# docker ps -l</div><div class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES</div><div class="line"><span class="number">9</span>d650d3cbf82        <span class="attribute">ubuntu</span>:<span class="number">14.04</span>        <span class="string">"/bin/bash"</span>         <span class="number">20</span> minutes ago      Exited (<span class="number">1</span>) <span class="number">52</span> seconds ago                       dreamy_agnesi</div><div class="line">root<span class="variable">@iZ94wel1a6lZ</span>:~#</div></pre></td></tr></table></figure>
+<p><code>9d650d3cbf82</code>是对应的容器id，我们通过commit 命令保存容器。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@iZ94wel1a6lZ:</span>~# docker commit <span class="number">9</span>d650d3cbf82 git_docker</div><div class="line"><span class="attribute">sha256</span>:<span class="number">30</span>ffceb8537d397c1e2d6a988b6b60a8440048eaadb5e0a9c3e6f4194e6ebdce</div><div class="line">root<span class="variable">@iZ94wel1a6lZ</span>:~#</div></pre></td></tr></table></figure>
+<p>这样刚刚安装好的git的容器的Image就创建好了。我们可以通过images命令来查询本地的镜像。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@iZ94wel1a6lZ:</span>~# docker images</div><div class="line">REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE</div><div class="line">git_docker                              latest              <span class="number">30</span>ffceb8537d        <span class="number">2</span> minutes ago       <span class="number">248.1</span> MB</div><div class="line">bay2/subversion                         v3                  <span class="number">05</span>c8454fe405        <span class="number">5</span> hours ago         <span class="number">270.4</span> MB</div><div class="line">bay2/subversion                         v2                  ce99a9365797        <span class="number">5</span> hours ago         <span class="number">270.4</span> MB</div><div class="line">bay2/subversion                         v1                  de85fae0214e        <span class="number">5</span> hours ago         <span class="number">270.3</span> MB</div><div class="line">bay2/subversion                         latest              <span class="number">5</span>aed828839ec        <span class="number">5</span> hours ago         <span class="number">270.3</span> MB</div><div class="line">sameersbn/postgresql                    <span class="number">9.4</span>-<span class="number">24</span>              <span class="number">49805</span>abe68d6        <span class="number">3</span> days ago          <span class="number">231.4</span> MB</div><div class="line">sameersbn/redmine                       latest              <span class="number">8</span>a0c75b3ebb0        <span class="number">5</span> days ago          <span class="number">659.2</span> MB</div><div class="line">ubuntu                                  <span class="number">14.04</span>               <span class="number">0</span>ccb13bf1954        <span class="number">11</span> days ago         <span class="number">188</span> MB</div><div class="line">daocloud.io/daocloud/daocloud-toolset   latest              <span class="number">1</span>ab33797d8a1        <span class="number">3</span> months ago        <span class="number">150.2</span> MB</div><div class="line">root<span class="variable">@iZ94wel1a6lZ</span>:~#</div></pre></td></tr></table></figure>
+<p><code>git_docker</code>就是我们刚刚创建好的image。</p>
+<p>最后我们可以通过run命令来运行这个镜像。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@iZ94wel1a6lZ:</span>~# docker run -t -i git_docker</div><div class="line">root<span class="variable">@ef412aa16dba</span>:/# git version</div><div class="line">git version <span class="number">1.9</span>.<span class="number">1</span></div><div class="line">root<span class="variable">@ef412aa16dba</span>:/#</div></pre></td></tr></table></figure>
+<p>刚刚安装了git的容器就被我运行起来了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Docker 这个技术的确很有意思，虽然只是玩了短短的一天，但我已经爱上了一项技术。我相信这是改变世界的技术之一。本次只是初探，将来必定会更深入的去学习。</p>
 </span>
       
     </div>
@@ -282,9 +337,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
-            <a href="/tags/测试/" rel="tag">#测试</a>
+            <a href="/tags/Docker/" rel="tag">#Docker</a>
           
         </div>
       
@@ -293,17 +346,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/01/31/ios-http-https抓包教程/" rel="next" title="ios http/https抓包教程">
-                <i class="fa fa-chevron-left"></i> ios http/https抓包教程
+              <a href="/2016/07/27/2016-7-27/" rel="next" title="DZNEmptyDataSet 源码学习笔记">
+                <i class="fa fa-chevron-left"></i> DZNEmptyDataSet 源码学习笔记
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/04/17/2016-04-17-18-34-46/" rel="prev" title="iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结">
-                iOS通讯录读取 -- AddressBook framework&Contacts Framework 使用总结 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -421,7 +470,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#开始使用UI-Testing"><span class="nav-number">1.</span> <span class="nav-text">开始使用UI Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UI-行为录制"><span class="nav-number">2.</span> <span class="nav-text">UI 行为录制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的操作函数"><span class="nav-number">3.</span> <span class="nav-text">常用的操作函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实时的UI反馈校验"><span class="nav-number">4.</span> <span class="nav-text">实时的UI反馈校验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Docker"><span class="nav-number">1.</span> <span class="nav-text">什么是Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-特征"><span class="nav-number">1.1.</span> <span class="nav-text">Docker 特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-组件与元素"><span class="nav-number">1.2.</span> <span class="nav-text">Docker 组件与元素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu-Docker-安装"><span class="nav-number">2.</span> <span class="nav-text">Ubuntu Docker 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前提条件"><span class="nav-number">2.1.</span> <span class="nav-text">前提条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Docker"><span class="nav-number">2.2.</span> <span class="nav-text">安装Docker</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建一个Image"><span class="nav-number">3.</span> <span class="nav-text">创建一个Image</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -481,9 +530,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
-      var disqus_identifier = '2016/03/12/XCode-UI-Testing-总结/';
-      var disqus_title = 'XCode UI Testing 总结';
-      var disqus_url = 'http://yoursite.com/2016/03/12/XCode-UI-Testing-总结/';
+      var disqus_identifier = '2016/08/03/2016-08-03/';
+      var disqus_title = '初探Docker';
+      var disqus_url = 'http://yoursite.com/2016/08/03/2016-08-03/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

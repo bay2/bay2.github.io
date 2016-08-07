@@ -37,7 +37,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,自动布局," />
+  <meta name="keywords" content="iOS,源码学习," />
 
 
 
@@ -53,20 +53,20 @@
 
 
 
-<meta name="description" content="界面到底是手写还是使用xib/storyboard这一直都是个纠结的问题。两种方法各有好处，我们获取可以取各之长使用。">
+<meta name="description" content="YYText 初步源码学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SnapKit+xib/storyboard约束自动布局">
-<meta property="og:url" content="http://yoursite.com/2016/01/10/SnapKit-故事板约束自动布局/index.html">
+<meta property="og:title" content="YYText 源码解析 —— YYLabel 之一">
+<meta property="og:url" content="http://yoursite.com/2016/08/07/2016-08-07/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
-<meta property="og:description" content="界面到底是手写还是使用xib/storyboard这一直都是个纠结的问题。两种方法各有好处，我们获取可以取各之长使用。">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/152AF2B2-8A16-4213-8C2E-6A86D9B794F7.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/C5877FA1-17FE-4993-BC5D-C750F916142C.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/4A712C4B-0870-4426-A749-8700EEA6113C.png">
-<meta property="og:updated_time" content="2016-07-28T00:27:48.000Z">
+<meta property="og:description" content="YYText 初步源码学习">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/68747470733a2f2f7261772e6769746875622e636f6d2f69626972656d652f5959546578742f6d61737465722f417474726962757465732f6172636869746563747572652e706e67.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14695766052370.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14695769117540.jpg">
+<meta property="og:updated_time" content="2016-08-07T03:08:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SnapKit+xib/storyboard约束自动布局">
-<meta name="twitter:description" content="界面到底是手写还是使用xib/storyboard这一直都是个纠结的问题。两种方法各有好处，我们获取可以取各之长使用。">
-<meta name="twitter:image" content="http://yoursite.com/../../../../../images/152AF2B2-8A16-4213-8C2E-6A86D9B794F7.png">
+<meta name="twitter:title" content="YYText 源码解析 —— YYLabel 之一">
+<meta name="twitter:description" content="YYText 初步源码学习">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/68747470733a2f2f7261772e6769746875622e636f6d2f69626972656d652f5959546578742f6d61737465722f417474726962757465732f6172636869746563747572652e706e67.png">
 
 
 
@@ -78,7 +78,7 @@
   };
 </script>
 
-  <title> SnapKit+xib/storyboard约束自动布局 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> YYText 源码解析 —— YYLabel 之一 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -207,7 +207,7 @@
             
             
               
-                SnapKit+xib/storyboard约束自动布局
+                YYText 源码解析 —— YYLabel 之一
               
             
           </h1>
@@ -216,8 +216,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2016-01-10T01:06:52+08:00" content="2016-01-10">
-              2016-01-10
+            <time itemprop="dateCreated" datetime="2016-08-07T10:57:04+08:00" content="2016-08-07">
+              2016-08-07
             </time>
           </span>
 
@@ -227,8 +227,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2016/01/10/SnapKit-故事板约束自动布局/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/10/SnapKit-故事板约束自动布局/" itemprop="commentsCount"></span>
+              <a href="/2016/08/07/2016-08-07/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/07/2016-08-07/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -247,14 +247,33 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>从事ios开发一段时间了，大部分开发工作需要进行UI界面的开发。一开始是使用xib/storyboard完成界面的开发工作。但是后来觉得使用xib/storyboard开发界面在有些时候不够灵活，于是我又尝试的去纯手写代码去进行界面的开发，使用SnapKit进行自动布局。虽然SnapKit很好用，但手写代码进行界面开发还真不是一般的耗时%&gt;_&lt;%。所以最近开始尝试是否可以xib/storyboard+SnapKit混合使用，主要布局使用xib/storyboard，在需要动态更新布局的时候使用SnapKit。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="约束和SnapKit无法同时使用"><a href="#约束和SnapKit无法同时使用" class="headerlink" title="约束和SnapKit无法同时使用"></a>约束和SnapKit无法同时使用</h3><p><img src="../../../../../images/152AF2B2-8A16-4213-8C2E-6A86D9B794F7.png" alt=""></p>
-<p>图中由于我再storyboard中设置了高度的约束，所以就无法再代码中通过SnapKit来修改约束了。</p>
-<h3 id="xib-storyboard中约束不完整会出现告警"><a href="#xib-storyboard中约束不完整会出现告警" class="headerlink" title="xib/storyboard中约束不完整会出现告警"></a>xib/storyboard中约束不完整会出现告警</h3><p>由于约束和SnapKit无法共同使用，于是我尝试把storyboard中高度的约束删除。虽然可以通过SnapKit来修改高度了，但这时storyboard中出现了告警。使用xib/storyboard布局就是因为考虑到xib/storyboard的可读性和可维护性，但是出现告警就违背了之前的初衷，这是无法接受的。</p>
-<p><img src="../../../../../images/C5877FA1-17FE-4993-BC5D-C750F916142C.png" alt=""></p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>在约束属性中，xcode给通过了一个Placeholder选项。这个选项可以使得约束在编译后被删除。这样我们就可以优雅的解决SnapKit与约束冲突的问题，同时不会出现告警。（我们把高度的约束加上，然后把Placeholder选项给勾上）</p>
-<p><img src="../../../../../images/4A712C4B-0870-4426-A749-8700EEA6113C.png" alt=""></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实NSLayoutConstraint也可以和xib/storyboard配合使用，但由于NSLayoutConstraint使用过于复杂，所以我选择使用SnapKit进行代码部分的布局。xib/storyboard在界面开发上的确可以大大提升开发效率，在部分界面设计场景也的确需要手写代码的灵活性。两者没有绝对的优劣，我们应该根据应用场景选择适合的实现方法。</p>
+        <span itemprop="articleBody"><h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p><img src="../../../../../images/68747470733a2f2f7261772e6769746875622e636f6d2f69626972656d652f5959546578742f6d61737465722f417474726962757465732f6172636869746563747572652e706e67.png" alt="68747470733a2f2f7261772e6769746875622e636f6d2f69626972656d652f5959546578742f6d61737465722f417474726962757465732f6172636869746563747572652e706e67"><br>（引用作者框架对比图片）</p>
+<p>YYText包括控件（YYLabel，YYTextView），布局（YYTextLayout，NSAttributedString，YYTextContainer），核心（CoreText）。</p>
+<h3 id="源码目录组织"><a href="#源码目录组织" class="headerlink" title="源码目录组织"></a>源码目录组织</h3><p><img src="../../../../../images/14695766052370.jpg" alt=""></p>
+<h2 id="YYLabel"><a href="#YYLabel" class="headerlink" title="YYLabel"></a>YYLabel</h2><h3 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h3><p><img src="../../../../../images/14695769117540.jpg" alt=""></p>
+<p>YYLabel 直接继承 UIView，作者自己实现 Label 的渲染。+_+</p>
+<h3 id="state"><a href="#state" class="headerlink" title="state"></a>state</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> &#123;</div><div class="line">			</div><div class="line"><span class="comment">// 是否需要更新布局</span></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> layoutNeedUpdate : <span class="number">1</span>;</div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> showingHighlight : <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> trackingTouch : <span class="number">1</span>;</div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> swallowTouch : <span class="number">1</span>;</div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> touchMoved : <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> hasTapAction : <span class="number">1</span>;</div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> hasLongPressAction : <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="comment">// 内容是否支持逐渐消失</span></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> contentsNeedFade : <span class="number">1</span>;</div><div class="line">    &#125; <span class="number">_</span>state;</div></pre></td></tr></table></figure>
+<h3 id="如何熏染出-Text"><a href="#如何熏染出-Text" class="headerlink" title="如何熏染出 Text"></a>如何熏染出 Text</h3><p>YYLabel 的熏染是通过 <code>YYTextAsyncLayerDelegate</code> 完成。 <code>YYTextAsyncLayerDelegate</code> 提供了 <code>newAsyncDisplayTask</code> 配置方法用来实现渲染。</p>
+<h3 id="YYTextAsyncLayer-与-YYLabel-的熏染流程"><a href="#YYTextAsyncLayer-与-YYLabel-的熏染流程" class="headerlink" title="YYTextAsyncLayer 与 YYLabel 的熏染流程"></a>YYTextAsyncLayer 与 YYLabel 的熏染流程</h3><p>以 <code>setText</code> 为例，看看这个熏染的流程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">st=&gt;start: 开始</div><div class="line">e=&gt;end: 结束</div><div class="line">op=&gt;operation: 调用setText</div><div class="line">op2=&gt;operation: 调用_setLayoutNeedUpdate</div><div class="line">op3=&gt;operation: [self.layer setNeedsDisplay]</div><div class="line">op4=&gt;operation: _cancelAsyncDisplay 取消异步熏染</div><div class="line">op5=&gt;operation: 调用display</div><div class="line">op6=&gt;operation: 调用_displayAsync</div><div class="line">cond=&gt;condition: 异步渲染?</div><div class="line">op7=&gt;operation: 异步渲染处理</div><div class="line">op8=&gt;operation: 渲染处理</div><div class="line"></div><div class="line">st-&gt;op-&gt;op2-&gt;op3-&gt;op4-&gt;op5-&gt;op6-&gt;cond</div><div class="line">cond(yes)-&gt;op7</div><div class="line">cond(no)-&gt;op8</div><div class="line">op7-&gt;e</div><div class="line">op8-&gt;e</div></pre></td></tr></table></figure>
+<ul>
+<li><code>[self.layer setNeedsDisplay]</code> 这里调用的是 <code>YYTextAsyncLayer</code> 的 <code>setNeedsDisplay</code> 。因为 <code>layerClass</code> 方法被重写了，返回了 <code>YYTextAsyncLayer</code> 。所以主layer所使用的类是 <code>YYTextAsyncLayer</code> 。</li>
+<li><code>_cancelAsyncDisplay</code> 的实现，后续再探讨。。。记遗留问题。</li>
+<li>这里 <code>display</code> 也被重写了，在这了执行了渲染最为关键的函数 <code>_displayAsync</code> 。</li>
+<li><code>YYTextAsyncLayer</code> 提供了 <code>displaysAsynchronously</code> 用来控制是否进行异步渲染，默认为异步熏染。</li>
+</ul>
+<h2 id="熏染"><a href="#熏染" class="headerlink" title="熏染"></a>熏染</h2><p>本人对 <code>Core Graphics Framework</code> 部分不同熟悉，个人重点对这一块代码进行学。刚才我们发现这里的渲染分为：普通渲染（ps：不知道怎么称，叫同步渲染感觉不太适合，就叫普通渲染吧）和异步渲染。这两种渲染的渲染代码处理基本是一样的，只是异步熏染增加了一些多线程的处理的考虑（比如：多线程经典的“读与写”的问题）。</p>
+<p>所以就直接学习普通渲染部分的代码吧#^_^#</p>
+<h3 id="YYTextAsyncLayer-熏染学习"><a href="#YYTextAsyncLayer-熏染学习" class="headerlink" title="YYTextAsyncLayer 熏染学习"></a>YYTextAsyncLayer 熏染学习</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">UIGraphicsBeginImageContextWithOptions</span>(<span class="keyword">self</span>.bounds.size, <span class="keyword">self</span>.opaque, <span class="keyword">self</span>.contentsScale);</div><div class="line"><span class="built_in">CGContextRef</span> context = <span class="built_in">UIGraphicsGetCurrentContext</span>();</div><div class="line"></div><div class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.opaque) &#123;</div><div class="line">    <span class="built_in">CGSize</span> size = <span class="keyword">self</span>.bounds.size;</div><div class="line">    size.width *= <span class="keyword">self</span>.contentsScale;</div><div class="line">    size.height *= <span class="keyword">self</span>.contentsScale;</div><div class="line">    <span class="built_in">CGContextSaveGState</span>(context); &#123;</div><div class="line">		<span class="keyword">if</span> (!<span class="keyword">self</span>.backgroundColor || <span class="built_in">CGColorGetAlpha</span>(<span class="keyword">self</span>.backgroundColor) &lt; <span class="number">1</span>) &#123;</div><div class="line">    		<span class="built_in">CGContextSetFillColorWithColor</span>(context, [<span class="built_in">UIColor</span> whiteColor].CGColor);</div><div class="line">    		<span class="built_in">CGContextAddRect</span>(context, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, size.width, size.height));</div><div class="line">    		<span class="built_in">CGContextFillPath</span>(context);</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">if</span> (<span class="keyword">self</span>.backgroundColor) &#123;</div><div class="line">    		<span class="built_in">CGContextSetFillColorWithColor</span>(context, <span class="keyword">self</span>.backgroundColor);</div><div class="line">    		<span class="built_in">CGContextAddRect</span>(context, <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, size.width, size.height));</div><div class="line">    		<span class="built_in">CGContextFillPath</span>(context);</div><div class="line">		&#125;</div><div class="line">	&#125; <span class="built_in">CGContextRestoreGState</span>(context);</div><div class="line">&#125;</div><div class="line"></div><div class="line">task.display(context, <span class="keyword">self</span>.bounds.size, ^&#123;<span class="keyword">return</span> <span class="literal">NO</span>;&#125;);</div><div class="line"><span class="built_in">UIImage</span> *image = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</div><div class="line"><span class="built_in">UIGraphicsEndImageContext</span>();</div><div class="line"><span class="keyword">self</span>.contents = (__bridge <span class="keyword">id</span>)(image.CGImage);</div></pre></td></tr></table></figure>
+<ul>
+<li>开始是调用 <code>UIGraphicsBeginImageContextWithOptions</code> 创建一个图片处理的上下文。 绘制结束调用 <code>UIGraphicsEndImageContext</code> 。</li>
+<li>通过 <code>UIGraphicsGetCurrentContext</code> 获取当前图形的上下文。</li>
+<li>这里有个 <code>opaque</code> 属性表示是否不透明，详细属性<a href="https://developer.apple.com/reference/quartzcore/calayer/1410763-opaque" target="_blank" rel="external">参见</a>。</li>
+<li><code>CGContextSaveGState</code> 把上下文保存到栈中。然后通过 <code>CGContextSetFillColorWithColor</code> 设置填充颜色， <code>CGContextAddRect</code> 添加矩形，<code>CGContextFillPath</code> 填充上下文路径。 最后保存通过 <code>CGContextRestoreGState</code> 保存最近的上下文。</li>
+<li>调用 <code>task.display</code> 回调，这里是调用配置的渲染方法，后面再分析 <code>YYLabel</code> 的熏染回调。 <code>YYLabel</code> 的熏染主要通过 <code>YYTextLayout</code> 来处理。 这么后续再做学习。</li>
+<li>通过 <code>UIGraphicsGetImageFromCurrentImageContext</code> 当前的上下文绘制出来的图片，结束绘制。</li>
+<li>最后将图片赋值给 <code>contents</code> 属性完成熏染。</li>
+</ul>
 </span>
       
     </div>
@@ -265,7 +284,7 @@
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
-            <a href="/tags/自动布局/" rel="tag">#自动布局</a>
+            <a href="/tags/源码学习/" rel="tag">#源码学习</a>
           
         </div>
       
@@ -274,17 +293,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/12/30/使用SnapKit实现动画效果/" rel="next" title="使用SnapKit实现动画效果">
-                <i class="fa fa-chevron-left"></i> 使用SnapKit实现动画效果
+              <a href="/2016/08/03/2016-08-03/" rel="next" title="初探Docker">
+                <i class="fa fa-chevron-left"></i> 初探Docker
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/01/31/ios-http-https抓包教程/" rel="prev" title="ios http/https抓包教程">
-                ios http/https抓包教程 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -402,7 +417,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#约束和SnapKit无法同时使用"><span class="nav-number">2.1.</span> <span class="nav-text">约束和SnapKit无法同时使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xib-storyboard中约束不完整会出现告警"><span class="nav-number">2.2.</span> <span class="nav-text">xib/storyboard中约束不完整会出现告警</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">1.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源码目录组织"><span class="nav-number">1.1.</span> <span class="nav-text">源码目录组织</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YYLabel"><span class="nav-number">2.</span> <span class="nav-text">YYLabel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#继承关系"><span class="nav-number">2.1.</span> <span class="nav-text">继承关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state"><span class="nav-number">2.2.</span> <span class="nav-text">state</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何熏染出-Text"><span class="nav-number">2.3.</span> <span class="nav-text">如何熏染出 Text</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YYTextAsyncLayer-与-YYLabel-的熏染流程"><span class="nav-number">2.4.</span> <span class="nav-text">YYTextAsyncLayer 与 YYLabel 的熏染流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#熏染"><span class="nav-number">3.</span> <span class="nav-text">熏染</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#YYTextAsyncLayer-熏染学习"><span class="nav-number">3.1.</span> <span class="nav-text">YYTextAsyncLayer 熏染学习</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -462,9 +477,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
-      var disqus_identifier = '2016/01/10/SnapKit-故事板约束自动布局/';
-      var disqus_title = 'SnapKit+xib/storyboard约束自动布局';
-      var disqus_url = 'http://yoursite.com/2016/01/10/SnapKit-故事板约束自动布局/';
+      var disqus_identifier = '2016/08/07/2016-08-07/';
+      var disqus_title = 'YYText 源码解析 —— YYLabel 之一';
+      var disqus_url = 'http://yoursite.com/2016/08/07/2016-08-07/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

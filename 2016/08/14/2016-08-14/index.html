@@ -1,0 +1,711 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,runtime," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="runtime 上的一个小实践">
+<meta property="og:type" content="article">
+<meta property="og:title" content="runtime在应用国际化上的实践">
+<meta property="og:url" content="http://yoursite.com/2016/08/14/2016-08-14/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="runtime 上的一个小实践">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14711370211708.png">
+<meta property="og:updated_time" content="2016-08-14T03:29:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="runtime在应用国际化上的实践">
+<meta name="twitter:description" content="runtime 上的一个小实践">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/14711370211708.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> runtime在应用国际化上的实践 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                runtime在应用国际化上的实践
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-08-14T11:18:27+08:00" content="2016-08-14">
+              2016-08-14
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/08/14/2016-08-14/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/14/2016-08-14/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在应用开发时，某一天我们的产品经理兴高采烈的和我们说：“我们的产品即将走向国际化，我们要做美国，英国，德国…进行推广。” 这意味着我们需要做国际化版本了。</p>
+<p><img src="../../../../../images/14711370211708.png" alt=""><br>怎么会这样。。</p>
+<p>我们的代码经常会有下面这样的代码</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cell.textLabel<span class="meta">.text</span> = @<span class="string">"我的文本"</span><span class="comment">;</span></div></pre></td></tr></table></figure>
+<p>或者是在直接在 xib、StoryBoard 直接设置属性了。</p>
+<h2 id="国际化"><a href="#国际化" class="headerlink" title="国际化"></a>国际化</h2><p>在iOS开发，我们是如何实现国际化的呢？对这一块不了解的同学可以看这篇<a href="http://www.cocoachina.com/ios/20151120/14258.html" target="_blank" rel="external">文章</a>。</p>
+<p>虽然 Xib、StoryBoard 都可以设置国际化。但我们<br>还是习惯全部写在一个 strings 中，这样方便做翻译的同学进行翻译。</p>
+<p>那这样我们要进行国际化的流程是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">st=&gt;start</div><div class="line">e=&gt;end</div><div class="line">op1=&gt;operation: 新建strings文件</div><div class="line">cond=&gt;condition: Xib StoryBoard 设置的文本</div><div class="line">op2=&gt;operation: 从 Xib StoryBoard 中拖控件，在代码中定义控件变量。</div><div class="line">op3=&gt;operation: 调用 NSLocalizedString 生成国际化后的字符</div><div class="line">op4=&gt;operation: 调用 setText 进行字符设置</div><div class="line"></div><div class="line">st-&gt;op1-&gt;cond</div><div class="line">cond(yes)-&gt;op2-&gt;op3-&gt;op4-&gt;e</div><div class="line">cond(no)-&gt;op3</div></pre></td></tr></table></figure>
+<p>这样实在太烦了。。这么多控件。。</p>
+<h2 id="使用runtime解决问题"><a href="#使用runtime解决问题" class="headerlink" title="使用runtime解决问题"></a>使用runtime解决问题</h2><h3 id="setText-国际化"><a href="#setText-国际化" class="headerlink" title="setText 国际化"></a>setText 国际化</h3><p>国际化主要的工作就是在 <code>setText</code> 之前需要调用 <code>NSLocalizedString</code> 生成国际化后的字符串。</p>
+<p>目前代码使我们纠结的地方是我们就直接使用 <code>setText</code> 了。我们希望在<code>setText</code>时插入一段国际化的代码。</p>
+<p>我们希望在执行某个函数之前插入一段代码，Runtime的 <code>Method Swizzling</code> 可以实现这样的功能。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="variable">@implementation</span> UILabel(NewLabel)</div><div class="line"></div><div class="line"></div><div class="line">+ (void)load &#123;</div><div class="line">    <span class="selector-attr">[UILabel configSwizzled]</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (void)configSwizzled &#123;</div><div class="line">    </div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    <span class="selector-tag">dispatch_once</span>(&amp;onceToken, ^&#123;</div><div class="line">        Class class = <span class="selector-attr">[self class]</span>;</div><div class="line">        <span class="comment">// When swizzling a class method, use the following:</span></div><div class="line">        <span class="comment">// Class class = object_getClass((id)self);</span></div><div class="line">        </div><div class="line">        SEL originalSelector = <span class="variable">@selector</span>(<span class="attribute">setText</span>:);</div><div class="line">        SEL swizzledSelector = <span class="variable">@selector</span>(<span class="attribute">setNewText</span>:);</div><div class="line">        </div><div class="line">        Method originalMethod = class_getInstanceMethod(class, originalSelector);</div><div class="line">        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);</div><div class="line">        </div><div class="line">        BOOL didAddMethod =</div><div class="line">        class_addMethod(class,</div><div class="line">                        originalSelector,</div><div class="line">                        method_getImplementation(swizzledMethod),</div><div class="line">                        method_getTypeEncoding(swizzledMethod));</div><div class="line">        </div><div class="line">        <span class="selector-tag">if</span> (didAddMethod) &#123;</div><div class="line">            class_replaceMethod(class,</div><div class="line">                                swizzledSelector,</div><div class="line">                                method_getImplementation(originalMethod),</div><div class="line">                                method_getTypeEncoding(originalMethod));</div><div class="line">        &#125; else &#123;</div><div class="line">            method_exchangeImplementations(originalMethod, swizzledMethod);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">setNewText</span><span class="selector-pseudo">:(NSString</span> *)<span class="selector-tag">text</span> &#123;</div><div class="line"></div><div class="line">    <span class="selector-attr">[self setNewText:NSLocalizedString(text, nil)]</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="variable">@end</span></div></pre></td></tr></table></figure>
+<ul>
+<li>我们使用分类扩展 <code>UILabel</code> 。</li>
+<li>然后重写 <code>load</code> 这个函数，在里面进行Swizzle的初始化。</li>
+<li>在这里我们把 <code>setText</code> Swizzle <code>setNewText</code>.</li>
+<li>在 <code>setNewText</code> 中我们我们调用 <code>NSLocalizedString</code> 进行国际化处理。</li>
+</ul>
+<p>好了，这样我们解决了在代码中 <code>setText</code> 的国际化问题。</p>
+<h2 id="Xib-StoryBoard-国际化"><a href="#Xib-StoryBoard-国际化" class="headerlink" title="Xib StoryBoard 国际化"></a>Xib StoryBoard 国际化</h2><p>这里我们发现，Xib StoryBoard 中设置属性的控件不会调用 <code>setText</code> 。</p>
+<p>那这我们怎么解决呢？ 让他们调用一下 <code>setText</code> 吧。那我们需要怎么做？ Xib StoryBoard 的控件，必然会走 <code>initWithCoder</code> 这个初始化函数。我们在再次使用 Runtime 的黑魔法，让 <code>initWithCoder</code> 执行完后，我们在调用一下 <code>setText</code>。</p>
+<p>直接看代码吧：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">+ (void)configSwizzled &#123;</div><div class="line"></div><div class="line">...</div><div class="line"></div><div class="line">dispatch_once(&amp;onceToken2, ^&#123;</div><div class="line">        Class <span class="class"><span class="keyword">class</span> = [<span class="title">self</span> <span class="title">class</span>];</span></div><div class="line">        <span class="comment">// When swizzling a class method, use the following:</span></div><div class="line">        <span class="comment">// Class class = object_getClass((id)self);</span></div><div class="line">        </div><div class="line">        SEL originalSelector = <span class="meta">@selector(initWithCoder:)</span>;</div><div class="line">        SEL swizzledSelector = <span class="meta">@selector(initNewWithCoder:)</span>;</div><div class="line">        </div><div class="line">        Method originalMethod = class_getInstanceMethod(<span class="class"><span class="keyword">class</span>, <span class="type">originalSelector);</span></span></div><div class="line">        Method swizzledMethod = class_getInstanceMethod(<span class="class"><span class="keyword">class</span>, <span class="type">swizzledSelector);</span></span></div><div class="line">        </div><div class="line">        BOOL didAddMethod =</div><div class="line">        class_addMethod(<span class="class"><span class="keyword">class</span>,</span></div><div class="line">                        <span class="type">originalSelector</span>,</div><div class="line">                        <span class="type">method_getImplementation</span>(swizzledMethod),</div><div class="line">                        method_getTypeEncoding(swizzledMethod));</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (didAddMethod) &#123;</div><div class="line">            class_replaceMethod(<span class="class"><span class="keyword">class</span>,</span></div><div class="line">                                <span class="type">swizzledSelector</span>,</div><div class="line">                                <span class="type">method_getImplementation</span>(originalMethod),</div><div class="line">                                method_getTypeEncoding(originalMethod));</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            method_exchangeImplementations(originalMethod, swizzledMethod);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (instancetype)initNewWithCoder:(NSCoder *)aDecoder &#123;</div><div class="line">    </div><div class="line">    id result = [self initNewWithCoder:aDecoder];</div><div class="line">    </div><div class="line">    [self setText:self.text];</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>So easy ！！</p>
+<h3 id="不用进行国际化的控件怎么办"><a href="#不用进行国际化的控件怎么办" class="headerlink" title="不用进行国际化的控件怎么办"></a>不用进行国际化的控件怎么办</h3><p>我们可以添加一个变量来控制代码是否进行国际化。那就使用<code>关联对象(Associated Object)</code>吧。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UILabel</span> (<span class="title">NewLabel</span>)</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>)IBInspectable <span class="built_in">BOOL</span> localizedEnlabe;</div><div class="line"><span class="keyword">@end</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UILabel</span>(<span class="title">NewLabel</span>)</span></div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">char</span> *localizedEnlabeChar = <span class="string">"LocalizedEnlabe"</span>;</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)setLocalizedEnlabe:(<span class="built_in">BOOL</span>)localizedEnlabe &#123;</div><div class="line">    </div><div class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;localizedEnlabeChar, [<span class="built_in">NSNumber</span> numberWithBool:localizedEnlabe], OBJC_ASSOCIATION_ASSIGN);</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line">- (<span class="built_in">BOOL</span>)localizedEnlabe &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">NSNumber</span> *value = objc_getAssociatedObject(<span class="keyword">self</span>, &amp;localizedEnlabeChar);</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (value) &#123;</div><div class="line">        <span class="keyword">return</span> [value boolValue];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<ul>
+<li>这里我使用 <code>IBInspectable</code> 属性方便 Xib StoryBoard 设置属性.</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这只是个 Demo， 需要国际化的控件还有 <code>UITextField</code> ， <code>UIButton</code> 等控件。其实我们这些代码可以直接在 <code>UIView</code> 的分类中实现。</p>
+<p>然后把我们要处理的属性方法以同样的方式 Swizzle 。</p>
+<p>虽然这种方法不见得能解决所有问题，但应该是可以解决 80% 的问题的。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/runtime/" rel="tag">#runtime</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/07/2016-08-07/" rel="next" title="YYText 源码解析 —— YYLabel 之一">
+                <i class="fa fa-chevron-left"></i> YYText 源码解析 —— YYLabel 之一
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#国际化"><span class="nav-number">2.</span> <span class="nav-text">国际化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用runtime解决问题"><span class="nav-number">3.</span> <span class="nav-text">使用runtime解决问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#setText-国际化"><span class="nav-number">3.1.</span> <span class="nav-text">setText 国际化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Xib-StoryBoard-国际化"><span class="nav-number">4.</span> <span class="nav-text">Xib StoryBoard 国际化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不用进行国际化的控件怎么办"><span class="nav-number">4.1.</span> <span class="nav-text">不用进行国际化的控件怎么办</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2016/08/14/2016-08-14/';
+      var disqus_title = 'runtime在应用国际化上的实践';
+      var disqus_url = 'http://yoursite.com/2016/08/14/2016-08-14/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  
+  
+
+  
+  
+
+</body>
+</html>

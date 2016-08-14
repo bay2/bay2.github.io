@@ -60,7 +60,8 @@
 <meta property="og:site_name" content="Sim 's Blog">
 <meta property="og:description" content="runtime 上的一个小实践">
 <meta property="og:image" content="http://yoursite.com/../../../../../images/14711370211708.png">
-<meta property="og:updated_time" content="2016-08-14T03:29:51.000Z">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/flow.jpg">
+<meta property="og:updated_time" content="2016-08-14T05:00:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="runtime在应用国际化上的实践">
 <meta name="twitter:description" content="runtime 上的一个小实践">
@@ -253,7 +254,7 @@
 <h2 id="国际化"><a href="#国际化" class="headerlink" title="国际化"></a>国际化</h2><p>在iOS开发，我们是如何实现国际化的呢？对这一块不了解的同学可以看这篇<a href="http://www.cocoachina.com/ios/20151120/14258.html" target="_blank" rel="external">文章</a>。</p>
 <p>虽然 Xib、StoryBoard 都可以设置国际化。但我们<br>还是习惯全部写在一个 strings 中，这样方便做翻译的同学进行翻译。</p>
 <p>那这样我们要进行国际化的流程是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">st=&gt;start</div><div class="line">e=&gt;end</div><div class="line">op1=&gt;operation: 新建strings文件</div><div class="line">cond=&gt;condition: Xib StoryBoard 设置的文本</div><div class="line">op2=&gt;operation: 从 Xib StoryBoard 中拖控件，在代码中定义控件变量。</div><div class="line">op3=&gt;operation: 调用 NSLocalizedString 生成国际化后的字符</div><div class="line">op4=&gt;operation: 调用 setText 进行字符设置</div><div class="line"></div><div class="line">st-&gt;op1-&gt;cond</div><div class="line">cond(yes)-&gt;op2-&gt;op3-&gt;op4-&gt;e</div><div class="line">cond(no)-&gt;op3</div></pre></td></tr></table></figure>
+<p><img src="../../../../../images/flow.jpg" alt=""></p>
 <p>这样实在太烦了。。这么多控件。。</p>
 <h2 id="使用runtime解决问题"><a href="#使用runtime解决问题" class="headerlink" title="使用runtime解决问题"></a>使用runtime解决问题</h2><h3 id="setText-国际化"><a href="#setText-国际化" class="headerlink" title="setText 国际化"></a>setText 国际化</h3><p>国际化主要的工作就是在 <code>setText</code> 之前需要调用 <code>NSLocalizedString</code> 生成国际化后的字符串。</p>
 <p>目前代码使我们纠结的地方是我们就直接使用 <code>setText</code> 了。我们希望在<code>setText</code>时插入一段国际化的代码。</p>

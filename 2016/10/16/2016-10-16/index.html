@@ -60,7 +60,7 @@
 <meta property="og:site_name" content="Sim 's Blog">
 <meta property="og:description" content="使用IBInspectable，优雅的进行描边">
 <meta property="og:image" content="https://github.com/bay2/IBViewExt/raw/master/demo2.png">
-<meta property="og:updated_time" content="2016-10-16T07:12:38.000Z">
+<meta property="og:updated_time" content="2016-10-16T13:57:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论优雅的实现描边">
 <meta name="twitter:description" content="使用IBInspectable，优雅的进行描边">
@@ -274,6 +274,10 @@
 <p><img src="https://github.com/bay2/IBViewExt/raw/master/demo2.png" alt=""></p>
 <p>这样做还是有缺点的，IB 上的属性有点多。。。</p>
 <p>对于代码感兴趣的同学可以到<a href="https://github.com/bay2/IBViewExt" target="_blank" rel="external">https://github.com/bay2/IBViewExt</a>，我在这里就不贴代码了，代码不多看 <code>UIView+IB.m</code> 文件就可以了。</p>
+<h2 id="IBInspectable-的局限"><a href="#IBInspectable-的局限" class="headerlink" title="IBInspectable 的局限"></a>IBInspectable 的局限</h2><ol>
+<li><code>BDesignable</code> 和 <code>IBInspectable</code> 无法在 Cocoa Touch Frameworks 中生效，详细看<a href="https://openradar.appspot.com/23114017" target="_blank" rel="external">这里</a>，所以使用 <code>Carthage</code> 的时候，<code>BDesignable</code> 和 <code>IBInspectable</code> 也无法正常工作， <code>cocoapods</code> 不会有次问题。</li>
+<li><code>BDesignable</code> 无法再 categories/extensions 正常工作， stackoverflow 上也有提到这个<a href="http://stackoverflow.com/questions/29906855/can-you-add-ibdesignable-properties-to-uiview-using-categories-extensions" target="_blank" rel="external">问题</a></li>
+</ol>
 </span>
       
     </div>
@@ -433,7 +437,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的描边实现"><span class="nav-number">1.</span> <span class="nav-text">常见的描边实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-UIView-实现描一条线"><span class="nav-number">1.1.</span> <span class="nav-text">通过 UIView 实现描一条线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-CALayer-绘制描边"><span class="nav-number">1.2.</span> <span class="nav-text">通过 CALayer 绘制描边</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-IBInspectable"><span class="nav-number">2.</span> <span class="nav-text">使用 IBInspectable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最终实现效果"><span class="nav-number">2.1.</span> <span class="nav-text">最终实现效果</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的描边实现"><span class="nav-number">1.</span> <span class="nav-text">常见的描边实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-UIView-实现描一条线"><span class="nav-number">1.1.</span> <span class="nav-text">通过 UIView 实现描一条线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-CALayer-绘制描边"><span class="nav-number">1.2.</span> <span class="nav-text">通过 CALayer 绘制描边</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-IBInspectable"><span class="nav-number">2.</span> <span class="nav-text">使用 IBInspectable</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最终实现效果"><span class="nav-number">2.1.</span> <span class="nav-text">最终实现效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IBInspectable-的局限"><span class="nav-number">3.</span> <span class="nav-text">IBInspectable 的局限</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

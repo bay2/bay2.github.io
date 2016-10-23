@@ -37,7 +37,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Unity," />
+  <meta name="keywords" content="iOS,Swift," />
 
 
 
@@ -53,16 +53,22 @@
 
 
 
-<meta name="description" content="我们在游戏开发是经常需要进行场景的加载，而有时候有些场景因为需要加载大量的资源，导致在加载场景时感觉很卡。这时候我就需要使用异步场景加载解决这样的问题了。">
+<meta name="description" content="Swift 模式匹配的一个小坑。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Unity 3d 场景异步加载">
-<meta property="og:url" content="http://yoursite.com/2015/11/21/Unity-3d-异步加载场景/index.html">
+<meta property="og:title" content="Swift 模式匹配的一个有趣的问题">
+<meta property="og:url" content="http://yoursite.com/2016/10/23/2016-10-23/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
-<meta property="og:description" content="我们在游戏开发是经常需要进行场景的加载，而有时候有些场景因为需要加载大量的资源，导致在加载场景时感觉很卡。这时候我就需要使用异步场景加载解决这样的问题了。">
-<meta property="og:updated_time" content="2016-06-22T14:15:14.000Z">
+<meta property="og:description" content="Swift 模式匹配的一个小坑。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/CvSZd_ZW8AEYkgm.jpg-large.jpeg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14771892594145.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/228_33120102042015.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14771923115495.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14771926936502.jpg">
+<meta property="og:updated_time" content="2016-10-23T03:42:16.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Unity 3d 场景异步加载">
-<meta name="twitter:description" content="我们在游戏开发是经常需要进行场景的加载，而有时候有些场景因为需要加载大量的资源，导致在加载场景时感觉很卡。这时候我就需要使用异步场景加载解决这样的问题了。">
+<meta name="twitter:title" content="Swift 模式匹配的一个有趣的问题">
+<meta name="twitter:description" content="Swift 模式匹配的一个小坑。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/CvSZd_ZW8AEYkgm.jpg-large.jpeg">
 
 
 
@@ -74,7 +80,7 @@
   };
 </script>
 
-  <title> Unity 3d 场景异步加载 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> Swift 模式匹配的一个有趣的问题 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -203,7 +209,7 @@
             
             
               
-                Unity 3d 场景异步加载
+                Swift 模式匹配的一个有趣的问题
               
             
           </h1>
@@ -212,8 +218,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2015-11-21T19:47:56+08:00" content="2015-11-21">
-              2015-11-21
+            <time itemprop="dateCreated" datetime="2016-10-23T11:29:42+08:00" content="2016-10-23">
+              2016-10-23
             </time>
           </span>
 
@@ -223,8 +229,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2015/11/21/Unity-3d-异步加载场景/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/21/Unity-3d-异步加载场景/" itemprop="commentsCount"></span>
+              <a href="/2016/10/23/2016-10-23/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/10/23/2016-10-23/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -243,30 +249,42 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们在游戏开发是经常需要进行场景的加载，而有时候有些场景因为需要加载大量的资源，导致在加载场景时感觉很卡。这时候我就需要使用异步场景加载解决这样的问题了。</p>
-<h2 id="异步加载场景"><a href="#异步加载场景" class="headerlink" title="异步加载场景"></a>异步加载场景</h2><p>Unity 为我们通过了两种异步加载的方式<code>Application.LoadLevelAsync</code> 和 <code>Application.LoadLevelAdditiveAsync</code>。<code>LoadLevelAsync</code>和<code>LoadLevelAdditiveAsync</code>的不同在于，前者最终加载完成后，上一个场景内容会被卸载，而后者是两者重叠到一起。</p>
-<p>也就是说使用<code>LoadLevlAsync</code>加载场景，新的场景加载完毕后会将上一个场景的物体销毁。在场景A加载场景B，进入场景B后场景A的物体资源将被系统销毁。</p>
-<p>而使用<code>LoadLevelAdditiveAsync</code>加载场景，则不会销毁当前关卡的物体。物体从新的关卡添加到当前的场景。这对创建连续的虚拟世界很有用，在你漫步环境，更多的内容被加载进来。</p>
-<h2 id="异步加载游戏进度条"><a href="#异步加载游戏进度条" class="headerlink" title="异步加载游戏进度条"></a>异步加载游戏进度条</h2><p>我们经常需要使用一个场景进行loading场景，而在这个场景中经常需要使用个经常使用进度条告诉玩家场景已经加载了多少。我们该如何知道场景的加载进度？如何控制进度条？</p>
-<p>首先我们看一下LoadLevelAsync的函数原型：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AsyncOperation <span class="title">LoadLevelAsync</span> (<span class="params"><span class="keyword">string</span> levelName</span>)</span></div></pre></td></tr></table></figure>
-<p>入参  <code>levelName</code> ： 场景名</p>
-<p>返回值 ： <code>AsyncOperation</code></p>
-<p>AsyncOperation中有个progress属性，我们可以通过progress属性得知场景加载的进度。</p>
-<p>下面奉上异步加载场景的实现代码:</p>
-<p>1.我们创建一个loading的场景，同时也创建了场景的关联脚本。</p>
-<p>2.定义LoadScene进行异步加载</p>
-<p>3.在Start中启动协程进行异步加载场景</p>
-<p>4.在Update中不断的更新进度条的值，显示加载进度。由于progress可能在0.9的时候就回进入新的场景，所以这么我们给进度值+0.1，使得进入场景前看到进度是100%</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">loading</span> : <span class="title">MonoBehaviour</span> &#123;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> Scrollbar loadScroll;</div><div class="line"></div><div class="line">	AsyncOperation <span class="keyword">async</span>;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></div><div class="line">	&#123;</div><div class="line">		<span class="comment">//在这里开启一个异步任务，</span></div><div class="line">		<span class="comment">//进入LoadScene方法。</span></div><div class="line">		StartCoroutine(LoadScene());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">//注意这里返回值一定是 IEnumerator</span></div><div class="line">	<span class="function">IEnumerator <span class="title">LoadScene</span>(<span class="params"></span>)</span></div><div class="line">	&#123;</div><div class="line">		<span class="keyword">async</span> = Application.LoadLevelAsync(<span class="string">"NEXT_SCENE"</span>);</div><div class="line"></div><div class="line">		<span class="comment">//读取完毕后返回， 系统会自动进入C场景</span></div><div class="line">		<span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">async</span>;</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Update</span>(<span class="params"></span>)</span></div><div class="line">	&#123;</div><div class="line"></div><div class="line">		<span class="comment">//在这里计算读取的进度，</span></div><div class="line">		<span class="comment">//progress 的取值范围在0.1 - 1之间， 但是它不会等于1</span></div><div class="line">		<span class="comment">//也就是说progress可能是0.9的时候就直接进入新场景了</span></div><div class="line">		<span class="comment">//所以在写进度条的时候需要注意一下。</span></div><div class="line">		<span class="comment">//为了计算百分比 所以直接乘以100即可</span></div><div class="line">		<span class="keyword">if</span> (<span class="keyword">async</span> != <span class="literal">null</span>) &#123;</div><div class="line">			loadScroll.size = <span class="keyword">async</span>.progress + <span class="number">0.1</span>F;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Resources-Load加载"><a href="#Resources-Load加载" class="headerlink" title="Resources.Load加载"></a>Resources.Load加载</h2><p>有时候我们会再新场景开始时使用<code>Resources.Load</code>加载资源，大的资源会导致<code>Resources.Load</code>也会很卡。就算使用异步加载场景也会发现在进度条到达100%时也会卡一段时间。我们该如何解决这个问题呢？</p>
-<p>我使用的方法是：</p>
-<p>1.将下个场景需要预先加载的资源对象定义成静态变量。</p>
-<p>2.在loading界面使用<code>Resources.LoadAsync</code>进行异步加载。</p>
-<p>3.加载完资源后，再进行场景的加载。</p>
-<p>代码示例：</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">loading</span> : <span class="title">MonoBehaviour</span> &#123;</div><div class="line"></div><div class="line">	<span class="keyword">public</span> Scrollbar loadScroll;</div><div class="line"></div><div class="line">	AsyncOperation <span class="keyword">async</span>;</div><div class="line">	ResourceRequest resReq;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Start</span>(<span class="params"></span>)</span></div><div class="line">	&#123;</div><div class="line">		<span class="comment">//在这里开启一个异步任务，</span></div><div class="line">		<span class="comment">//进入LoadScene方法。</span></div><div class="line">		StartCoroutine(LoadScene());</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">//注意这里返回值一定是 IEnumerator</span></div><div class="line">	<span class="function">IEnumerator <span class="title">LoadScene</span>(<span class="params"></span>)</span></div><div class="line">	&#123;</div><div class="line"></div><div class="line">		<span class="comment">//先加载资源文件，再加载下一个场景</span></div><div class="line">		<span class="function"><span class="keyword">yield</span> return <span class="title">StartCoroutine</span>(<span class="params">LoadAudio(</span>))</span>;</div><div class="line"></div><div class="line">		<span class="keyword">async</span> = Application.LoadLevelAsync(<span class="string">"NEXT_SCENE"</span>);</div><div class="line"></div><div class="line">		<span class="comment">//读取完毕后返回， 系统会自动进入C场景</span></div><div class="line">		<span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">async</span>;</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function">IEnumerator <span class="title">LoadAudio</span>(<span class="params"></span>)</span></div><div class="line">	&#123;</div><div class="line">		resReq = Resources.LoadAsync(<span class="string">"NEXT_AUDIO"</span>,<span class="keyword">typeof</span>(AudioClip));</div><div class="line">		<span class="keyword">yield</span> <span class="keyword">return</span> resReq;</div><div class="line">		NEXT_SCENE.m_PlayClip = resReq.asset <span class="keyword">as</span> AudioClip;</div><div class="line"></div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">Update</span>(<span class="params"></span>)</span></div><div class="line">	&#123;</div><div class="line"></div><div class="line">		<span class="comment">//在这里计算读取的进度，</span></div><div class="line">		<span class="comment">//progress 的取值范围在0.1 - 1之间， 但是它不会等于1</span></div><div class="line">		<span class="comment">//也就是说progress可能是0.9的时候就直接进入新场景了</span></div><div class="line">		<span class="comment">//所以在写进度条的时候需要注意一下。</span></div><div class="line">		<span class="comment">//为了计算百分比 所以直接乘以100即可</span></div><div class="line"></div><div class="line">		<span class="keyword">float</span> loadProgess = <span class="number">0.0</span>F;</div><div class="line"></div><div class="line">		<span class="comment">//资源文件加载占进度条的10%</span></div><div class="line">		<span class="keyword">if</span> (resReq != <span class="literal">null</span>) &#123;</div><div class="line">			loadAudioProgess = resReq.progress * <span class="number">0.1</span>F;</div><div class="line">		&#125;</div><div class="line"></div><div class="line"></div><div class="line">		<span class="keyword">if</span> (<span class="keyword">async</span> != <span class="literal">null</span>) &#123;</div><div class="line">			loadScroll.size = <span class="keyword">async</span>.progress + loadAudioProgess;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>此乃一个Unity菜鸟的总结，欢迎打脸~~</p>
+        <span itemprop="articleBody"><p>昨天 Chris Eidhof 大神在 Tweets 上发了一段这样的代码，他认为这是 Swift 的一个 bug 。<a href="https://twitter.com/chriseidhof/status/789424661683724288" target="_blank" rel="external">推文</a></p>
+<p><img src="../../../../../images/CvSZd_ZW8AEYkgm.jpg-large.jpeg" alt="CvSZd_ZW8AEYkgm.jpg-large"></p>
+<p>最近在看喵神的《Swifter - Swift 必备 Tips（第三版）》，刚好看到<strong>字面量表达</strong>和<strong>模式匹配</strong>。所以也想尝试解释这个 bug 的产生原因。</p>
+<h2 id="字面量表达"><a href="#字面量表达" class="headerlink" title="字面量表达"></a>字面量表达</h2><p>什么是字面量？在 Swift 中我们会像下面那样赋值变量，这里的 3、Hello、true 就是字面量。</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> <span class="attr">aNumber</span> = <span class="number">3</span></div><div class="line"><span class="keyword">let</span> <span class="attr">aString</span> = <span class="string">"Hello"</span></div><div class="line"><span class="keyword">let</span> <span class="attr">aBool</span> = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>在上面的代码中 <code>HasPrefix</code> 这个 <code>struct</code> 继承了 <code>ExpressibleByStringLiteral</code> 这个协议，使得它支持了 <code>字面量表达</code>。<br>也就是说现在 <code>HasPrefix</code> 可以像下面这样赋值了：</p>
+<p><img src="../../../../../images/14771892594145.jpg" alt=""></p>
+<h2 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h2><p>关于模式匹配的使用我这里就不做解释了，打开可以看 SwiftGG 上的模式匹配系列：</p>
+<ul>
+<li><a href="http://swift.gg/2016/04/26/pattern-matching-1/" target="_blank" rel="external">模式匹配第一弹: switch, enums &amp; where 子句</a></li>
+<li><a href="http://swift.gg/2016/04/27/pattern-matching-2/" target="_blank" rel="external">模式匹配第二弹：元组，range 和类型</a></li>
+<li><a href="http://swift.gg/2016/04/28/pattern-matching-3/" target="_blank" rel="external">模式匹配第三弹: 自定义的模式匹配和语法糖</a></li>
+<li><a href="http://swift.gg/2016/06/06/pattern-matching-4/" target="_blank" rel="external">模式匹配第四弹：if case，guard case，for case</a></li>
+</ul>
+<p>这里值得一提的是 Swift 使用 <code>~=</code> 来表示模式匹配的操作符。(因为这和本文谈论的 bug 有关)<br>上面代码，重载了 <code>~=</code> 操作符，使得 <code>HasPrefix</code> 支持了模式匹配。</p>
+<h2 id="问题的产生"><a href="#问题的产生" class="headerlink" title="问题的产生"></a>问题的产生</h2><p>（以下是我自己对这个问题的理解，有理解不对的地方欢迎大伙打脸。）</p>
+<p>从上面 Playground 的打印我们可以看出来，代码执行了 <code>~=</code>。也就是说进行了模式匹配。</p>
+<p>可以是我们重载的 <code>~=</code> 右值是个 <code>HasPrefix</code> 啊，switch 部分的代码是两个 <code>String</code> 啊， Why？？</p>
+<p><img src="../../../../../images/228_33120102042015.jpg" alt="228_33120102042015"></p>
+<p>在回想上面代码对 <code>HasPrefix</code> 做了什么？ <strong>字面量表示</strong>，这样使我们可以简单的将 <code>String</code> 赋值给 <code>HasPrefix</code> 。</p>
+<h3 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h3><ol>
+<li>使用 Switch 是 Swift 会优先进行模式匹配</li>
+<li>Swift 中没有实现， 左右值都是 <code>String</code> 的 <code>~=</code> 。</li>
+<li>由于我们使用的了<code>字面量表示</code>，导致使用 Switch 时， <code>String</code> 的字面量，也可以是 <code>HasPrefix</code> 的字面量。</li>
+<li>最后就执行了模式匹配</li>
+</ol>
+<p>为了证实这个猜测，我尝试重载左右值都为 <code>String</code> 的 <code>~=</code> 。</p>
+<p><img src="../../../../../images/14771923115495.jpg" alt=""></p>
+<p>这回问题视乎没有了。</p>
+<h2 id="思考🤔"><a href="#思考🤔" class="headerlink" title="思考🤔"></a>思考🤔</h2><h3 id="我要对-HasPrefix-进行模式匹配怎么办？"><a href="#我要对-HasPrefix-进行模式匹配怎么办？" class="headerlink" title="我要对 HasPrefix 进行模式匹配怎么办？"></a>我要对 HasPrefix 进行模式匹配怎么办？</h3><p><img src="../../../../../images/14771926936502.jpg" alt=""></p>
+<p>好像只能这样了。。。</p>
+<h3 id="我们在日常开发有可能会遇到这样的坑吗？"><a href="#我们在日常开发有可能会遇到这样的坑吗？" class="headerlink" title="我们在日常开发有可能会遇到这样的坑吗？"></a>我们在日常开发有可能会遇到这样的坑吗？</h3><p>假设如果我们引入了一个第三方库，这个第三方库对其自定义的一个类型，实现了<strong>字面量表达</strong>和<strong>模式匹配</strong>。我们好像就会遇到这个坑。</p>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
+<li>或许可以像我刚刚那个定义对应的 <code>~=</code>，但我不确定会不会有其他考虑不到的问题</li>
+<li>如果你不希望进行模式匹配，你就使用 <code>if</code> 吧（推荐，ps：感觉这样做比较保险）</li>
+</ul>
 </span>
       
     </div>
@@ -275,7 +293,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Unity/" rel="tag">#Unity</a>
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
           
         </div>
       
@@ -284,17 +304,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/15/使用hexo-github建立个人博客/" rel="next" title="使用hexo+github建立个人博客">
-                <i class="fa fa-chevron-left"></i> 使用hexo+github建立个人博客
+              <a href="/2016/10/16/2016-10-16/" rel="next" title="论优雅的实现描边">
+                <i class="fa fa-chevron-left"></i> 论优雅的实现描边
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/11/29/Unity资源路径及加载外部资源介绍/" rel="prev" title="Unity资源路径及加载外部资源介绍">
-                Unity资源路径及加载外部资源介绍 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -430,7 +446,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步加载场景"><span class="nav-number">2.</span> <span class="nav-text">异步加载场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步加载游戏进度条"><span class="nav-number">3.</span> <span class="nav-text">异步加载游戏进度条</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resources-Load加载"><span class="nav-number">4.</span> <span class="nav-text">Resources.Load加载</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字面量表达"><span class="nav-number">1.</span> <span class="nav-text">字面量表达</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模式匹配"><span class="nav-number">2.</span> <span class="nav-text">模式匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题的产生"><span class="nav-number">3.</span> <span class="nav-text">问题的产生</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#猜测"><span class="nav-number">3.1.</span> <span class="nav-text">猜测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思考🤔"><span class="nav-number">4.</span> <span class="nav-text">思考🤔</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#我要对-HasPrefix-进行模式匹配怎么办？"><span class="nav-number">4.1.</span> <span class="nav-text">我要对 HasPrefix 进行模式匹配怎么办？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们在日常开发有可能会遇到这样的坑吗？"><span class="nav-number">4.2.</span> <span class="nav-text">我们在日常开发有可能会遇到这样的坑吗？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法"><span class="nav-number">4.2.1.</span> <span class="nav-text">解决方法</span></a></li></ol></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -490,9 +506,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
-      var disqus_identifier = '2015/11/21/Unity-3d-异步加载场景/';
-      var disqus_title = 'Unity 3d 场景异步加载';
-      var disqus_url = 'http://yoursite.com/2015/11/21/Unity-3d-异步加载场景/';
+      var disqus_identifier = '2016/10/23/2016-10-23/';
+      var disqus_title = 'Swift 模式匹配的一个有趣的问题';
+      var disqus_url = 'http://yoursite.com/2016/10/23/2016-10-23/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

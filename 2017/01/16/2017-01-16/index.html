@@ -1,0 +1,783 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Swift,设计模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="『BUILDER（生成器）』">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式笔记及Swift上的实现之二　 『BUILDER（生成器）』">
+<meta property="og:url" content="http://yoursite.com/2017/01/16/2017-01-16/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="『BUILDER（生成器）』">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/1024-h_main-w-2.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/%E7%94%9F%E6%88%90%E5%99%A8%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/%E7%94%9F%E6%88%90%E5%99%A8%E5%8D%8F%E5%8A%A9.png">
+<meta property="og:updated_time" content="2017-01-16T13:13:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式笔记及Swift上的实现之二　 『BUILDER（生成器）』">
+<meta name="twitter:description" content="『BUILDER（生成器）』">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/1024-h_main-w-2.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> 设计模式笔记及Swift上的实现之二　 『BUILDER（生成器）』 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                设计模式笔记及Swift上的实现之二　 『BUILDER（生成器）』
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2017-01-16T21:10:12+08:00" content="2017-01-16">
+              2017-01-16
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2017/01/16/2017-01-16/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/16/2017-01-16/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p><img src="../../../../../images/1024-h_main-w-2.png" alt=""></p>
+<p><code>生成器</code> 和 <code>抽象工厂</code> 一样同属于创建型模式。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><h3 id="意图"><a href="#意图" class="headerlink" title="意图"></a>意图</h3><p>将一个复杂对象的<strong>构建</strong>与它的表示<strong>分离</strong>，使得同样的构建过程可以创建不同的表示。</p>
+<h3 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h3><ul>
+<li>当创建复杂对象的算法应该独立于该对象的组成部分已经它们的装配方式时。</li>
+<li>当构造过程必须允许被构造的对象有不同的表示时。</li>
+</ul>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><p><img src="../../../../../images/%E7%94%9F%E6%88%90%E5%99%A8%E7%BB%93%E6%9E%84.png" alt="生成器结构"></p>
+<h3 id="参与者"><a href="#参与者" class="headerlink" title="参与者"></a>参与者</h3><ul>
+<li>Builder</li>
+</ul>
+<blockquote>
+<p>为创建一个 Product 对象的各个部件指定抽象接口。</p>
+</blockquote>
+<ul>
+<li>ConcreteBuilder</li>
+</ul>
+<blockquote>
+<p>实现 Builder 的接口已构造和装配该产品的各个部件。<br>定义并明确它所创建的表示。<br>提供一个检索产品的接口。</p>
+</blockquote>
+<ul>
+<li>Director</li>
+</ul>
+<blockquote>
+<p>构造一个 Builder 接口对象。</p>
+</blockquote>
+<ul>
+<li>Product</li>
+</ul>
+<h3 id="协助"><a href="#协助" class="headerlink" title="协助"></a>协助</h3><p><img src="../../../../../images/%E7%94%9F%E6%88%90%E5%99%A8%E5%8D%8F%E5%8A%A9.png" alt="生成器协助"></p>
+<ul>
+<li>客户创建 Director 对象，比通过他想要的 Builder 对象进行配置。</li>
+<li>一旦产品部件被生成，向导器就会通知生成器。</li>
+<li>客户从生成器中检索产品。</li>
+</ul>
+<h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><ul>
+<li>它使你可以改变一个产品的内部表示</li>
+</ul>
+<blockquote>
+<p>Builder 对象提供给导向器一个构造产品的抽象接口。该接口使得生成器可以隐藏产品的表示和内部结构。</p>
+</blockquote>
+<ul>
+<li>它将构造代码和表示代码分开</li>
+<li>他可以对构造过程进行更精细的控制<blockquote>
+<p>Builder 模式与一下子就生成产品的创建型模式不同，它是在导向器控制下一步一步构造产品的。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><ul>
+<li>装配和构造接口</li>
+<li>为什么产品没有抽象类</li>
+</ul>
+<blockquote>
+<p>由于具体生成器生成的产品，它们的表示相差很大，以至于给不同的产品公共的父类并不现实。</p>
+</blockquote>
+<ul>
+<li>在 Builder 中缺省的方法为空</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>定义一个生成器 <code>MazeBuilder</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">MazeBuilder</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildMaze</span><span class="params">()</span></span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildRoom</span><span class="params">(n: Int)</span></span></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildDoor</span><span class="params">(roomFrom: Int, roomTo: Int)</span></span></div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">getMaze</span><span class="params">()</span></span> -&gt; <span class="type">Maze</span>?</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">MazeBuilder</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildMaze</span><span class="params">()</span></span> &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildRoom</span><span class="params">(n: Int)</span></span> &#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildDoor</span><span class="params">(roomFrom: Int, roomTo: Int)</span></span> &#123; &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">getMaze</span><span class="params">()</span></span> -&gt; <span class="type">Maze</span>? &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>主要接口有：</p>
+<ol>
+<li>创建迷宫接口</li>
+<li>创建房间接口</li>
+<li>创建门的接口</li>
+</ol>
+<p><code>MazeBuilder</code> 并不用来构建迷宫，它主要用来定义接口。</p>
+<p>现在我们定义一个用来构建迷宫的类 <code>StandarMazeBuilder</code> 。<br>这里 <code>StandarMazeBuilder</code> 我选择使用 <code>class</code>, 因为生成器在协助中有一点 <code>客户从生成器中检索产品</code>。也就是说用户使用生成器的方法构造产品后，还可以使用通过现在生成器对象进行检索产品。这样使用引用类型是更好的选择。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StandarMazeBuilder</span>: <span class="title">MazeBuilder</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> currentMaze: <span class="type">Maze</span>?</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildMaze</span><span class="params">()</span></span> &#123;</div><div class="line">        currentMaze = <span class="type">Maze</span>()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildRoom</span><span class="params">(n: Int)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">var</span> room = <span class="type">Room</span>(no: n)</div><div class="line">        </div><div class="line">        room.setSide(dect: .east, site: <span class="type">Wall</span>())</div><div class="line">        room.setSide(dect: .north, site: <span class="type">Wall</span>())</div><div class="line">        room.setSide(dect: .south, site: <span class="type">Wall</span>())</div><div class="line">        room.setSide(dect: .west, site: <span class="type">Wall</span>())</div><div class="line">        </div><div class="line">        currentMaze?.addRoom(room: room)</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">commonWall</span><span class="params">(r1: Room, r2: Room)</span></span> -&gt; <span class="type">Direction</span> &#123;</div><div class="line">        <span class="keyword">return</span> .north</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildDoor</span><span class="params">(roomFrom: Int, roomTo: Int)</span></span> &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">var</span> r1 = currentMaze!.getRoom(roomFrom)</div><div class="line">        </div><div class="line">        <span class="keyword">var</span> r2 = currentMaze!.getRoom(roomTo)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> d = <span class="type">Door</span>(r1: r1, r2: r2)</div><div class="line">        </div><div class="line">        r1.setSide(dect: commonWall(r1: r1, r2: r2), site: d)</div><div class="line">        r2.setSide(dect: commonWall(r1: r2, r2: r1), site: d)</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">getMaze</span><span class="params">()</span></span> -&gt; <span class="type">Maze</span>? &#123;</div><div class="line">        <span class="keyword">return</span> currentMaze</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里 <code>commonWall</code> 是个功能性操作，决定两个房间的公共墙壁的方位（为了简单处理我这里就固定返回一个值吧）</p>
+<p>最后我们需要定义一个导向器。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">struct</span> <span class="selector-tag">MazeGame</span> &#123;</div><div class="line">    </div><div class="line">    <span class="selector-tag">func</span> <span class="selector-tag">createMaze</span>(<span class="attribute">builder</span>: MazeBuilder) <span class="selector-tag">-</span>&gt; <span class="selector-tag">Maze</span>? &#123;</div><div class="line">        </div><div class="line">        builder<span class="selector-class">.buildMaze</span>()</div><div class="line">        </div><div class="line">        <span class="selector-tag">builder</span><span class="selector-class">.buildRoom</span>(<span class="attribute">n</span>: <span class="number">1</span>)</div><div class="line">        <span class="selector-tag">builder</span><span class="selector-class">.buildRoom</span>(<span class="attribute">n</span>: <span class="number">2</span>)</div><div class="line">        </div><div class="line">        <span class="selector-tag">builder</span><span class="selector-class">.buildDoor</span>(<span class="attribute">roomFrom</span>: <span class="number">1</span>, <span class="attribute">roomTo</span>: <span class="number">2</span>)</div><div class="line">        </div><div class="line">        <span class="selector-tag">return</span> <span class="selector-tag">builder</span><span class="selector-class">.getMaze</span>()</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在再看看如何使用这个生成器来构造迷宫。</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> <span class="attr">game</span> = MazeGame()</div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="attr">builder</span> = StandarMazeBuilder()</div><div class="line"></div><div class="line">game.createMaze(builder: builder)</div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="attr">maze</span> = builder.getMaze()</div><div class="line"></div><div class="line">print(<span class="string">"\(maze!)"</span>)</div></pre></td></tr></table></figure>
+<p>打印信息：</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">===========================</div><div class="line">Maze room:</div><div class="line">room_2 Room </div><div class="line">north <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">south <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">east <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">west <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">room_1 Room </div><div class="line">north <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">south <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">east <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">west <span class="keyword">is</span> <span class="keyword">Optional</span>(Wall)</div><div class="line">===========================</div></pre></td></tr></table></figure>
+<p>到现在生成器模式看上去好像没什么特别之处。</p>
+<p>那接下来我们就来完成另外一个需求，我们不去构建迷宫，只对迷宫的构件进行计数。<br>这个看起来和原来用例构建迷宫的代码有则很大的差异。</p>
+<p>但我们使用生成器模式就不用惧怕这样的差异。我们重新定义一个 <code>CountingMazeBuilder</code> 生成器就可以了。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CountingMazeBuilder</span>: <span class="title">MazeBuilder</span> </span>&#123;</div><div class="line">    </div><div class="line">    </div><div class="line">    <span class="keyword">var</span> doors = <span class="number">0</span></div><div class="line">    <span class="keyword">var</span> rooms = <span class="number">0</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildDoor</span><span class="params">(roomFrom: Int, roomTo: Int)</span></span> &#123;</div><div class="line">        doors += <span class="number">1</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">buildRoom</span><span class="params">(n: Int)</span></span> &#123;</div><div class="line">        rooms += <span class="number">1</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">getCounts</span><span class="params">()</span></span> -&gt; (r: <span class="type">Int</span>, d: <span class="type">Int</span>) &#123;</div><div class="line">        <span class="keyword">return</span> (rooms, doors)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们再看看用户如何使用这个生成器，代码视乎没有太大的变化。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> game = <span class="type">MazeGame</span>()</div><div class="line"></div><div class="line"><span class="keyword">let</span> countingBuilder = <span class="type">CountingMazeBuilder</span>()</div><div class="line"></div><div class="line">game.createMaze(builder: countingBuilder)</div><div class="line"></div><div class="line"><span class="keyword">let</span> <span class="built_in">count</span> = countingBuilder.getCounts()</div><div class="line"></div><div class="line"><span class="built_in">print</span>(<span class="string">"The maze has \nrooms <span class="subst">\(<span class="built_in">count</span>.r)</span> \ndoors <span class="subst">\(<span class="built_in">count</span>.d)</span>"</span>)</div></pre></td></tr></table></figure>
+<p>打印信息：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">The maze has </div><div class="line">rooms <span class="number">2</span> </div><div class="line">doors <span class="number">1</span></div></pre></td></tr></table></figure>
+<h2 id="最后来点总结"><a href="#最后来点总结" class="headerlink" title="最后来点总结"></a>最后来点总结</h2><p>相比抽象工厂模式，生成器模式更擅长于对内部表示存在较大差异的产品定义统一的接口。使得构建代码和表示代码分离。</p>
+<p>最最后 <strong>欢迎讨论、批评、指错</strong>。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
+          
+            <a href="/tags/设计模式/" rel="tag">#设计模式</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/04/2017-01-04/" rel="next" title="设计模式笔记及Swift上的实现之一『ABSTRACT FACTORY（抽象工厂）』">
+                <i class="fa fa-chevron-left"></i> 设计模式笔记及Swift上的实现之一『ABSTRACT FACTORY（抽象工厂）』
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/bay2" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:sim_cai@icloud.com" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> Email
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#意图"><span class="nav-number">1.1.</span> <span class="nav-text">意图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#适用性"><span class="nav-number">1.2.</span> <span class="nav-text">适用性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结构"><span class="nav-number">1.3.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参与者"><span class="nav-number">1.4.</span> <span class="nav-text">参与者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协助"><span class="nav-number">1.5.</span> <span class="nav-text">协助</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果"><span class="nav-number">1.6.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.7.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">1.8.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后来点总结"><span class="nav-number">2.</span> <span class="nav-text">最后来点总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2017/01/16/2017-01-16/';
+      var disqus_title = '设计模式笔记及Swift上的实现之二　 『BUILDER（生成器）』';
+      var disqus_url = 'http://yoursite.com/2017/01/16/2017-01-16/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  
+  
+
+  
+  
+
+</body>
+</html>

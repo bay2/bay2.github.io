@@ -37,7 +37,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="诊断调试," />
+  <meta name="keywords" content="Swift,设计模式," />
 
 
 
@@ -53,26 +53,19 @@
 
 
 
-<meta name="description" content="抓包是网络调试的必备技能，Charles 是一款http/https常用的抓包工具。">
+<meta name="description" content="『PROTOTYPE（原型）』">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ios http/https抓包教程">
-<meta property="og:url" content="http://yoursite.com/2016/01/31/ios-http-https抓包教程/index.html">
+<meta property="og:title" content="设计模式笔记及Swift上的实现之五『SINGLETON（单例）』">
+<meta property="og:url" content="http://yoursite.com/2017/02/12/2017-02-12/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
-<meta property="og:description" content="抓包是网络调试的必备技能，Charles 是一款http/https常用的抓包工具。">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/IMG_1604.PNG">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/46D16AAB-ADE3-43E5-AA6F-8CE3643DDB43.jpeg">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/IMG_1606.PNG">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/IMG_1607.PNG">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/IMG_1608.PNG">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/IMG_1609.PNG">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/20A9715A-F95D-4D5B-BE56-12EC0722E96F.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/68769C6A-22E9-4A35-91A5-CB69DA2E5523.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/EA83C8CA-B309-409A-B1E5-3DDFAE153B86.png">
-<meta property="og:updated_time" content="2016-08-14T07:19:03.000Z">
+<meta property="og:description" content="『PROTOTYPE（原型）』">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/maxresdefault.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/IC400943.png">
+<meta property="og:updated_time" content="2017-02-12T00:46:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ios http/https抓包教程">
-<meta name="twitter:description" content="抓包是网络调试的必备技能，Charles 是一款http/https常用的抓包工具。">
-<meta name="twitter:image" content="http://yoursite.com/../../../../../images/IMG_1604.PNG">
+<meta name="twitter:title" content="设计模式笔记及Swift上的实现之五『SINGLETON（单例）』">
+<meta name="twitter:description" content="『PROTOTYPE（原型）』">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/maxresdefault.jpg">
 
 
 
@@ -84,7 +77,7 @@
   };
 </script>
 
-  <title> ios http/https抓包教程 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 设计模式笔记及Swift上的实现之五『SINGLETON（单例）』 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -213,7 +206,7 @@
             
             
               
-                ios http/https抓包教程
+                设计模式笔记及Swift上的实现之五『SINGLETON（单例）』
               
             
           </h1>
@@ -222,8 +215,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2016-01-31T18:37:25+08:00" content="2016-01-31">
-              2016-01-31
+            <time itemprop="dateCreated" datetime="2017-02-12T08:43:46+08:00" content="2017-02-12">
+              2017-02-12
             </time>
           </span>
 
@@ -233,8 +226,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2016/01/31/ios-http-https抓包教程/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/31/ios-http-https抓包教程/" itemprop="commentsCount"></span>
+              <a href="/2017/02/12/2017-02-12/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/12/2017-02-12/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -253,42 +246,42 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>抓包是在网络开发时常用的调试手动，我们可以通道抓取通信报文，根据问题现象来分析问题的产生的原因。Charles 是一款http/https常用的抓包工具。下面详细介绍如何使用这款工具来抓取iPhone上的报文。</p>
-<h2 id="HTTP抓包"><a href="#HTTP抓包" class="headerlink" title="HTTP抓包"></a>HTTP抓包</h2><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在iPhone上将你手机的代理服务器配置成你mac的ip，端口配置成8888。如下图：</p>
-<p><img src="../../../../../images/IMG_1604.PNG" alt=""></p>
-<h3 id="开始抓包"><a href="#开始抓包" class="headerlink" title="开始抓包"></a>开始抓包</h3><ul>
-<li>打开mac 上的 Charles工具</li>
-<li>点击抓包按钮，这样我们就可以轻松的抓取iPhone上的所有报文了，很简单吧#^_^#。</li>
+        <span itemprop="articleBody"><p><img src="../../../../../images/maxresdefault.jpg" alt=""></p>
+<p>单例是书中最后一个创建型模式。单例这个设计模式相信大家再熟悉不过了。但单例也是最容易被滥用的设计模式。我们可以通过重新理解单例的意图，来帮助我们在后续的开发中决定是否该使用这中模式。</p>
+<h2 id="意图"><a href="#意图" class="headerlink" title="意图"></a>意图</h2><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>对一些类来说，只有一个实例是很重要的。例如我们 iOS 开发中经常做的提示框。我们希望这种提示框出现一个之后，在消失之前不会出现第二个，这时单例是最好的选择。</p>
+<h2 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h2><ul>
+<li>类只能有一个实例，而客户可以从一个已知的访问点访问它。</li>
+<li>这个唯一的实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能适用一个扩展的实例。</li>
 </ul>
-<p><img src="../../../../../images/46D16AAB-ADE3-43E5-AA6F-8CE3643DDB43.jpeg" alt=""></p>
-<h2 id="HTTPS抓包"><a href="#HTTPS抓包" class="headerlink" title="HTTPS抓包"></a>HTTPS抓包</h2><p>你可能会发现https协议的报文，抓出来全都是乱码。这是因为https协议是经过加密的，我们无法轻易的看到报文的内容。我们需要安装Charles 官方提供的证书来解决这个问题。</p>
-<h3 id="安装证书"><a href="#安装证书" class="headerlink" title="安装证书"></a>安装证书</h3><ul>
-<li>在iPhone上通过Safari打开<a href="http://www.charlesproxy.com/documentation/additional/legacy-ssl-proxying/" target="_blank" rel="external">链接</a>，点击图片红框的链接下载证书。</li>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="../../../../../images/IC400943.png" alt=""></p>
+<h2 id="参与者"><a href="#参与者" class="headerlink" title="参与者"></a>参与者</h2><ul>
+<li>Singleton</li>
 </ul>
-<p><img src="../../../../../images/IMG_1606.PNG" alt=""></p>
-<ul>
-<li>点击安装证书。</li>
+<blockquote>
+<p>—— 定义一个 Instance 操作，允许客户访问它的唯一实例。<br>—— 可能负责创建它自己的唯一方法。</p>
+</blockquote>
+<h2 id="协作"><a href="#协作" class="headerlink" title="协作"></a>协作</h2><ul>
+<li>客户只能通过 Singleton 的 Instance 操作访问一个 Singleton 的实例。</li>
 </ul>
-<p><img src="../../../../../images/IMG_1607.PNG" alt=""></p>
-<ul>
-<li>输入完密码后，继续点击安装。</li>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><ul>
+<li>对唯一实例的受控访问</li>
+<li>缩小名空间（避免存储唯一实例的全局变量污染名空间）</li>
+<li>允许对操作和表达的精化</li>
+<li>允许可变数目的实例（允许一个 Singleton 类有多个实例）</li>
+<li>比类操作更灵活</li>
 </ul>
-<p><img src="../../../../../images/IMG_1608.PNG" alt=""></p>
-<ul>
-<li>出现“已验证”说明你的证书已经安装成功了，接下来我们要在Charles进行配置。</li>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><ul>
+<li>保证一个唯一的实例</li>
+<li>创建 Singleton 的子类</li>
 </ul>
-<p><img src="../../../../../images/IMG_1609.PNG" alt=""></p>
-<h3 id="Charles配置"><a href="#Charles配置" class="headerlink" title="Charles配置"></a>Charles配置</h3><ul>
-<li>菜单栏”Proxy” -&gt; “SSL Proxying Settings…”</li>
-<li>选中Enable SSL Proxying</li>
-</ul>
-<p><img src="../../../../../images/20A9715A-F95D-4D5B-BE56-12EC0722E96F.png" alt=""></p>
-<ul>
-<li>点击Add按钮，填写Host（希望抓取报文的https地址），端口号（433 https端口号）</li>
-</ul>
-<p><img src="../../../../../images/68769C6A-22E9-4A35-91A5-CB69DA2E5523.png" alt=""></p>
-<p>这样我们就可以开始抓包了Y^o^Y</p>
-<p><img src="../../../../../images/EA83C8CA-B309-409A-B1E5-3DDFAE153B86.png" alt=""></p>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><p>Swift 上单例的实现，其实很简单。我们只需要使用 <code>static</code> 就可以创建一个全局的实例了，不行像 OC 那样使用 <code>dispatch_once</code> 来保证线程安全。<br>我们使用 <code>fileprivate</code> 来修饰我们的构造函数。这确保没有其他创建实例的手段。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MazeFactory</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">static</span> <span class="keyword">let</span> interface = <span class="type">MazeFactory</span>()</div><div class="line">    </div><div class="line">    fileprivate <span class="keyword">init</span>() &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">makeMaze</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"This is Maze."</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="type">MazeFactory</span>.interface.makeMaze()</div></pre></td></tr></table></figure>
+<p><strong>打印结果</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="type">This</span> <span class="keyword">is</span> <span class="type">Maze</span>.</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>单例模式使用起来很简单，而单例也可以配合很多模式一起使用。</p>
+<p>附：<a href="https://github.com/bay2/DesignPatternSwift" target="_blank" rel="external">Playground 代码</a></p>
+<p>欢迎讨论、批评、指错。</p>
 </span>
       
     </div>
@@ -297,7 +290,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/诊断调试/" rel="tag">#诊断调试</a>
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
+          
+            <a href="/tags/设计模式/" rel="tag">#设计模式</a>
           
         </div>
       
@@ -306,17 +301,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/01/10/SnapKit-故事板约束自动布局/" rel="next" title="SnapKit+xib/storyboard约束自动布局">
-                <i class="fa fa-chevron-left"></i> SnapKit+xib/storyboard约束自动布局
+              <a href="/2017/01/30/2017-01-30/" rel="next" title="设计模式笔记及Swift上的实现之四『PROTOTYPE（原型）』">
+                <i class="fa fa-chevron-left"></i> 设计模式笔记及Swift上的实现之四『PROTOTYPE（原型）』
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/03/12/XCode-UI-Testing-总结/" rel="prev" title="XCode UI Testing 总结">
-                XCode UI Testing 总结 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -452,7 +443,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP抓包"><span class="nav-number">2.</span> <span class="nav-text">HTTP抓包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">2.1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始抓包"><span class="nav-number">2.2.</span> <span class="nav-text">开始抓包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS抓包"><span class="nav-number">3.</span> <span class="nav-text">HTTPS抓包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装证书"><span class="nav-number">3.1.</span> <span class="nav-text">安装证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Charles配置"><span class="nav-number">3.2.</span> <span class="nav-text">Charles配置</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#意图"><span class="nav-number">1.</span> <span class="nav-text">意图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动机"><span class="nav-number">2.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适用性"><span class="nav-number">3.</span> <span class="nav-text">适用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构"><span class="nav-number">4.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参与者"><span class="nav-number">5.</span> <span class="nav-text">参与者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协作"><span class="nav-number">6.</span> <span class="nav-text">协作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">7.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">8.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码示例"><span class="nav-number">9.</span> <span class="nav-text">代码示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -512,9 +503,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
-      var disqus_identifier = '2016/01/31/ios-http-https抓包教程/';
-      var disqus_title = 'ios http/https抓包教程';
-      var disqus_url = 'http://yoursite.com/2016/01/31/ios-http-https抓包教程/';
+      var disqus_identifier = '2017/02/12/2017-02-12/';
+      var disqus_title = '设计模式笔记及Swift上的实现之五『SINGLETON（单例）』';
+      var disqus_url = 'http://yoursite.com/2017/02/12/2017-02-12/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

@@ -53,19 +53,20 @@
 
 
 
-<meta name="description" content="『SINGLETON（单例）』">
+<meta name="description" content="『『ADAPTER（适配器）』">
 <meta property="og:type" content="article">
-<meta property="og:title" content="设计模式笔记及Swift上的实现之五『SINGLETON（单例）』">
-<meta property="og:url" content="http://yoursite.com/2017/02/12/2017-02-12/index.html">
+<meta property="og:title" content="设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』">
+<meta property="og:url" content="http://yoursite.com/2017/02/20/2017-02-20/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
-<meta property="og:description" content="『SINGLETON（单例）』">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/maxresdefault.jpg">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/IC400943.png">
-<meta property="og:updated_time" content="2017-02-12T00:52:46.000Z">
+<meta property="og:description" content="『『ADAPTER（适配器）』">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/2_1a%E7%94%B5%E6%BA%90%E9%80%82%E9%85%8D%E5%99%A84.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/1362066399_9469.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/20160128085132447.jpeg">
+<meta property="og:updated_time" content="2017-02-20T01:57:26.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="设计模式笔记及Swift上的实现之五『SINGLETON（单例）』">
-<meta name="twitter:description" content="『SINGLETON（单例）』">
-<meta name="twitter:image" content="http://yoursite.com/../../../../../images/maxresdefault.jpg">
+<meta name="twitter:title" content="设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』">
+<meta name="twitter:description" content="『『ADAPTER（适配器）』">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/2_1a%E7%94%B5%E6%BA%90%E9%80%82%E9%85%8D%E5%99%A84.jpg">
 
 
 
@@ -77,7 +78,7 @@
   };
 </script>
 
-  <title> 设计模式笔记及Swift上的实现之五『SINGLETON（单例）』 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -206,7 +207,7 @@
             
             
               
-                设计模式笔记及Swift上的实现之五『SINGLETON（单例）』
+                设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』
               
             
           </h1>
@@ -215,8 +216,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2017-02-12T08:43:46+08:00" content="2017-02-12">
-              2017-02-12
+            <time itemprop="dateCreated" datetime="2017-02-20T08:57:00+08:00" content="2017-02-20">
+              2017-02-20
             </time>
           </span>
 
@@ -226,8 +227,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2017/02/12/2017-02-12/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/12/2017-02-12/" itemprop="commentsCount"></span>
+              <a href="/2017/02/20/2017-02-20/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/20/2017-02-20/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -246,40 +247,72 @@
       
 
       
-        <span itemprop="articleBody"><p><img src="../../../../../images/maxresdefault.jpg" alt=""></p>
-<p>单例是书中最后一个创建型模式。单例这个设计模式相信大家再熟悉不过了。但单例也是最容易被滥用的设计模式。我们可以通过重新理解单例的意图，来帮助我们在后续的开发中决定是否该使用这中模式。</p>
-<h2 id="意图"><a href="#意图" class="headerlink" title="意图"></a>意图</h2><p>保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
-<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>对一些类来说，只有一个实例是很重要的。例如我们 iOS 开发中经常做的提示框。我们希望这种提示框出现一个之后，在消失之前不会出现第二个，这时单例是最好的选择。</p>
+        <span itemprop="articleBody"><p><img src="../../../../../images/2_1a%E7%94%B5%E6%BA%90%E9%80%82%E9%85%8D%E5%99%A84.jpg" alt=""></p>
+<p>什么是适配器？在真实世界中我们会接触到各种各样的适配器，例如上图的电源适配器。将两座的电源接口转换为 USB 接口。</p>
+<h2 id="意图"><a href="#意图" class="headerlink" title="意图"></a>意图</h2><p>适配器模式则是将一个类的接口转换成客户希望的另外一个接口。 （=。= 这么看来适配器模式我们是一直都在用啊）</p>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>有时，为了复用而设计的工具箱类，不能够被复用的原因仅仅是因为它的接口与专业应用领域所需要的接口不匹配。</p>
+<p>例如，我们 iOS 开发中经常会封装一个网络请求类，用于封装一下固定的传参等其他操作。我们平时进行网络请求也是调用这个类，而这个类就是一个适配器。这些固定的传参操作只是我们这个项目要用到的，是<strong>专业应用领域</strong>。</p>
 <h2 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h2><ul>
-<li>类只能有一个实例，而客户可以从一个已知的访问点访问它。</li>
-<li>这个唯一的实例应该是通过子类化可扩展的，并且客户应该无需更改代码就能适用一个扩展的实例。</li>
+<li>你想使用一个已存在的类，而它的接口不符合你的需求。</li>
+<li>你想创建一个可以复用的类，该类可以与其他不相关的类或不可预见的类（那些接口不一定兼容的类）协调工作。</li>
+<li>你想使用一些已存在的子类，但是不可能对每一个都进行子类化匹配他们的接口。对象适配器可以适配它的父类接口（仅适用于对象 Adapter）</li>
 </ul>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="../../../../../images/IC400943.png" alt=""></p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>类适配器使用多继承对一个接口与另一个接口进行匹配。<br><img src="../../../../../images/1362066399_9469.jpg" alt=""></p>
+<p>对象匹配器依赖于对象组合。<br><img src="../../../../../images/20160128085132447.jpeg" alt=""></p>
 <h2 id="参与者"><a href="#参与者" class="headerlink" title="参与者"></a>参与者</h2><ul>
-<li>Singleton</li>
+<li>Target</li>
 </ul>
 <blockquote>
-<p>—— 定义一个 Instance 操作，允许客户访问它的唯一实例。<br>—— 可能负责创建它自己的唯一方法。</p>
+<p>定义 Client 使用的与特定领域相关的接口。</p>
 </blockquote>
-<h2 id="协作"><a href="#协作" class="headerlink" title="协作"></a>协作</h2><ul>
-<li>客户只能通过 Singleton 的 Instance 操作访问一个 Singleton 的实例。</li>
+<ul>
+<li>Client</li>
 </ul>
-<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><ul>
-<li>对唯一实例的受控访问</li>
-<li>缩小名空间（避免存储唯一实例的全局变量污染名空间）</li>
-<li>允许对操作和表达的精化</li>
-<li>允许可变数目的实例（允许一个 Singleton 类有多个实例）</li>
-<li>比类操作更灵活</li>
+<blockquote>
+<p>与符合 Target 接口的对象协同。</p>
+</blockquote>
+<ul>
+<li>Adaptee</li>
+</ul>
+<blockquote>
+<p>定义一个已存在的接口，这个接口需要适配。</p>
+</blockquote>
+<ul>
+<li>Adapter</li>
+</ul>
+<blockquote>
+<p>对 Adaptee 的接口与 Target 接口进行适配。</p>
+</blockquote>
+<h2 id="协助"><a href="#协助" class="headerlink" title="协助"></a>协助</h2><p>Client 在 Adapter 示例上调用一下操作。 Adapter 调用 Adaptee 的操作实现请求。</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>类适配器：</p>
+<ul>
+<li>用一个具体的 Adapter 类对 Adapter 和 Target 进行匹配。当我们想匹配一个类及它所有的子类时，类 Adapter 将无法胜任工作。</li>
+<li>使得一个 Adapter 可以重定义 Adaptee 的部分行为。</li>
+<li>引入一个对象，并不需要额外的指针以间接得到 Adaptee。（=。=这样点现在估计不怎么考虑了吧）</li>
+</ul>
+<p>对象适配器：</p>
+<ul>
+<li>允许一个 Adapter 与多个 Adaptee 同时工作。</li>
+<li>使得重定义 Adaptee 的行为比较困难。</li>
+</ul>
+<p>使用 Adapter 模式时需要考虑的其他一些因素有：</p>
+<ul>
+<li><code>Adaptee 的匹配程度</code></li>
+<li><code>可插入的 Adapter</code> 当其他的类使用一个类时，如果所需的假定条件越少，这个类就更具有可复用性。</li>
+<li><code>使用双向适配器提供透明操作</code> 使用适配器的存在着一个潜在的问题，它们不对所有的客户都透明。被适配的对象不在兼容 Adaptee 的接口，因此并不是所有的 Adaptee 对象可以被使用的地方，它都可以被使用。双向适配器提供了这样的透明性。</li>
 </ul>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><ul>
-<li>保证一个唯一的实例</li>
-<li>创建 Singleton 的子类</li>
+<li><code>使用 C++ 实现适配器类</code> 在 C++ 支持多继承，这里需要使用多继承，所以这里写的是使用 C++ 实现适配器类。我认为这里在 Swift 中其实可以通过 Protocol 来实现，但前提是 Adaptee 是个 Protocol。 Adapter 类继承 Target 类，同时 Adapter 私有继承 Adaptee 类。</li>
+<li><code>使用抽象操作</code></li>
+<li><code>使用代理对象</code> 这个中方式在 OC 的代码中经常会看到。 Adaptee 将一些操作提供给代理对象，这样客户可以对适配加以控制。</li>
+<li><code>参数化的适配器</code> 从书中 Smalltask 的代码理解，就是使用 Block 实现适配。</li>
 </ul>
-<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><p>Swift 上单例的实现，其实很简单。我们只需要使用 <code>static</code> 就可以创建一个全局的实例了，不行像 OC 那样使用 <code>dispatch_once</code> 来保证线程安全。<br>我们使用 <code>fileprivate</code> 来修饰我们的构造函数。这确保没有其他创建实例的手段。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MazeFactory</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">static</span> <span class="keyword">let</span> interface = <span class="type">MazeFactory</span>()</div><div class="line">    </div><div class="line">    fileprivate <span class="keyword">init</span>() &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">makeMaze</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"This is Maze."</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="type">MazeFactory</span>.interface.makeMaze()</div></pre></td></tr></table></figure>
-<p><strong>打印结果</strong></p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="type">This</span> <span class="keyword">is</span> <span class="type">Maze</span>.</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>单例模式使用起来很简单，而单例也可以配合很多模式一起使用。</p>
+<h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><p>书中类适配器的实现更适合 C++， 所以我们的代码示例就使用书中的对象适配器的实现。</p>
+<p>Shape 假定有一个边框，这个边框由它相对的两角定义。而 TextView 则有原点、宽、高的定义。TextShape 类是这些不同接口的适配器。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">Shape</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">boundingBox</span><span class="params">()</span></span> -&gt; (bottomLeft: <span class="type">CGPoint</span>, topRight: <span class="type">CGPoint</span>)</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">createManipulator</span><span class="params">()</span></span> -&gt; <span class="type">Manipulator</span></div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Shape</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">boundingBox</span><span class="params">()</span></span> -&gt; (bottomLeft: <span class="type">CGPoint</span>, topRight: <span class="type">CGPoint</span>) &#123;</div><div class="line">        <span class="keyword">return</span> (<span class="type">CGPoint</span>.zero, <span class="type">CGPoint</span>.zero)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">createManipulator</span><span class="params">()</span></span> -&gt; <span class="type">Manipulator</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="type">Manipulator</span>()</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextView</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">getOrigin</span><span class="params">()</span></span> -&gt; <span class="type">CGPoint</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="type">CGPoint</span>(x: <span class="number">10</span>, y: <span class="number">10</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">getExtent</span><span class="params">()</span></span> -&gt; <span class="type">CGSize</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="type">CGSize</span>(width: <span class="number">10</span>, height: <span class="number">10</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">isEmpty</span><span class="params">()</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们采用对象适配器， TextShape 需要维护一个 TextView 对象。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextShape</span>: <span class="title">Shape</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> textView: <span class="type">TextView</span></div><div class="line">    </div><div class="line">    <span class="keyword">init</span>(<span class="number">_</span> textView: <span class="type">TextView</span>) &#123;</div><div class="line">        <span class="keyword">self</span>.textView = textView</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">boundingBox</span><span class="params">()</span></span> -&gt; (bottomLeft: <span class="type">CGPoint</span>, topRight: <span class="type">CGPoint</span>) &#123;</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> origin = textView.getOrigin()</div><div class="line">        <span class="keyword">let</span> extent = textView.getExtent()</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> bottom = origin.x</div><div class="line">        <span class="keyword">let</span> <span class="keyword">left</span> = origin.y</div><div class="line">        </div><div class="line">        <span class="keyword">return</span> (<span class="type">CGPoint</span>(x: bottom, y: <span class="keyword">left</span>), topRight: <span class="type">CGPoint</span>(x: bottom + extent.height, y: <span class="keyword">left</span> + extent.width))</div><div class="line">    </div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">createManipulator</span><span class="params">()</span></span> -&gt; <span class="type">Manipulator</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="type">Manipulator</span>()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">isEmpty</span><span class="params">()</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">        <span class="keyword">return</span> textView.isEmpty()</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>适配器分成两种：类适配器和对象适配器。在 Swift 使用对象适配器，视乎更加合适。</p>
 <p>附：<a href="https://github.com/bay2/DesignPatternSwift" target="_blank" rel="external">Playground 代码</a></p>
 <p>欢迎讨论、批评、指错。</p>
 </span>
@@ -301,17 +334,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/30/2017-01-30/" rel="next" title="设计模式笔记及Swift上的实现之四『PROTOTYPE（原型）』">
-                <i class="fa fa-chevron-left"></i> 设计模式笔记及Swift上的实现之四『PROTOTYPE（原型）』
+              <a href="/2017/02/12/2017-02-12/" rel="next" title="设计模式笔记及Swift上的实现之五『SINGLETON（单例）』">
+                <i class="fa fa-chevron-left"></i> 设计模式笔记及Swift上的实现之五『SINGLETON（单例）』
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/20/2017-02-20/" rel="prev" title="设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』">
-                设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -447,7 +476,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#意图"><span class="nav-number">1.</span> <span class="nav-text">意图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动机"><span class="nav-number">2.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适用性"><span class="nav-number">3.</span> <span class="nav-text">适用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构"><span class="nav-number">4.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参与者"><span class="nav-number">5.</span> <span class="nav-text">参与者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协作"><span class="nav-number">6.</span> <span class="nav-text">协作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">7.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">8.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码示例"><span class="nav-number">9.</span> <span class="nav-text">代码示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#意图"><span class="nav-number">1.</span> <span class="nav-text">意图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动机"><span class="nav-number">2.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适用性"><span class="nav-number">3.</span> <span class="nav-text">适用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构"><span class="nav-number">4.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参与者"><span class="nav-number">5.</span> <span class="nav-text">参与者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协助"><span class="nav-number">6.</span> <span class="nav-text">协助</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">7.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">8.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码示例"><span class="nav-number">9.</span> <span class="nav-text">代码示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -507,9 +536,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
-      var disqus_identifier = '2017/02/12/2017-02-12/';
-      var disqus_title = '设计模式笔记及Swift上的实现之五『SINGLETON（单例）』';
-      var disqus_url = 'http://yoursite.com/2017/02/12/2017-02-12/';
+      var disqus_identifier = '2017/02/20/2017-02-20/';
+      var disqus_title = '设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』';
+      var disqus_url = 'http://yoursite.com/2017/02/20/2017-02-20/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

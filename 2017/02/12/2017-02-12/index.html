@@ -278,7 +278,7 @@
 <h2 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h2><p>Swift 上单例的实现，其实很简单。我们只需要使用 <code>static</code> 就可以创建一个全局的实例了，不行像 OC 那样使用 <code>dispatch_once</code> 来保证线程安全。<br>我们使用 <code>fileprivate</code> 来修饰我们的构造函数。这确保没有其他创建实例的手段。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">MazeFactory</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">static</span> <span class="keyword">let</span> interface = <span class="type">MazeFactory</span>()</div><div class="line">    </div><div class="line">    fileprivate <span class="keyword">init</span>() &#123;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">makeMaze</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="built_in">print</span>(<span class="string">"This is Maze."</span>)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="type">MazeFactory</span>.interface.makeMaze()</div></pre></td></tr></table></figure>
 <p><strong>打印结果</strong></p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="type">This</span> <span class="keyword">is</span> <span class="type">Maze</span>.</div></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">This <span class="keyword">is</span> Maze.</div></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>单例模式使用起来很简单，而单例也可以配合很多模式一起使用。</p>
 <p>附：<a href="https://github.com/bay2/DesignPatternSwift" target="_blank" rel="external">Playground 代码</a></p>
 <p>欢迎讨论、批评、指错。</p>
@@ -383,7 +383,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-count">26</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

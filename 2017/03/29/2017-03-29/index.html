@@ -1,0 +1,748 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Swift,设计模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="使用 RxSwift 订阅 UIView 的 isHidden 属性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现一个需求 —— 使用 RxSwift 订阅 UIView 的 isHidden 属性">
+<meta property="og:url" content="http://yoursite.com/2017/03/29/2017-03-29/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="使用 RxSwift 订阅 UIView 的 isHidden 属性">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907957629836.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907963190486.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907966551999.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907975018713.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907981189220.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907982923020.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907984225211.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907990537387.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907995154959.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14907997006995.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14908003089486.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14908006443769.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14908009585593.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14908014060346.jpg">
+<meta property="og:updated_time" content="2017-03-29T15:39:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现一个需求 —— 使用 RxSwift 订阅 UIView 的 isHidden 属性">
+<meta name="twitter:description" content="使用 RxSwift 订阅 UIView 的 isHidden 属性">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/14907957629836.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> 实现一个需求 —— 使用 RxSwift 订阅 UIView 的 isHidden 属性 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                实现一个需求 —— 使用 RxSwift 订阅 UIView 的 isHidden 属性
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2017-03-29T23:35:10+08:00" content="2017-03-29">
+              2017-03-29
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2017/03/29/2017-03-29/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/29/2017-03-29/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>最近在做项目的时候，遇到了一个需求。我有三个 View(View1， View2， View3)，View1 和 View2 其中一个显示，View3 就显示。</p>
+<p>稍微思考了一下，觉得订阅 isHidden 属性的改变，然后通过 <code>CombineLatest</code> 组合 <code>Observable</code> 来实现。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>而问题就来了。。。</p>
+<p><img src="../../../../../images/14907957629836.jpg" alt=""></p>
+<p><code>isHidden</code> 居然是个 <code>UIBindingObserver&lt;UIView, Bool&gt;</code></p>
+<h2 id="尝试使用-KVO"><a href="#尝试使用-KVO" class="headerlink" title="尝试使用 KVO"></a>尝试使用 KVO</h2><p>我在使用 OC 时，会使用 <code>ReactiveCocoa</code> 。而在 <code>ReactiveCocoa</code> 我经常使用 KVO 去监控属性。或者在 <code>RxSwift</code> 也有类似的方法吧？</p>
+<p><img src="../../../../../images/14907963190486.jpg" alt=""></p>
+<p>好像的确有类似的东西，那就到源码中查看怎么使用吧。。。</p>
+<p><img src="../../../../../images/14907966551999.jpg" alt=""></p>
+<p>从这些注释，大概知道了使用方法，那就开干吧。。。</p>
+<p><img src="../../../../../images/14907975018713.jpg" alt=""></p>
+<p>只打印了 <code>next(Optional(false))</code>, 并不能监控到 <code>isHidden</code> 值的变化=。=</p>
+<p>为什么呢？难道我使用方法不对？找找可参照的例子。<br>在 <code>KVOObservableTests.swift</code> 找到了一段测试代码：</p>
+<p><img src="../../../../../images/14907981189220.jpg" alt=""></p>
+<p>注意，这里的属性都使用了 <code>dynamic</code> , 感觉好像抓到了些什么？先尝试定义一个类试试看。</p>
+<p><img src="../../../../../images/14907982923020.jpg" alt=""></p>
+<p>起作用了😎，那把 <code>dynamic</code> 删了呢？</p>
+<p><img src="../../../../../images/14907984225211.jpg" alt=""></p>
+<p>又不好使了😔 为什么呢？<br>其实喵神在《Swift 开发必备 Tips》中就提过这个问题。</p>
+<p><img src="../../../../../images/14907990537387.jpg" alt=""></p>
+<p>所以，只能另想办法了😒</p>
+<h2 id="使用-methodInvoked"><a href="#使用-methodInvoked" class="headerlink" title="使用 methodInvoked"></a>使用 methodInvoked</h2><p>还记得 <code>UITextField</code> 经常使用的 <code>text</code> 属性么？它又是怎么实现的呢？</p>
+<p><img src="../../../../../images/14907995154959.jpg" alt=""></p>
+<p>查看源码，发现它使用了 <code>UIControl</code> 的 <code>value</code> 方法。继续往下看。。。</p>
+<p><img src="../../../../../images/14907997006995.jpg" alt=""></p>
+<p>这里是通过监控控件事件来实现的。。🤔那么 <code>textField.rx.text.subscribe</code> 同样存在一个问题 </p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">textField</span>.<span class="keyword">text</span> = <span class="string">"test"</span></div></pre></td></tr></table></figure>
+<p>这样的操作，也是没法得到事件的。。</p>
+<p>但可以从这个段代码中得到给启发，我是否可以通过订阅方法处理来完成我想要的需求呢？我们在设置属性时必然会走 <code>set</code> 方法。</p>
+<p><img src="../../../../../images/14908003089486.jpg" alt=""></p>
+<p>嗯，这个好像是我们需要的方法，那就看看能否实现吧。</p>
+<p><img src="../../../../../images/14908006443769.jpg" alt=""></p>
+<p>好像起作用了，但我们可以做进一步的优化。我希望事件就给我返回个 <code>Bool</code>,而且包含一开始的默认属性。</p>
+<p><img src="../../../../../images/14908009585593.jpg" alt=""></p>
+<p>这样就得到我想要的结果了🙃，但我可以让它变得更好用点，把它封装到 <code>rx</code> 中作为一个 <code>hidden</code> 属性好了</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Reactive</span> <span class="title">where</span> <span class="title">Base</span>: <span class="title">UIView</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> hidden: <span class="type">Observable</span>&lt;<span class="type">Bool</span>&gt; &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.methodInvoked(#selector(setter: <span class="keyword">self</span>.base.isHidden))</div><div class="line">            .<span class="built_in">map</span> &#123; event -&gt; <span class="type">Bool</span> <span class="keyword">in</span></div><div class="line">                <span class="keyword">guard</span> <span class="keyword">let</span> isHidden = event.first <span class="keyword">as</span>? <span class="type">Bool</span> <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="built_in">fatalError</span>()</div><div class="line">                &#125;</div><div class="line">                </div><div class="line">                <span class="keyword">return</span> isHidden</div><div class="line">            &#125;</div><div class="line">            .startWith(<span class="keyword">self</span>.base.isHidden)</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="../../../../../images/14908014060346.jpg" alt=""></p>
+<p>嗯，现在就可以愉快的订阅 <code>hidden</code> 属性了 (＾－＾)V</p>
+<p>如果大家有更好的方法，欢迎分享讨论。</p>
+<p>最后：欢迎讨论、批评、指错。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
+          
+            <a href="/tags/设计模式/" rel="tag">#设计模式</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/20/2017-02-20/" rel="next" title="设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』">
+                <i class="fa fa-chevron-left"></i> 设计模式笔记及Swift上的实现之六『ADAPTER（适配器）』
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/bay2" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:sim_cai@icloud.com" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> Email
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尝试使用-KVO"><span class="nav-number">2.</span> <span class="nav-text">尝试使用 KVO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-methodInvoked"><span class="nav-number">3.</span> <span class="nav-text">使用 methodInvoked</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2017/03/29/2017-03-29/';
+      var disqus_title = '实现一个需求 —— 使用 RxSwift 订阅 UIView 的 isHidden 属性';
+      var disqus_url = 'http://yoursite.com/2017/03/29/2017-03-29/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  
+  
+
+  
+  
+
+</body>
+</html>

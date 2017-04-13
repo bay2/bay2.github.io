@@ -37,7 +37,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,Swift," />
+  <meta name="keywords" content="Tools," />
 
 
 
@@ -53,22 +53,19 @@
 
 
 
-<meta name="description" content="Swift 模式匹配的一个小坑。">
+<meta name="description" content="最近写了个工具CarthagePods，将 Carthage 和 CocoaPods 配合一起使用。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Swift 模式匹配的一个有趣的问题">
-<meta property="og:url" content="http://yoursite.com/2016/10/23/2016-10-23/index.html">
+<meta property="og:title" content="CarthagePods -- 一个整合 CocoaPods 和 Carthage 一起使用的工具">
+<meta property="og:url" content="http://yoursite.com/2017/04/13/2017-04-14/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
-<meta property="og:description" content="Swift 模式匹配的一个小坑。">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/CvSZd_ZW8AEYkgm.jpg-large.jpeg">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/14771892594145.jpg">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/228_33120102042015.jpg">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/14771923115495.jpg">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/14771926936502.jpg">
-<meta property="og:updated_time" content="2016-10-23T04:40:47.000Z">
+<meta property="og:description" content="最近写了个工具CarthagePods，将 Carthage 和 CocoaPods 配合一起使用。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14920008735282.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14920021037322.jpg">
+<meta property="og:updated_time" content="2017-04-13T06:34:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Swift 模式匹配的一个有趣的问题">
-<meta name="twitter:description" content="Swift 模式匹配的一个小坑。">
-<meta name="twitter:image" content="http://yoursite.com/../../../../../images/CvSZd_ZW8AEYkgm.jpg-large.jpeg">
+<meta name="twitter:title" content="CarthagePods -- 一个整合 CocoaPods 和 Carthage 一起使用的工具">
+<meta name="twitter:description" content="最近写了个工具CarthagePods，将 Carthage 和 CocoaPods 配合一起使用。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/14920008735282.jpg">
 
 
 
@@ -80,7 +77,7 @@
   };
 </script>
 
-  <title> Swift 模式匹配的一个有趣的问题 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> CarthagePods -- 一个整合 CocoaPods 和 Carthage 一起使用的工具 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -209,7 +206,7 @@
             
             
               
-                Swift 模式匹配的一个有趣的问题
+                CarthagePods -- 一个整合 CocoaPods 和 Carthage 一起使用的工具
               
             
           </h1>
@@ -218,8 +215,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2016-10-23T11:29:42+08:00" content="2016-10-23">
-              2016-10-23
+            <time itemprop="dateCreated" datetime="2017-04-13T14:27:28+08:00" content="2017-04-13">
+              2017-04-13
             </time>
           </span>
 
@@ -229,8 +226,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2016/10/23/2016-10-23/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/10/23/2016-10-23/" itemprop="commentsCount"></span>
+              <a href="/2017/04/13/2017-04-14/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/13/2017-04-14/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -249,43 +246,43 @@
       
 
       
-        <span itemprop="articleBody"><p>昨天 Chris Eidhof 大神在 Tweets 上发了一段这样的代码，他认为这是 Swift 的一个 bug 。<a href="https://twitter.com/chriseidhof/status/789424661683724288" target="_blank" rel="external">推文</a></p>
-<p><img src="../../../../../images/CvSZd_ZW8AEYkgm.jpg-large.jpeg" alt="CvSZd_ZW8AEYkgm.jpg-large"></p>
-<p>最近在看喵神的《Swifter - Swift 必备 Tips（第三版）》，刚好看到<strong>字面量表达</strong>和<strong>模式匹配</strong>。所以也想尝试解释这个 bug 的产生原因。</p>
-<h2 id="字面量表达"><a href="#字面量表达" class="headerlink" title="字面量表达"></a>字面量表达</h2><p>什么是字面量？在 Swift 中我们会像下面那样赋值变量，这里的 3、Hello、true 就是字面量。</p>
-<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> <span class="attr">aNumber</span> = <span class="number">3</span></div><div class="line"><span class="keyword">let</span> <span class="attr">aString</span> = <span class="string">"Hello"</span></div><div class="line"><span class="keyword">let</span> <span class="attr">aBool</span> = <span class="literal">true</span></div></pre></td></tr></table></figure>
-<p>在上面的代码中 <code>HasPrefix</code> 这个 <code>struct</code> 继承了 <code>ExpressibleByStringLiteral</code> 这个协议，使得它支持了 <code>字面量表达</code>。<br>也就是说现在 <code>HasPrefix</code> 可以像下面这样赋值了：</p>
-<p><img src="../../../../../images/14771892594145.jpg" alt=""></p>
-<h2 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h2><p>关于模式匹配的使用我这里就不做解释了，打开可以看 SwiftGG 上的模式匹配系列：</p>
+        <span itemprop="articleBody"><p>最近写了个工具<a href="https://github.com/bay2/CarthagePods" target="_blank" rel="external">CarthagePods</a>，将 <code>Carthage</code> 和 <code>CocoaPods</code> 配合一起使用。介绍我这个工具之前，先看看我们 iOS 开发最常用的两个包管理器吧。</p>
+<h1 id="Carthage"><a href="#Carthage" class="headerlink" title="Carthage"></a>Carthage</h1><p>Carthage 有个重要的优点，它可以把依赖的库都编译成 <code>framework</code>，这样一来就不需要每次编译工程，都去编译一遍依赖的第三方库。<br>但是也存在一些缺点，例如：</p>
 <ul>
-<li><a href="http://swift.gg/2016/04/26/pattern-matching-1/" target="_blank" rel="external">模式匹配第一弹: switch, enums &amp; where 子句</a></li>
-<li><a href="http://swift.gg/2016/04/27/pattern-matching-2/" target="_blank" rel="external">模式匹配第二弹：元组，range 和类型</a></li>
-<li><a href="http://swift.gg/2016/04/28/pattern-matching-3/" target="_blank" rel="external">模式匹配第三弹: 自定义的模式匹配和语法糖</a></li>
-<li><a href="http://swift.gg/2016/06/06/pattern-matching-4/" target="_blank" rel="external">模式匹配第四弹：if case，guard case，for case</a></li>
+<li>使用的依赖库比较多，集成起来就比较麻烦。</li>
+<li><code>framework</code> 对 <code>@IBDesignable</code> 和 <code>@IBInspectable</code> 并不那么友好 =。= 。</li>
 </ul>
-<p>这里值得一提的是 Swift 使用 <code>~=</code> 来表示模式匹配的操作符。(因为这和本文谈论的 bug 有关)<br>上面代码，重载了 <code>~=</code> 操作符，使得 <code>HasPrefix</code> 支持了模式匹配。</p>
-<h2 id="问题的产生"><a href="#问题的产生" class="headerlink" title="问题的产生"></a>问题的产生</h2><p>（以下是我自己对这个问题的理解，有理解不对的地方欢迎大伙打脸。）</p>
-<p>从上面 Playground 的打印我们可以看出来，代码执行了 <code>~=</code>。也就是说进行了模式匹配。</p>
-<p>可以是我们重载的 <code>~=</code> 右值是个 <code>HasPrefix</code> 啊，switch 部分的代码是两个 <code>String</code> 啊， Why？？</p>
-<p><img src="../../../../../images/228_33120102042015.jpg" alt="228_33120102042015"></p>
-<p>在回想上面代码对 <code>HasPrefix</code> 做了什么？ <strong>字面量表示</strong>，这样使我们可以简单的将 <code>String</code> 赋值给 <code>HasPrefix</code> 。</p>
-<h3 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h3><ol>
-<li>使用 Switch 是 Swift 会优先进行模式匹配</li>
-<li>Swift 中没有实现， 左右值都是 <code>String</code> 的 <code>~=</code> 。</li>
-<li>由于我们使用的了<code>字面量表示</code>，导致使用 Switch 时， <code>String</code> 的字面量，也可以是 <code>HasPrefix</code> 的字面量。</li>
-<li>最后就执行了模式匹配</li>
-</ol>
-<p>为了证实这个猜测，我尝试重载左右值都为 <code>String</code> 的 <code>~=</code> 。</p>
-<p><img src="../../../../../images/14771923115495.jpg" alt=""></p>
-<p>这回问题视乎没有了。</p>
-<h2 id="思考🤔"><a href="#思考🤔" class="headerlink" title="思考🤔"></a>思考🤔</h2><h3 id="我要对-HasPrefix-进行模式匹配怎么办？"><a href="#我要对-HasPrefix-进行模式匹配怎么办？" class="headerlink" title="我要对 HasPrefix 进行模式匹配怎么办？"></a>我要对 HasPrefix 进行模式匹配怎么办？</h3><p><img src="../../../../../images/14771926936502.jpg" alt=""></p>
-<p>好像只能这样了。。。</p>
-<h3 id="我们在日常开发有可能会遇到这样的坑吗？"><a href="#我们在日常开发有可能会遇到这样的坑吗？" class="headerlink" title="我们在日常开发有可能会遇到这样的坑吗？"></a>我们在日常开发有可能会遇到这样的坑吗？</h3><p>假设如果我们引入了一个第三方库，这个第三方库对其自定义的一个类型，实现了<strong>字面量表达</strong>和<strong>模式匹配</strong>。我们好像就会遇到这个坑。</p>
-<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><ul>
-<li>或许可以像我刚刚那个定义对应的 <code>~=</code>，但我不确定会不会有其他考虑不到的问题</li>
-<li>如果你不希望进行模式匹配，你就使用 <code>if</code> 吧（推荐，ps：感觉这样做比较保险）</li>
+<h1 id="CocoaPods"><a href="#CocoaPods" class="headerlink" title="CocoaPods"></a>CocoaPods</h1><p><code>CocoaPods</code> 正好可以解决 <code>Carthage</code> 的不足。<code>CocoaPods</code> 使用起来非常方便，因为他不会把依赖库编译提前编译成 <code>framework</code>， 所以也不存在对 <code>@IBDesignable</code> 和 <code>@IBInspectable</code> 不友好的问题。</p>
+<p>当然，他不会把第三方库编译成功 <code>framework</code> 这也会导致工程编译起来比较慢。</p>
+<h1 id="取长补短"><a href="#取长补短" class="headerlink" title="取长补短"></a>取长补短</h1><p>前段时间虾神在他的公众号中发布了一篇文章则提供类一个解决方案<a href="http://mp.weixin.qq.com/s/wV68OWGB3fiWc1hJW-o59g" target="_blank" rel="external">I have a pod, I have a carthage, En…</a>。<br>然而操作起来还是略微麻烦=。=</p>
+<p>这样我们就可以将使用 <code>@IBDesignable</code> 和 <code>@IBInspectable</code> 属性的库还是使用 <code>CocoaPods</code> 来管理。没使用的则使用 <code>Carthage</code> 。</p>
+<h1 id="方案流程"><a href="#方案流程" class="headerlink" title="方案流程"></a>方案流程</h1><p>虾神文章中大概的实现方案流程是这样的：</p>
+<ul>
+<li>先使用 <code>Carthage</code> 把一些依赖库编译成 <code>framework</code>。</li>
+<li>通过 <code>CocoaPods</code> 把 <code>framework</code> 打包 <code>repo</code></li>
+<li>最后通过 <code>CocoaPods</code> 把所有的依赖库都 install 了。</li>
 </ul>
-<p>欢迎讨论、批评、指错。</p>
+<p>虾神的方案很酷，但是使用起来还是略为麻烦。所以我决定使用 <code>Ruby</code> 来把这些流程串联起来，只需要简单的敲个 <code>install</code> 就能完成这些工作 ^-^</p>
+<p>为什么使用 <code>Ruby</code> ？因为我想学 <code>Ruby</code> ，拿来练手=。=</p>
+<h1 id="CarthagePods"><a href="#CarthagePods" class="headerlink" title="CarthagePods"></a>CarthagePods</h1><h2 id="安装方法"><a href="#安装方法" class="headerlink" title="安装方法"></a>安装方法</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gem <span class="keyword">install</span> CarthagePods</div></pre></td></tr></table></figure>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>接下来简单介绍一下 <code>CarthagePods</code> 的一些命令吧。</p>
+<p><img src="../../../../../images/14920008735282.jpg" alt=""></p>
+<h3 id="init"><a href="#init" class="headerlink" title="init"></a>init</h3><p>会生成 <code>CocoaPods</code> 的 <code>Podfile</code> 文件, <code>Carthage</code> 的 <code>Cartfile</code> 文件， 和一个 <code>CPodfile</code>。</p>
+<p>大家使用的时候可以和往常使用 <code>CocoaPods</code> 和 <code>Carthage</code> ，一样把依赖的库配置到对应的文件中。</p>
+<p>那 <code>CPodfile</code> 又是什么鬼？</p>
+<p>我在使用我最常用的库 <code>RxSwift</code> 时，发现了一个问题。<code>RxSwift</code> 使用 <code>Carthage</code> 编译时会生成一个 <code>RxTest</code> 的 <code>framework</code> 。如果你工程中包含了这个 <code>framework</code> 会导致你打包失败。所以 <code>CPodfile</code> 则提供了一种方法把需要过滤的 <code>framework</code> 给过滤掉。</p>
+<p>使用方法如下：</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filterFramework [<span class="symbol">'RxTest</span>.framework', <span class="symbol">'RxBlocking</span>.framework']</div></pre></td></tr></table></figure>
+<h3 id="install"><a href="#install" class="headerlink" title="install"></a>install</h3><p>install 命令则是分别执行 <code>CocoaPods</code> 的 <code>install</code> 命令 和 <code>Carthage</code> 的 <code>bootstrap</code> 命令。</p>
+<p>考虑到保留两个工具的功能，这里尽可能保留了两个工具 install 时的参数。<br><img src="../../../../../images/14920021037322.jpg" alt=""></p>
+<p>熟悉 <code>Carthage</code> 可能会发现，少了个 <code>--platform</code>。<br>我们使用 <code>CocoaPods</code> 是其实会在 <code>Podfile</code> 中直接定对应的平台，所以这里的参数，工具会直接在 <code>Podfile</code> 中获取。</p>
+<h3 id="update"><a href="#update" class="headerlink" title="update"></a>update</h3><p>这个命令就是分别执行 <code>CocoaPods</code> 和 <code>Carthage</code> 的 <code>update</code> 命令。功能与 install 相似。</p>
+<h2 id="遗留问题"><a href="#遗留问题" class="headerlink" title="遗留问题"></a>遗留问题</h2><ul>
+<li>两个库，一个使用 <code>CocoaPods</code>， 一个使用 <code>Carthage</code> 去 install，如果这两个库同时依赖于另外一个库。这种场景可能会产生问题。（这个问题会在后续版本解决）</li>
+<li>我开发的时候希望能使用 <code>RxTest</code>，发布的时候把它过滤掉。这个目前还是比较难办的。</li>
+</ul>
+<p>不过退一步想，我们遇到这些情况还是都可以几乎无痛的，把一些库切换使用 <code>CocoaPods</code> 做依赖管理。</p>
+<p>最后欢迎大家尝试使用我这个工具，欢迎 Issue 。我会尽我最大努力去维护它。</p>
 </span>
       
     </div>
@@ -294,9 +291,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
-            <a href="/tags/Swift/" rel="tag">#Swift</a>
+            <a href="/tags/Tools/" rel="tag">#Tools</a>
           
         </div>
       
@@ -305,17 +300,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/16/2016-10-16/" rel="next" title="论优雅的实现描边">
-                <i class="fa fa-chevron-left"></i> 论优雅的实现描边
+              <a href="/2017/03/29/2017-03-29/" rel="next" title="实现一个需求 —— 使用 RxSwift 订阅 UIView 的 isHidden 属性">
+                <i class="fa fa-chevron-left"></i> 实现一个需求 —— 使用 RxSwift 订阅 UIView 的 isHidden 属性
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/04/2017-01-04/" rel="prev" title="设计模式笔记及Swift上的实现之一『ABSTRACT FACTORY（抽象工厂）』">
-                设计模式笔记及Swift上的实现之一『ABSTRACT FACTORY（抽象工厂）』 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -451,7 +442,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字面量表达"><span class="nav-number">1.</span> <span class="nav-text">字面量表达</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模式匹配"><span class="nav-number">2.</span> <span class="nav-text">模式匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题的产生"><span class="nav-number">3.</span> <span class="nav-text">问题的产生</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#猜测"><span class="nav-number">3.1.</span> <span class="nav-text">猜测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思考🤔"><span class="nav-number">4.</span> <span class="nav-text">思考🤔</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#我要对-HasPrefix-进行模式匹配怎么办？"><span class="nav-number">4.1.</span> <span class="nav-text">我要对 HasPrefix 进行模式匹配怎么办？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们在日常开发有可能会遇到这样的坑吗？"><span class="nav-number">4.2.</span> <span class="nav-text">我们在日常开发有可能会遇到这样的坑吗？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方法"><span class="nav-number">4.2.1.</span> <span class="nav-text">解决方法</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Carthage"><span class="nav-number">1.</span> <span class="nav-text">Carthage</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CocoaPods"><span class="nav-number">2.</span> <span class="nav-text">CocoaPods</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#取长补短"><span class="nav-number">3.</span> <span class="nav-text">取长补短</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方案流程"><span class="nav-number">4.</span> <span class="nav-text">方案流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CarthagePods"><span class="nav-number">5.</span> <span class="nav-text">CarthagePods</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装方法"><span class="nav-number">5.1.</span> <span class="nav-text">安装方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">5.2.</span> <span class="nav-text">介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#init"><span class="nav-number">5.2.1.</span> <span class="nav-text">init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#install"><span class="nav-number">5.2.2.</span> <span class="nav-text">install</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#update"><span class="nav-number">5.2.3.</span> <span class="nav-text">update</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遗留问题"><span class="nav-number">5.3.</span> <span class="nav-text">遗留问题</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -511,9 +502,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
-      var disqus_identifier = '2016/10/23/2016-10-23/';
-      var disqus_title = 'Swift 模式匹配的一个有趣的问题';
-      var disqus_url = 'http://yoursite.com/2016/10/23/2016-10-23/';
+      var disqus_identifier = '2017/04/13/2017-04-14/';
+      var disqus_title = 'CarthagePods -- 一个整合 CocoaPods 和 Carthage 一起使用的工具';
+      var disqus_url = 'http://yoursite.com/2017/04/13/2017-04-14/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');

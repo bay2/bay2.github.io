@@ -1,0 +1,803 @@
+<!doctype html>
+<html class="theme-next   use-motion ">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  
+    <link href='//fonts.lug.ustc.edu.cn/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="树莓派," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+
+
+
+
+
+
+<meta name="description" content="做点不一样的事情，树莓派搭建个人 NAS 下载机。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017-07-15">
+<meta property="og:url" content="http://yoursite.com/2017/07/15/2017-07-15/index.html">
+<meta property="og:site_name" content="Sim 's Blog">
+<meta property="og:description" content="做点不一样的事情，树莓派搭建个人 NAS 下载机。">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/15000475503758.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/15000476245744.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997746545028.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997748999370.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997751001738.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997752179418.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997773262421.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997771209704.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997816201076.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997832023156.jpg">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/14997831050247.jpg">
+<meta property="og:updated_time" content="2017-07-15T09:29:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2017-07-15">
+<meta name="twitter:description" content="做点不一样的事情，树莓派搭建个人 NAS 下载机。">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/15000475503758.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post',
+    motion: true
+  };
+</script>
+
+  <title> 2017-07-15 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-77265983-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Sim 's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                2017-07-15
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2017-07-15T17:23:47+08:00" content="2017-07-15">
+              2017-07-15
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2017/07/15/2017-07-15/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/15/2017-07-15/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h1 id="树莓派搭建个人-NAS-下载机（实现离线下载功能）"><a href="#树莓派搭建个人-NAS-下载机（实现离线下载功能）" class="headerlink" title="树莓派搭建个人 NAS 下载机（实现离线下载功能）"></a>树莓派搭建个人 NAS 下载机（实现离线下载功能）</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>什么是树莓派？</p>
+<p><img src="../../../../../images/15000475503758.jpg" alt=""></p>
+<p>当然不是上图的这个。</p>
+<p>树莓派（英语：Raspberry Pi），是一款基于Linux的单板机电脑。它由英国的树莓派基金会所开发，目的是以低价硬件及自由软件促进学校的基本计算机科学教育。</p>
+<p>是下图这个。<br><img src="../../../../../images/15000476245744.jpg" alt=""></p>
+<p>树莓派到目前为止有 A型，A+型，B型，B+型，B型 (第2代)，B型 (第3代)。详情的硬件规格<a href="https://zh.wikipedia.org/wiki/%E6%A0%91%E8%8E%93%E6%B4%BE#.E7.A1.AC.E9.AB.94.E8.A7.84.E6.A0.BC" target="_blank" rel="external">参见</a>。</p>
+<p>而是手上的这款应该属于『B型 (第2代)』，已经放了多年了。一直在思考一个问题『我能用它来做得什么呢？』</p>
+<p>最近我决定拿它来搭建个 NAS 下载机。</p>
+<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><h4 id="格式化SD卡"><a href="#格式化SD卡" class="headerlink" title="格式化SD卡"></a>格式化SD卡</h4><p><img src="../../../../../images/14997746545028.jpg" alt=""></p>
+<p>注意一定要选择 FAT 格式。</p>
+<p>通过 <code>df -h</code> 我们可以查看挂载的卷</p>
+<p><img src="../../../../../images/14997748999370.jpg" alt=""></p>
+<p><code>/dev/disk1s1</code> 就是我挂载的 SD 卡。</p>
+<h4 id="分区卸载"><a href="#分区卸载" class="headerlink" title="分区卸载"></a>分区卸载</h4><p>接下来通过 <code>diskutil unmount</code> 命令，卸载 SD 卡的分区。</p>
+<p><img src="../../../../../images/14997751001738.jpg" alt=""></p>
+<h4 id="确认设备"><a href="#确认设备" class="headerlink" title="确认设备"></a>确认设备</h4><p>通过 <code>diskutil list</code> 命令，确认设备。<br><img src="../../../../../images/14997752179418.jpg" alt=""></p>
+<h4 id="写入系统镜像"><a href="#写入系统镜像" class="headerlink" title="写入系统镜像"></a>写入系统镜像</h4><p>这时需要先下载个系统镜像。镜像可以到树莓派官网下载。 <a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="external">https://www.raspberrypi.org/downloads</a></p>
+<p><img src="../../../../../images/14997773262421.jpg" alt=""></p>
+<p>树莓派官网提供了各种不同版本版系统。这里我选择了 <code>NOOBS</code> 。</p>
+<p>下载完镜像后，使用下面命令写入系统镜像</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo <span class="selector-tag">dd</span> bs=<span class="number">4</span>m <span class="keyword">if</span>=<span class="number">2017</span>-<span class="number">06</span>-<span class="number">21</span>-raspbian-jessie-lite<span class="selector-class">.img</span> of=/dev/disk1</div></pre></td></tr></table></figure>
+<p>打印下面信息，说明写入系统镜像成功<br><img src="../../../../../images/14997771209704.jpg" alt=""></p>
+<p>这时，将 SD 卡，电源线和显示器接到树莓派上，就可以登录树莓派的系统命令行了。<br>树莓派默认用户名为 <code>pi</code>，默认密码是 <code>raspberry</code>。</p>
+<h2 id="启动-SSH-服务"><a href="#启动-SSH-服务" class="headerlink" title="启动 SSH 服务"></a>启动 SSH 服务</h2><p>树莓派默认已经预装的 SSH，只要启动 SSH 服务就可以愉快的通过 SSH 登录了。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo service ssh <span class="literal">start</span></div></pre></td></tr></table></figure>
+<h2 id="更新-apt-get"><a href="#更新-apt-get" class="headerlink" title="更新 apt-get"></a>更新 apt-get</h2><p>使用以下命令，更新 <code>apt-get</code></p>
+<figure class="highlight q"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></div></pre></td></tr></table></figure>
+<h2 id="安装-zsh"><a href="#安装-zsh" class="headerlink" title="安装 zsh"></a>安装 zsh</h2><p>为什么要安装 <code>zsh</code> 呢？ 这不是必须的，这是个人喜好，这样我才能愉快的使用命令行。<br>通过 <code>apt-get</code> 就可以轻松安装</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install zsh</div></pre></td></tr></table></figure>
+<h2 id="安装-git"><a href="#安装-git" class="headerlink" title="安装 git"></a>安装 git</h2><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install git</div></pre></td></tr></table></figure>
+<h2 id="安装-Oh-My-Zsh"><a href="#安装-Oh-My-Zsh" class="headerlink" title="安装 Oh My Zsh"></a>安装 Oh My Zsh</h2><p>当然这边也不是必须的，个人喜好罢了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)</span>"</span></div></pre></td></tr></table></figure>
+<h2 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h2><p>树莓派在 jessie 这个版本就已经支持了 docker。目前我使用的版本就是这个版本。</p>
+<p><img src="../../../../../images/14997816201076.jpg" alt=""></p>
+<p>使用下面命令安装 docker</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -sSL http<span class="variable">s:</span>//<span class="built_in">get</span>.docker.<span class="keyword">com</span> | <span class="keyword">sh</span></div></pre></td></tr></table></figure>
+<p>安装完后，通过下面命令，把 <code>pi</code> 这个账号加入到 docker 群组</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo usermod -aG docker <span class="literal">pi</span></div></pre></td></tr></table></figure>
+<h2 id="挂载移动硬盘"><a href="#挂载移动硬盘" class="headerlink" title="挂载移动硬盘"></a>挂载移动硬盘</h2><p><img src="../../../../../images/14997832023156.jpg" alt=""></p>
+<p>需要先把移动硬盘格式化成 <code>ExFAT</code> 的格式。</p>
+<p>然后把移动硬盘插到树莓派上。</p>
+<p>通过 <code>sudo fdisk -l</code> 命令可以看到插到树莓派的移动硬盘。</p>
+<p><img src="../../../../../images/14997831050247.jpg" alt=""></p>
+<p>接着创建一个挂载磁盘使用的目录</p>
+<p>使用以下命令挂载磁盘</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mount -o uid=<span class="built_in">pi</span>,gid=<span class="built_in">pi</span> /dev/sda2 /home/<span class="built_in">pi</span>/<span class="keyword">data</span></div></pre></td></tr></table></figure>
+<p>这条命令表示，需要把移动硬盘挂载到 <code>/home/pi/data</code> 目录。</p>
+<p>这时，你可能会看到以下错误提示<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">moun<span class="variable">t:</span> unknown filesystem <span class="built_in">type</span> <span class="string">'exfat'</span></div></pre></td></tr></table></figure></p>
+<p>树莓派默认不识别 <code>exfat</code>， 需要安装 <code>exfat-fuse</code> 后再执行命令。</p>
+<p><strong>安装 exfat-fuse</strong><br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install exfat-fuse</div></pre></td></tr></table></figure></p>
+<p>挂载完后，在 <code>home/pi/data下</code> 以下文件夹<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">aria2/.aria2</div><div class="line">aria2/downloads</div><div class="line">``` </div><div class="line"></div><div class="line">## 配置开机启动自动挂载移动硬盘</div><div class="line"></div><div class="line">编辑 `/etc/fstab` 文件，在文件尾部加上</div></pre></td></tr></table></figure></p>
+<p>/dev/sda2 /home/pi/data auto defaults,noexec,umask=0000 0 0<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="section">## 部署 Samba 共享文件</span></div><div class="line"></div><div class="line">这里我选择使用 Docker 来，部署 Samba（这也算是个人洁癖吧）。</div><div class="line">Github 上有个 [<span class="string">dperson/samba</span>](<span class="link">https://github.com/dperson/samba</span>)，是一个已经写好的 Docker 项目。可惜他并没有支持树莓派的环境。我们先让其支持树莓派的环境。</div><div class="line"></div><div class="line">通过 git 命令，将工程 clone 下来。</div></pre></td></tr></table></figure></p>
+<p>cd samba<br>cp Dockerfile Dockerfile.arm<br>vi Dockerfile.arm<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="symbol">将 `FROM debian:</span>stretch` 改为 `FROM resin/rpi-raspbian`</div><div class="line"></div><div class="line">这样就可以愉快的构建树莓派版本的 Samba Docker 镜像了。</div><div class="line"></div><div class="line">使用以下命令构建镜像</div></pre></td></tr></table></figure></p>
+<p>sudo docker build -f Dockerfile.arm -t dperson/samba  .<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">构建完镜像后，接下来就是运行镜像启动共享服务</div></pre></td></tr></table></figure></p>
+<p>sudo docker run -it -p 139:139 -p 445:445 \<br>       -v  /home/pi/data/aria2/downloads:/downloads \<br>       -d –name=”samba” dperson/samba \<br>       -u “pi;pi” \<br>       -s “downloads;/downloads;yes;no;no;all;pi”<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">这里，共享了 <span class="code">`downloads`</span> 目录，并创建了 <span class="code">`pi`</span> 用户。详细的参数说明请[<span class="string">参见</span>](<span class="link">https://github.com/dperson/samba#configuration</span>)。</div><div class="line"></div><div class="line"><span class="section">## 部署 webui-aria2</span></div><div class="line"></div><div class="line">[<span class="string">aria2</span>](<span class="link">https://github.com/aria2/aria2</span>) 是一个很牛逼的命令行下载工具，同时也能支持 RPC 模式。</div><div class="line"></div><div class="line"><span class="bullet">* </span>简单来说就是有以下特性: </div><div class="line"><span class="bullet">* </span>支持多协议: HTTP / HTTPS，FTP，SFTP，BitTorrent和Metalink</div><div class="line"><span class="bullet">* </span>多线程连线：aria2 会自动从多个线程下载文件，并充分利用你的带宽；</div><div class="line"><span class="bullet">* </span>轻量：运行时不会占用过多资源，根据官方介绍，内存占用通常在 4MB~9MB，使用BitTorrent 协议，下行速度 2.8MB/s 时 CPU 占用率约 6%；</div><div class="line"><span class="bullet">* </span>全功能 BitTorrent 客户端，可以当BT客户端使用，抛弃迅雷。</div><div class="line"><span class="bullet">* </span>支持 RPC 界面远程控制</div><div class="line"></div><div class="line">[<span class="string">webui-aria2</span>](<span class="link">https://github.com/ziahamza/webui-aria2</span>) 则是 <span class="code">`aria2`</span> 的 web 版。</div><div class="line"></div><div class="line">首先用 git clone webui-aria2 的工程。</div></pre></td></tr></table></figure></p>
+<p>git clone <a href="https://github.com/ziahamza/webui-aria2.git" target="_blank" rel="external">https://github.com/ziahamza/webui-aria2.git</a><br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">`webui-aria2` 官方已提供了能构建树莓派版本的 `Dockerfile`，直接通过下面的命令构建镜像。</div></pre></td></tr></table></figure></p>
+<p>cd webui-aria2<br>sudo docker build -f Dockerfile.arm -t yourname/webui-aria2 .<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">然后在目录（/home/pi/data/aria2/.aria2）下创建文件 `session.txt`，`aria2.log`，`aria2.conf`。</div><div class="line"></div><div class="line">`aria2.conf` 配置如下：</div></pre></td></tr></table></figure></p>
+<p>#用户名</p>
+<p>#rpc-user=user</p>
+<p>#密码</p>
+<p>#rpc-passwd=passwd</p>
+<p>#上面的认证方式不建议使用,建议使用下面的token方式</p>
+<p>#设置加密的密钥</p>
+<p>#rpc-secret=token</p>
+<p>#允许rpc<br>enable-rpc=true</p>
+<p>#允许所有来源, web界面跨域权限需要<br>rpc-allow-origin-all=true</p>
+<p>#允许外部访问，false的话只监听本地端口<br>rpc-listen-all=true</p>
+<p>#RPC端口, 仅当默认端口被占用时修改</p>
+<p>#rpc-listen-port=6800</p>
+<p>#最大同时下载数(任务数), 路由建议值: 3<br>max-concurrent-downloads=5</p>
+<p>#断点续传<br>continue=true</p>
+<p>#同服务器连接数<br>max-connection-per-server=5</p>
+<p>#最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要<br>min-split-size=10M</p>
+<p>#单文件最大线程数, 路由建议值: 5<br>split=10</p>
+<p>#下载速度限制<br>max-overall-download-limit=0</p>
+<p>#单文件速度限制<br>max-download-limit=0</p>
+<p>#上传速度限制<br>max-overall-upload-limit=0</p>
+<p>#单文件速度限制<br>max-upload-limit=0</p>
+<p>#断开速度过慢的连接</p>
+<p>#lowest-speed-limit=0</p>
+<p>#验证用，需要1.16.1之后的release版本</p>
+<p>#referer=*</p>
+<p>#文件保存路径, 默认为当前启动位置<br>dir=/User/xxx/Downloads</p>
+<p>#文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本</p>
+<p>#disk-cache=0</p>
+<p>#另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)</p>
+<p>#enable-mmap=true</p>
+<p>#文件预分配, 能有效降低文件碎片, 提高磁盘性能. 缺点是预分配时间较长</p>
+<p>#所需时间 none &lt; falloc ? trunc &lt;&lt; prealloc, falloc和trunc需要文件系统和内核支持<br>file-allocation=prealloc<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">接下来通过下面👇命令启动 docker</div></pre></td></tr></table></figure></p>
+<p>sudo docker run –restart=always -d -v /home/pi/data/aria2:/data -p 6800:6800 -p 9100:8080 –name=”webui-aria2” yourname/webui-aria2<br>```</p>
+<p>⚠️注意你映射的磁盘路径哦</p>
+<p>最后你就可以通过 <a href="http://[树莓派IP]:9100" target="_blank" rel="external">http://[树莓派IP]:9100</a> 访问 <code>Aria2 WebUI</code> 了。</p>
+<h2 id="最后唠叨点什么"><a href="#最后唠叨点什么" class="headerlink" title="最后唠叨点什么"></a>最后唠叨点什么</h2><ul>
+<li>如果对于 Docker 不熟悉的可以看看 <a href="https://www.gitbook.com/book/yeasy/docker_practice/details" target="_blank" rel="external">Docker — 从入门到实践</a>，也欢迎阅读我之前写的 <a href="http://simcai.com/2016/08/03/2016-08-03/" target="_blank" rel="external">初探Docker</a></li>
+<li>为什么要用树莓派做个离线下载机？</li>
+</ul>
+<blockquote>
+<p>是的，目前像市面上的一些路由器都已经有了这些功能了。<br>但是如果你想在这个功能的基础上在去扩展一些功能却不是那么容易的事。<br>这使用 aria2 做， aria2 是开源的。你可以更具自己的需求去扩展一些功能。<br>例如：实现自动下载电影，什么的。</p>
+</blockquote>
+<p>最最最后，欢迎讨论、批评、指错。</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/树莓派/" rel="tag">#树莓派</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/13/2017-04-14/" rel="next" title="CarthagePods -- 一个整合 CocoaPods 和 Carthage 一起使用的工具">
+                <i class="fa fa-chevron-left"></i> CarthagePods -- 一个整合 CocoaPods 和 Carthage 一起使用的工具
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+        </div>
+
+        
+
+
+        
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
+
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://raw.githubusercontent.com/bay2/bay2.github.io/master/images/default_avatar.png?v=3&s=460" alt="Sim Cai" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">Sim Cai</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/bay2" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:sim_cai@icloud.com" target="_blank">
+                  
+                    <i class="fa fa-globe"></i> Email
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#树莓派搭建个人-NAS-下载机（实现离线下载功能）"><span class="nav-number">1.</span> <span class="nav-text">树莓派搭建个人 NAS 下载机（实现离线下载功能）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装系统"><span class="nav-number">1.2.</span> <span class="nav-text">安装系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#格式化SD卡"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">格式化SD卡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分区卸载"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">分区卸载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确认设备"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">确认设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入系统镜像"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">写入系统镜像</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-SSH-服务"><span class="nav-number">1.3.</span> <span class="nav-text">启动 SSH 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新-apt-get"><span class="nav-number">1.4.</span> <span class="nav-text">更新 apt-get</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-zsh"><span class="nav-number">1.5.</span> <span class="nav-text">安装 zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-git"><span class="nav-number">1.6.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Oh-My-Zsh"><span class="nav-number">1.7.</span> <span class="nav-text">安装 Oh My Zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-docker"><span class="nav-number">1.8.</span> <span class="nav-text">安装 docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载移动硬盘"><span class="nav-number">1.9.</span> <span class="nav-text">挂载移动硬盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后唠叨点什么"><span class="nav-number">1.10.</span> <span class="nav-text">最后唠叨点什么</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sim Cai</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+    
+    
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'simcai';
+      var disqus_identifier = '2017/07/15/2017-07-15/';
+      var disqus_title = '2017-07-15';
+      var disqus_url = 'http://yoursite.com/2017/07/15/2017-07-15/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+<script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+<script type="text/javascript" src="/js/motion.js?v=0.4.5.2" id="motion.global"></script>
+
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  <script type="text/javascript" src="/js/bootstrap.js"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  
+  
+
+  
+  
+
+</body>
+</html>

@@ -55,7 +55,7 @@
 
 <meta name="description" content="做点不一样的事情，树莓派搭建个人 NAS 下载机。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2017-07-15">
+<meta property="og:title" content="树莓派搭建个人 NAS 下载机（实现离线下载功能）">
 <meta property="og:url" content="http://yoursite.com/2017/07/15/2017-07-15/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
 <meta property="og:description" content="做点不一样的事情，树莓派搭建个人 NAS 下载机。">
@@ -70,9 +70,9 @@
 <meta property="og:image" content="http://yoursite.com/../../../../../images/14997816201076.jpg">
 <meta property="og:image" content="http://yoursite.com/../../../../../images/14997832023156.jpg">
 <meta property="og:image" content="http://yoursite.com/../../../../../images/14997831050247.jpg">
-<meta property="og:updated_time" content="2017-07-15T09:29:44.000Z">
+<meta property="og:updated_time" content="2017-07-16T14:20:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2017-07-15">
+<meta name="twitter:title" content="树莓派搭建个人 NAS 下载机（实现离线下载功能）">
 <meta name="twitter:description" content="做点不一样的事情，树莓派搭建个人 NAS 下载机。">
 <meta name="twitter:image" content="http://yoursite.com/../../../../../images/15000475503758.jpg">
 
@@ -86,7 +86,7 @@
   };
 </script>
 
-  <title> 2017-07-15 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 树莓派搭建个人 NAS 下载机（实现离线下载功能） | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -215,7 +215,7 @@
             
             
               
-                2017-07-15
+                树莓派搭建个人 NAS 下载机（实现离线下载功能）
               
             
           </h1>
@@ -255,7 +255,7 @@
       
 
       
-        <span itemprop="articleBody"><h1 id="树莓派搭建个人-NAS-下载机（实现离线下载功能）"><a href="#树莓派搭建个人-NAS-下载机（实现离线下载功能）" class="headerlink" title="树莓派搭建个人 NAS 下载机（实现离线下载功能）"></a>树莓派搭建个人 NAS 下载机（实现离线下载功能）</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>什么是树莓派？</p>
+        <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>什么是树莓派？</p>
 <p><img src="../../../../../images/15000475503758.jpg" alt=""></p>
 <p>当然不是上图的这个。</p>
 <p>树莓派（英语：Raspberry Pi），是一款基于Linux的单板机电脑。它由英国的树莓派基金会所开发，目的是以低价硬件及自由软件促进学校的基本计算机科学教育。</p>
@@ -263,15 +263,15 @@
 <p>树莓派到目前为止有 A型，A+型，B型，B+型，B型 (第2代)，B型 (第3代)。详情的硬件规格<a href="https://zh.wikipedia.org/wiki/%E6%A0%91%E8%8E%93%E6%B4%BE#.E7.A1.AC.E9.AB.94.E8.A7.84.E6.A0.BC" target="_blank" rel="external">参见</a>。</p>
 <p>而是手上的这款应该属于『B型 (第2代)』，已经放了多年了。一直在思考一个问题『我能用它来做得什么呢？』</p>
 <p>最近我决定拿它来搭建个 NAS 下载机。</p>
-<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><h4 id="格式化SD卡"><a href="#格式化SD卡" class="headerlink" title="格式化SD卡"></a>格式化SD卡</h4><p><img src="../../../../../images/14997746545028.jpg" alt=""></p>
+<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><h3 id="格式化SD卡"><a href="#格式化SD卡" class="headerlink" title="格式化SD卡"></a>格式化SD卡</h3><p><img src="../../../../../images/14997746545028.jpg" alt=""></p>
 <p>注意一定要选择 FAT 格式。</p>
 <p>通过 <code>df -h</code> 我们可以查看挂载的卷</p>
 <p><img src="../../../../../images/14997748999370.jpg" alt=""></p>
 <p><code>/dev/disk1s1</code> 就是我挂载的 SD 卡。</p>
-<h4 id="分区卸载"><a href="#分区卸载" class="headerlink" title="分区卸载"></a>分区卸载</h4><p>接下来通过 <code>diskutil unmount</code> 命令，卸载 SD 卡的分区。</p>
+<h3 id="分区卸载"><a href="#分区卸载" class="headerlink" title="分区卸载"></a>分区卸载</h3><p>接下来通过 <code>diskutil unmount</code> 命令，卸载 SD 卡的分区。</p>
 <p><img src="../../../../../images/14997751001738.jpg" alt=""></p>
-<h4 id="确认设备"><a href="#确认设备" class="headerlink" title="确认设备"></a>确认设备</h4><p>通过 <code>diskutil list</code> 命令，确认设备。<br><img src="../../../../../images/14997752179418.jpg" alt=""></p>
-<h4 id="写入系统镜像"><a href="#写入系统镜像" class="headerlink" title="写入系统镜像"></a>写入系统镜像</h4><p>这时需要先下载个系统镜像。镜像可以到树莓派官网下载。 <a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="external">https://www.raspberrypi.org/downloads</a></p>
+<h3 id="确认设备"><a href="#确认设备" class="headerlink" title="确认设备"></a>确认设备</h3><p>通过 <code>diskutil list</code> 命令，确认设备。<br><img src="../../../../../images/14997752179418.jpg" alt=""></p>
+<h3 id="写入系统镜像"><a href="#写入系统镜像" class="headerlink" title="写入系统镜像"></a>写入系统镜像</h3><p>这时需要先下载个系统镜像。镜像可以到树莓派官网下载。 <a href="https://www.raspberrypi.org/downloads/" target="_blank" rel="external">https://www.raspberrypi.org/downloads</a></p>
 <p><img src="../../../../../images/14997773262421.jpg" alt=""></p>
 <p>树莓派官网提供了各种不同版本版系统。这里我选择了 <code>NOOBS</code> 。</p>
 <p>下载完镜像后，使用下面命令写入系统镜像</p>
@@ -279,6 +279,9 @@
 <p>打印下面信息，说明写入系统镜像成功<br><img src="../../../../../images/14997771209704.jpg" alt=""></p>
 <p>这时，将 SD 卡，电源线和显示器接到树莓派上，就可以登录树莓派的系统命令行了。<br>树莓派默认用户名为 <code>pi</code>，默认密码是 <code>raspberry</code>。</p>
 <h2 id="启动-SSH-服务"><a href="#启动-SSH-服务" class="headerlink" title="启动 SSH 服务"></a>启动 SSH 服务</h2><p>树莓派默认已经预装的 SSH，只要启动 SSH 服务就可以愉快的通过 SSH 登录了。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo service ssh <span class="literal">start</span></div></pre></td></tr></table></figure>
+<p>配置开机自动启动 <code>ssh</code> 服务。</p>
+<p>编辑 <code>/etc/rc.local</code> 文件，在文件的 <code>exit 0</code> 前加上👇这一句。</p>
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo service ssh <span class="literal">start</span></div></pre></td></tr></table></figure>
 <h2 id="更新-apt-get"><a href="#更新-apt-get" class="headerlink" title="更新 apt-get"></a>更新 apt-get</h2><p>使用以下命令，更新 <code>apt-get</code></p>
 <figure class="highlight q"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></div></pre></td></tr></table></figure>
@@ -300,51 +303,44 @@
 <p><img src="../../../../../images/14997831050247.jpg" alt=""></p>
 <p>接着创建一个挂载磁盘使用的目录</p>
 <p>使用以下命令挂载磁盘</p>
-<figure class="highlight xl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mount -o uid=<span class="built_in">pi</span>,gid=<span class="built_in">pi</span> /dev/sda2 /home/<span class="built_in">pi</span>/<span class="keyword">data</span></div></pre></td></tr></table></figure>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mount -o nonempty uid=<span class="built_in">pi</span>,gid=<span class="built_in">pi</span> /dev/sda2 /home/<span class="built_in">pi</span>/<span class="keyword">data</span></div></pre></td></tr></table></figure>
 <p>这条命令表示，需要把移动硬盘挂载到 <code>/home/pi/data</code> 目录。</p>
-<p>这时，你可能会看到以下错误提示<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">moun<span class="variable">t:</span> unknown filesystem <span class="built_in">type</span> <span class="string">'exfat'</span></div></pre></td></tr></table></figure></p>
+<p>这时，你可能会看到以下错误提示</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">moun<span class="variable">t:</span> unknown filesystem <span class="built_in">type</span> <span class="string">'exfat'</span></div></pre></td></tr></table></figure>
 <p>树莓派默认不识别 <code>exfat</code>， 需要安装 <code>exfat-fuse</code> 后再执行命令。</p>
-<p><strong>安装 exfat-fuse</strong><br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install exfat-fuse</div></pre></td></tr></table></figure></p>
-<p>挂载完后，在 <code>home/pi/data下</code> 以下文件夹<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">aria2/.aria2</div><div class="line">aria2/downloads</div><div class="line">``` </div><div class="line"></div><div class="line">## 配置开机启动自动挂载移动硬盘</div><div class="line"></div><div class="line">编辑 `/etc/fstab` 文件，在文件尾部加上</div></pre></td></tr></table></figure></p>
-<p>/dev/sda2 /home/pi/data auto defaults,noexec,umask=0000 0 0<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="section">## 部署 Samba 共享文件</span></div><div class="line"></div><div class="line">这里我选择使用 Docker 来，部署 Samba（这也算是个人洁癖吧）。</div><div class="line">Github 上有个 [<span class="string">dperson/samba</span>](<span class="link">https://github.com/dperson/samba</span>)，是一个已经写好的 Docker 项目。可惜他并没有支持树莓派的环境。我们先让其支持树莓派的环境。</div><div class="line"></div><div class="line">通过 git 命令，将工程 clone 下来。</div></pre></td></tr></table></figure></p>
-<p>cd samba<br>cp Dockerfile Dockerfile.arm<br>vi Dockerfile.arm<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="symbol">将 `FROM debian:</span>stretch` 改为 `FROM resin/rpi-raspbian`</div><div class="line"></div><div class="line">这样就可以愉快的构建树莓派版本的 Samba Docker 镜像了。</div><div class="line"></div><div class="line">使用以下命令构建镜像</div></pre></td></tr></table></figure></p>
-<p>sudo docker build -f Dockerfile.arm -t dperson/samba  .<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">构建完镜像后，接下来就是运行镜像启动共享服务</div></pre></td></tr></table></figure></p>
-<p>sudo docker run -it -p 139:139 -p 445:445 \<br>       -v  /home/pi/data/aria2/downloads:/downloads \<br>       -d –name=”samba” dperson/samba \<br>       -u “pi;pi” \<br>       -s “downloads;/downloads;yes;no;no;all;pi”<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">这里，共享了 <span class="code">`downloads`</span> 目录，并创建了 <span class="code">`pi`</span> 用户。详细的参数说明请[<span class="string">参见</span>](<span class="link">https://github.com/dperson/samba#configuration</span>)。</div><div class="line"></div><div class="line"><span class="section">## 部署 webui-aria2</span></div><div class="line"></div><div class="line">[<span class="string">aria2</span>](<span class="link">https://github.com/aria2/aria2</span>) 是一个很牛逼的命令行下载工具，同时也能支持 RPC 模式。</div><div class="line"></div><div class="line"><span class="bullet">* </span>简单来说就是有以下特性: </div><div class="line"><span class="bullet">* </span>支持多协议: HTTP / HTTPS，FTP，SFTP，BitTorrent和Metalink</div><div class="line"><span class="bullet">* </span>多线程连线：aria2 会自动从多个线程下载文件，并充分利用你的带宽；</div><div class="line"><span class="bullet">* </span>轻量：运行时不会占用过多资源，根据官方介绍，内存占用通常在 4MB~9MB，使用BitTorrent 协议，下行速度 2.8MB/s 时 CPU 占用率约 6%；</div><div class="line"><span class="bullet">* </span>全功能 BitTorrent 客户端，可以当BT客户端使用，抛弃迅雷。</div><div class="line"><span class="bullet">* </span>支持 RPC 界面远程控制</div><div class="line"></div><div class="line">[<span class="string">webui-aria2</span>](<span class="link">https://github.com/ziahamza/webui-aria2</span>) 则是 <span class="code">`aria2`</span> 的 web 版。</div><div class="line"></div><div class="line">首先用 git clone webui-aria2 的工程。</div></pre></td></tr></table></figure></p>
-<p>git clone <a href="https://github.com/ziahamza/webui-aria2.git" target="_blank" rel="external">https://github.com/ziahamza/webui-aria2.git</a><br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">`webui-aria2` 官方已提供了能构建树莓派版本的 `Dockerfile`，直接通过下面的命令构建镜像。</div></pre></td></tr></table></figure></p>
-<p>cd webui-aria2<br>sudo docker build -f Dockerfile.arm -t yourname/webui-aria2 .<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">然后在目录（/home/pi/data/aria2/.aria2）下创建文件 `session.txt`，`aria2.log`，`aria2.conf`。</div><div class="line"></div><div class="line">`aria2.conf` 配置如下：</div></pre></td></tr></table></figure></p>
-<p>#用户名</p>
-<p>#rpc-user=user</p>
-<p>#密码</p>
-<p>#rpc-passwd=passwd</p>
-<p>#上面的认证方式不建议使用,建议使用下面的token方式</p>
-<p>#设置加密的密钥</p>
-<p>#rpc-secret=token</p>
-<p>#允许rpc<br>enable-rpc=true</p>
-<p>#允许所有来源, web界面跨域权限需要<br>rpc-allow-origin-all=true</p>
-<p>#允许外部访问，false的话只监听本地端口<br>rpc-listen-all=true</p>
-<p>#RPC端口, 仅当默认端口被占用时修改</p>
-<p>#rpc-listen-port=6800</p>
-<p>#最大同时下载数(任务数), 路由建议值: 3<br>max-concurrent-downloads=5</p>
-<p>#断点续传<br>continue=true</p>
-<p>#同服务器连接数<br>max-connection-per-server=5</p>
-<p>#最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要<br>min-split-size=10M</p>
-<p>#单文件最大线程数, 路由建议值: 5<br>split=10</p>
-<p>#下载速度限制<br>max-overall-download-limit=0</p>
-<p>#单文件速度限制<br>max-download-limit=0</p>
-<p>#上传速度限制<br>max-overall-upload-limit=0</p>
-<p>#单文件速度限制<br>max-upload-limit=0</p>
-<p>#断开速度过慢的连接</p>
-<p>#lowest-speed-limit=0</p>
-<p>#验证用，需要1.16.1之后的release版本</p>
-<p>#referer=*</p>
-<p>#文件保存路径, 默认为当前启动位置<br>dir=/User/xxx/Downloads</p>
-<p>#文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本</p>
-<p>#disk-cache=0</p>
-<p>#另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)</p>
-<p>#enable-mmap=true</p>
-<p>#文件预分配, 能有效降低文件碎片, 提高磁盘性能. 缺点是预分配时间较长</p>
-<p>#所需时间 none &lt; falloc ? trunc &lt;&lt; prealloc, falloc和trunc需要文件系统和内核支持<br>file-allocation=prealloc<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">接下来通过下面👇命令启动 docker</div></pre></td></tr></table></figure></p>
-<p>sudo docker run –restart=always -d -v /home/pi/data/aria2:/data -p 6800:6800 -p 9100:8080 –name=”webui-aria2” yourname/webui-aria2<br>```</p>
+<p><strong>安装 exfat-fuse</strong></p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install exfat-fuse</div></pre></td></tr></table></figure>
+<p>挂载完后，在 <code>home/pi/data下</code> 以下文件夹</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">aria2/<span class="selector-class">.aria2</span></div><div class="line">aria2/downloads</div></pre></td></tr></table></figure>
+<h2 id="部署-Samba-共享文件"><a href="#部署-Samba-共享文件" class="headerlink" title="部署 Samba 共享文件"></a>部署 Samba 共享文件</h2><p>这里我选择使用 Docker 来，部署 Samba（这也算是个人洁癖吧）。<br>Github 上有个 <a href="https://github.com/dperson/samba" target="_blank" rel="external">dperson/samba</a>，是一个已经写好的 Docker 项目。可惜他并没有支持树莓派的环境。我们先让其支持树莓派的环境。</p>
+<p>通过 git 命令，将工程 clone 下来。</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> samba</div><div class="line"><span class="keyword">cp</span> Dockerfile Dockerfile.arm</div><div class="line"><span class="keyword">vi</span> Dockerfile.arm</div></pre></td></tr></table></figure>
+<p>将 <code>FROM debian:stretch</code> 改为 <code>FROM resin/rpi-raspbian</code></p>
+<p>这样就可以愉快的构建树莓派版本的 Samba Docker 镜像了。</p>
+<p>使用以下命令构建镜像</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">sudo</span> docker <span class="keyword">build </span>-f Dockerfile<span class="meta">.arm</span> -t dperson/samba  .</div></pre></td></tr></table></figure>
+<p>构建完镜像后，接下来就是运行镜像启动共享服务</p>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sudo docker run -it -p 139:139 -p 445:445 \</div><div class="line">       -<span class="ruby">v  /home/pi/data/aria2/<span class="symbol">downloads:</span>/downloads \</span></div><div class="line">       -<span class="ruby">d --name=<span class="string">"samba"</span> dperson/samba \</span></div><div class="line">       -<span class="ruby">u <span class="string">"pi;pi"</span> \</span></div><div class="line">       -<span class="ruby">s <span class="string">"downloads;/downloads;yes;no;no;all;pi"</span></span></div></pre></td></tr></table></figure>
+<p>这里，共享了 <code>downloads</code> 目录，并创建了 <code>pi</code> 用户。详细的参数说明请<a href="https://github.com/dperson/samba#configuration" target="_blank" rel="external">参见</a>。</p>
+<h2 id="部署-webui-aria2"><a href="#部署-webui-aria2" class="headerlink" title="部署 webui-aria2"></a>部署 webui-aria2</h2><p><a href="https://github.com/aria2/aria2" target="_blank" rel="external">aria2</a> 是一个很牛逼的命令行下载工具，同时也能支持 RPC 模式。</p>
+<ul>
+<li>简单来说就是有以下特性: </li>
+<li>支持多协议: HTTP / HTTPS，FTP，SFTP，BitTorrent和Metalink</li>
+<li>多线程连线：aria2 会自动从多个线程下载文件，并充分利用你的带宽；</li>
+<li>轻量：运行时不会占用过多资源，根据官方介绍，内存占用通常在 4MB~9MB，使用BitTorrent 协议，下行速度 2.8MB/s 时 CPU 占用率约 6%；</li>
+<li>全功能 BitTorrent 客户端，可以当BT客户端使用，抛弃迅雷。</li>
+<li>支持 RPC 界面远程控制</li>
+</ul>
+<p><a href="https://github.com/ziahamza/webui-aria2" target="_blank" rel="external">webui-aria2</a> 则是 <code>aria2</code> 的 web 版。</p>
+<p>首先用 git clone webui-aria2 的工程。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">clone</span> <span class="title">https</span>://github.com/ziahamza/webui-aria2.git</div></pre></td></tr></table></figure>
+<p><code>webui-aria2</code> 官方已提供了能构建树莓派版本的 <code>Dockerfile</code>，直接通过下面的命令构建镜像。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">cd</span> webui-aria2</div><div class="line"><span class="symbol">sudo</span> docker <span class="keyword">build </span>-f Dockerfile<span class="meta">.arm</span> -t yourname/webui-aria2 .</div></pre></td></tr></table></figure>
+<p>然后在目录（/home/pi/data/aria2/.aria2）下创建文件 <code>session.txt</code>，<code>aria2.log</code>，<code>aria2.conf</code>。</p>
+<p><code>aria2.conf</code> 配置如下：</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#用户名</span></div><div class="line"><span class="meta">#rpc-user=user</span></div><div class="line"><span class="meta">#密码</span></div><div class="line"><span class="meta">#rpc-passwd=passwd</span></div><div class="line"><span class="meta">#上面的认证方式不建议使用,建议使用下面的token方式</span></div><div class="line"><span class="meta">#设置加密的密钥</span></div><div class="line"><span class="meta">#rpc-secret=token</span></div><div class="line"><span class="meta">#允许rpc</span></div><div class="line">enable-rpc=<span class="literal">true</span></div><div class="line"><span class="meta">#允许所有来源, web界面跨域权限需要</span></div><div class="line">rpc-allow-origin-all=<span class="literal">true</span></div><div class="line"><span class="meta">#允许外部访问，false的话只监听本地端口</span></div><div class="line">rpc-listen-all=<span class="literal">true</span></div><div class="line"><span class="meta">#RPC端口, 仅当默认端口被占用时修改</span></div><div class="line"><span class="meta">#rpc-listen-port=6800</span></div><div class="line"><span class="meta">#最大同时下载数(任务数), 路由建议值: 3</span></div><div class="line">max-concurrent-downloads=<span class="number">5</span></div><div class="line"><span class="meta">#断点续传</span></div><div class="line">continue=<span class="literal">true</span></div><div class="line"><span class="meta">#同服务器连接数</span></div><div class="line">max-connection-per-server=<span class="number">5</span></div><div class="line"><span class="meta">#最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要</span></div><div class="line">min-split-size=<span class="number">10</span>M</div><div class="line"><span class="meta">#单文件最大线程数, 路由建议值: 5</span></div><div class="line">split=<span class="number">10</span></div><div class="line"><span class="meta">#下载速度限制</span></div><div class="line">max-overall-download-limit=<span class="number">0</span></div><div class="line"><span class="meta">#单文件速度限制</span></div><div class="line">max-download-limit=<span class="number">0</span></div><div class="line"><span class="meta">#上传速度限制</span></div><div class="line">max-overall-upload-limit=<span class="number">0</span></div><div class="line"><span class="meta">#单文件速度限制</span></div><div class="line">max-upload-limit=<span class="number">0</span></div><div class="line"><span class="meta">#断开速度过慢的连接</span></div><div class="line"><span class="meta">#lowest-speed-limit=0</span></div><div class="line"><span class="meta">#验证用，需要1.16.1之后的release版本</span></div><div class="line"><span class="meta">#referer=*</span></div><div class="line"><span class="meta">#文件保存路径, 默认为当前启动位置</span></div><div class="line">dir=/User/xxx/Downloads</div><div class="line"><span class="meta">#文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本</span></div><div class="line"><span class="meta">#disk-cache=0</span></div><div class="line"><span class="meta">#另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)</span></div><div class="line"><span class="meta">#enable-mmap=true</span></div><div class="line"><span class="meta">#文件预分配, 能有效降低文件碎片, 提高磁盘性能. 缺点是预分配时间较长</span></div><div class="line"><span class="meta">#所需时间 none &lt; falloc ? trunc &lt;&lt; prealloc, falloc和trunc需要文件系统和内核支持</span></div><div class="line">file-allocation=prealloc</div></pre></td></tr></table></figure>
+<p>接下来通过下面👇命令启动 docker </p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo docker run --restart=always -d -v /home/pi/data/aria2:/data -<span class="selector-tag">p</span> <span class="number">6800</span>:<span class="number">6800</span> -<span class="selector-tag">p</span> <span class="number">9100</span>:<span class="number">8080</span> --name=<span class="string">"webui-aria2"</span> yourname/webui-aria2</div></pre></td></tr></table></figure>
 <p>⚠️注意你映射的磁盘路径哦</p>
 <p>最后你就可以通过 <a href="http://[树莓派IP]:9100" target="_blank" rel="external">http://[树莓派IP]:9100</a> 访问 <code>Aria2 WebUI</code> 了。</p>
 <h2 id="最后唠叨点什么"><a href="#最后唠叨点什么" class="headerlink" title="最后唠叨点什么"></a>最后唠叨点什么</h2><ul>
@@ -514,7 +510,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#树莓派搭建个人-NAS-下载机（实现离线下载功能）"><span class="nav-number">1.</span> <span class="nav-text">树莓派搭建个人 NAS 下载机（实现离线下载功能）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装系统"><span class="nav-number">1.2.</span> <span class="nav-text">安装系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#格式化SD卡"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">格式化SD卡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分区卸载"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">分区卸载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#确认设备"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">确认设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入系统镜像"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">写入系统镜像</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-SSH-服务"><span class="nav-number">1.3.</span> <span class="nav-text">启动 SSH 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新-apt-get"><span class="nav-number">1.4.</span> <span class="nav-text">更新 apt-get</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-zsh"><span class="nav-number">1.5.</span> <span class="nav-text">安装 zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-git"><span class="nav-number">1.6.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Oh-My-Zsh"><span class="nav-number">1.7.</span> <span class="nav-text">安装 Oh My Zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-docker"><span class="nav-number">1.8.</span> <span class="nav-text">安装 docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载移动硬盘"><span class="nav-number">1.9.</span> <span class="nav-text">挂载移动硬盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后唠叨点什么"><span class="nav-number">1.10.</span> <span class="nav-text">最后唠叨点什么</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装系统"><span class="nav-number">2.</span> <span class="nav-text">安装系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化SD卡"><span class="nav-number">2.1.</span> <span class="nav-text">格式化SD卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区卸载"><span class="nav-number">2.2.</span> <span class="nav-text">分区卸载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#确认设备"><span class="nav-number">2.3.</span> <span class="nav-text">确认设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写入系统镜像"><span class="nav-number">2.4.</span> <span class="nav-text">写入系统镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-SSH-服务"><span class="nav-number">3.</span> <span class="nav-text">启动 SSH 服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新-apt-get"><span class="nav-number">4.</span> <span class="nav-text">更新 apt-get</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-zsh"><span class="nav-number">5.</span> <span class="nav-text">安装 zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-git"><span class="nav-number">6.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Oh-My-Zsh"><span class="nav-number">7.</span> <span class="nav-text">安装 Oh My Zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-docker"><span class="nav-number">8.</span> <span class="nav-text">安装 docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载移动硬盘"><span class="nav-number">9.</span> <span class="nav-text">挂载移动硬盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署-Samba-共享文件"><span class="nav-number">10.</span> <span class="nav-text">部署 Samba 共享文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署-webui-aria2"><span class="nav-number">11.</span> <span class="nav-text">部署 webui-aria2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后唠叨点什么"><span class="nav-number">12.</span> <span class="nav-text">最后唠叨点什么</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -575,7 +571,7 @@
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
       var disqus_identifier = '2017/07/15/2017-07-15/';
-      var disqus_title = '2017-07-15';
+      var disqus_title = '树莓派搭建个人 NAS 下载机（实现离线下载功能）';
       var disqus_url = 'http://yoursite.com/2017/07/15/2017-07-15/';
 
       function run_disqus_script(disqus_script){

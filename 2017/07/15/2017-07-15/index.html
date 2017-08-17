@@ -286,10 +286,10 @@
 <h2 id="更新-apt-get"><a href="#更新-apt-get" class="headerlink" title="更新 apt-get"></a>更新 apt-get</h2><p>使用以下命令，更新 <code>apt-get</code></p>
 <figure class="highlight q"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="built_in">get</span> <span class="keyword">update</span></div></pre></td></tr></table></figure>
 <h2 id="安装-zsh"><a href="#安装-zsh" class="headerlink" title="安装 zsh"></a>安装 zsh</h2><p>为什么要安装 <code>zsh</code> 呢？ 这不是必须的，这是个人喜好，这样我才能愉快的使用命令行。<br>通过 <code>apt-get</code> 就可以轻松安装</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install zsh</div></pre></td></tr></table></figure>
-<h2 id="安装-git"><a href="#安装-git" class="headerlink" title="安装 git"></a>安装 git</h2><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install git</div></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install zsh</div></pre></td></tr></table></figure>
+<h2 id="安装-git"><a href="#安装-git" class="headerlink" title="安装 git"></a>安装 git</h2><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install git</div></pre></td></tr></table></figure>
 <h2 id="安装-Oh-My-Zsh"><a href="#安装-Oh-My-Zsh" class="headerlink" title="安装 Oh My Zsh"></a>安装 Oh My Zsh</h2><p>当然这边也不是必须的，个人喜好罢了。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)</span>"</span></div></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sh -<span class="built_in">c</span> <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"</span></div></pre></td></tr></table></figure>
 <h2 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h2><p>树莓派在 jessie 这个版本就已经支持了 docker。目前我使用的版本就是这个版本。</p>
 <p><img src="../../../../../images/14997816201076.jpg" alt=""></p>
 <p>使用下面命令安装 docker</p>
@@ -309,7 +309,7 @@
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">moun<span class="variable">t:</span> unknown filesystem <span class="built_in">type</span> <span class="string">'exfat'</span></div></pre></td></tr></table></figure>
 <p>树莓派默认不识别 <code>exfat</code>， 需要安装 <code>exfat-fuse</code> 后再执行命令。</p>
 <p><strong>安装 exfat-fuse</strong></p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install exfat-fuse</div></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install exfat-fuse</div></pre></td></tr></table></figure>
 <p>挂载完后，在 <code>home/pi/data下</code> 以下文件夹</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">aria2/<span class="selector-class">.aria2</span></div><div class="line">aria2/downloads</div></pre></td></tr></table></figure>
 <h2 id="部署-Samba-共享文件"><a href="#部署-Samba-共享文件" class="headerlink" title="部署 Samba 共享文件"></a>部署 Samba 共享文件</h2><p>这里我选择使用 Docker 来，部署 Samba（这也算是个人洁癖吧）。<br>Github 上有个 <a href="https://github.com/dperson/samba" target="_blank" rel="external">dperson/samba</a>，是一个已经写好的 Docker 项目。可惜他并没有支持树莓派的环境。我们先让其支持树莓派的环境。</p>
@@ -375,6 +375,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/17/2017-08-17/" rel="prev" title="Spring Boot 框架快速入门">
+                Spring Boot 框架快速入门 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -446,7 +450,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-count">29</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -460,7 +464,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">18</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -259,7 +259,7 @@
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gem <span class="keyword">install</span> travis</div></pre></td></tr></table></figure>
 <h2 id="配置Travis"><a href="#配置Travis" class="headerlink" title="配置Travis"></a>配置Travis</h2><p>我们通过配置Travis告诉Travis我们需要他干什么。</p>
 <h3 id="创建-travis-yml"><a href="#创建-travis-yml" class="headerlink" title="创建.travis.yml"></a>创建.travis.yml</h3><p><strong>.travis.yml</strong>是Travis的配置文件，我们需要把这个问题创建到我们工程的根目录下。Travis会根据你在这个文件中的配置执行相应的操作，在整个build的生命周期里，你可以在不同的阶段做不同的操作。</p>
-<h3 id="最简单的编译配置项"><a href="#最简单的编译配置项" class="headerlink" title="最简单的编译配置项"></a>最简单的编译配置项</h3><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">language:</span> objective-c</div></pre></td></tr></table></figure>
+<h3 id="最简单的编译配置项"><a href="#最简单的编译配置项" class="headerlink" title="最简单的编译配置项"></a>最简单的编译配置项</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">language: objective-<span class="built_in">c</span></div></pre></td></tr></table></figure>
 <p>Travis 编译器运行在虚拟机环境下。该编译器已经利用 Ruby，Homebrew，CocoaPods 和一些默认的编译脚本进行过预配置。上述的配置项已经足够编译你的项目了。</p>
 <h3 id="自定义编译命令"><a href="#自定义编译命令" class="headerlink" title="自定义编译命令"></a>自定义编译命令</h3><p>上述的编译工程过于简单，容易导致使用错误的证书。我们一般会使用自定义编译命令。<br>Travis提供了xcodebuild和Xctool。<br>xcodebuild是Apple提供的命令，而Xctool 是来自 Facebook 的命令行工具，它可以简化程序的编译和测试。</p>
 <p>打开终端并输入：</p>
@@ -425,7 +425,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-count">29</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -439,7 +439,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">18</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

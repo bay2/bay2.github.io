@@ -37,7 +37,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS,ARC," />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -53,26 +53,19 @@
 
 
 
-<meta name="description" content="iOS 上，任何内存泄漏问题，归根结底都是循环引用问题">
+<meta name="description" content="Masonry 源码学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="漫谈内存泄漏">
-<meta property="og:url" content="http://yoursite.com/2017/09/24/2017-09-24/index.html">
+<meta property="og:title" content="Masonry 源码解析">
+<meta property="og:url" content="http://yoursite.com/2017/11/26/2017-11-26/index.html">
 <meta property="og:site_name" content="Sim 's Blog">
-<meta property="og:description" content="iOS 上，任何内存泄漏问题，归根结底都是循环引用问题">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/%E4%B8%80%E4%B8%AA%20Linux%20%E8%BF%9B%E7%A8%8B%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/1.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/2.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/3.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/4.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/5.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/6.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/7.png">
-<meta property="og:image" content="http://yoursite.com/../../../../../images/8.png">
-<meta property="og:updated_time" content="2017-09-24T13:43:14.003Z">
+<meta property="og:description" content="Masonry 源码学习">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/Masonry.png">
+<meta property="og:image" content="http://yoursite.com/../../../../../images/15116177474777.jpg">
+<meta property="og:updated_time" content="2017-11-26T06:37:45.553Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="漫谈内存泄漏">
-<meta name="twitter:description" content="iOS 上，任何内存泄漏问题，归根结底都是循环引用问题">
-<meta name="twitter:image" content="http://yoursite.com/../../../../../images/%E4%B8%80%E4%B8%AA%20Linux%20%E8%BF%9B%E7%A8%8B%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98.png">
+<meta name="twitter:title" content="Masonry 源码解析">
+<meta name="twitter:description" content="Masonry 源码学习">
+<meta name="twitter:image" content="http://yoursite.com/../../../../../images/Masonry.png">
 
 
 
@@ -84,7 +77,7 @@
   };
 </script>
 
-  <title> 漫谈内存泄漏 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> Masonry 源码解析 | Sim 's Blog </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -213,7 +206,7 @@
             
             
               
-                漫谈内存泄漏
+                Masonry 源码解析
               
             
           </h1>
@@ -222,8 +215,8 @@
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2017-09-24T21:34:15+08:00" content="2017-09-24">
-              2017-09-24
+            <time itemprop="dateCreated" datetime="2017-11-26T14:34:24+08:00" content="2017-11-26">
+              2017-11-26
             </time>
           </span>
 
@@ -233,8 +226,8 @@
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2017/09/24/2017-09-24/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/24/2017-09-24/" itemprop="commentsCount"></span>
+              <a href="/2017/11/26/2017-11-26/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/11/26/2017-11-26/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -253,71 +246,49 @@
       
 
       
-        <span itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近看了同事整理的一份与内存泄漏相关思维导图。突然想从内存泄漏的角度探讨一下与内存相关的话题。<br>什么是内存泄漏？然而我又问自己一个问题， malloc 的内存到底是什么？</p>
-<h2 id="什么是内存"><a href="#什么是内存" class="headerlink" title="什么是内存"></a>什么是内存</h2><p>在计算机系统中，我们谈论的<strong>内存</strong>通常是指<strong>DRAM</strong> 。</p>
-<h3 id="虚拟内存空间"><a href="#虚拟内存空间" class="headerlink" title="虚拟内存空间"></a>虚拟内存空间</h3><p>而当我们程序在系统上运行起来时，操作系统为我们提供了一个假象，程序看起来是独占使用处理器、主存和I/O设备的。这种假象是通过<strong>进程</strong>的概念来实现的。</p>
-<p><strong>虚拟内存</strong>，也为进程提供一个假象，每个进程都独占地使用主存。每个进程看到的内存都是一致的，称为<strong>虚拟内存空间</strong>。</p>
-<p>虚拟内存的能力：</p>
+        <span itemprop="articleBody"><p><img src="../../../../../images/Masonry.png" alt="Masonry"></p>
+<p>上图是 Masonry 的大体结构。</p>
+<blockquote>
+<p>Masonry 主要分两层，一部分通过主要的用户接口及通过 DSL 能力。另一部分则是核心功能代码。</p>
+</blockquote>
+<h2 id="DSL"><a href="#DSL" class="headerlink" title="DSL"></a>DSL</h2><p>Masonry 通过自定义 DSL，让用户可以通过简单的代码实现布局。</p>
+<p><code>mas_makeConstraints</code> 是我们最常用的方法。</p>
+<h3 id="mas-makeConstraints"><a href="#mas-makeConstraints" class="headerlink" title="mas_makeConstraints"></a>mas_makeConstraints</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSArray</span> *)mas_makeConstraints:(<span class="keyword">void</span>(^)(MASConstraintMaker *))block &#123;</div><div class="line">    <span class="keyword">self</span>.translatesAutoresizingMaskIntoConstraints = <span class="literal">NO</span>;</div><div class="line">    </div><div class="line">    <span class="comment">// 构建一个 MASConstraintMaker 对象</span></div><div class="line">    MASConstraintMaker *constraintMaker = [[MASConstraintMaker alloc] initWithView:<span class="keyword">self</span>];</div><div class="line">    </div><div class="line">    <span class="comment">// 将对象传给 block</span></div><div class="line">    block(constraintMaker);</div><div class="line">    </div><div class="line">    <span class="comment">// 执行 install 布局</span></div><div class="line">    <span class="keyword">return</span> [constraintMaker install];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>mas_makeConstraints</code> 在，给 block 传入 <code>MASConstraintMaker</code> 对象。</p>
+<h3 id="left"><a href="#left" class="headerlink" title="left"></a>left</h3><p><code>MASConstraintMaker</code> 和 <code>MASConstraint</code> 中定义了大量的属性。</p>
+<p><img src="../../../../../images/15116177474777.jpg" alt=""></p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">-</span> (MASConstraint *)<span class="selector-tag">left</span> &#123;</div><div class="line">    return <span class="selector-attr">[self addConstraintWithLayoutAttribute:NSLayoutAttributeLeft]</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这些属性的代码，大概都长这样。添加完实现后，又返回 <code>MASConstraint</code> 。这样使得我们能够通过 <code>.</code> 语法不断的添加 Layout 属性。</p>
+<h3 id="addConstraintWithLayoutAttribute"><a href="#addConstraintWithLayoutAttribute" class="headerlink" title="addConstraintWithLayoutAttribute:"></a>addConstraintWithLayoutAttribute:</h3><p><code>MASConstraintMaker</code> 中的 <code>addConstraintWithLayoutAttribute:</code> 最终调用 <code>constraint:addConstraintWithLayoutAttribute:</code></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">- (MASConstraint *)<span class="string">constraint:</span>(MASConstraint *)constraint <span class="string">addConstraintWithLayoutAttribute:</span>(NSLayoutAttribute)layoutAttribute &#123;</div><div class="line">    MASViewAttribute *viewAttribute = [[MASViewAttribute alloc] <span class="string">initWithView:</span>self.view <span class="string">layoutAttribute:</span>layoutAttribute];</div><div class="line">    </div><div class="line">    <span class="comment">// 生成新的约束</span></div><div class="line">    MASViewConstraint *newConstraint = [[MASViewConstraint alloc] <span class="string">initWithFirstViewAttribute:</span>viewAttribute];</div><div class="line">    </div><div class="line">    <span class="comment">// 对于约束有依赖的处理</span></div><div class="line">    <span class="keyword">if</span> ([constraint <span class="string">isKindOfClass:</span>MASViewConstraint.<span class="keyword">class</span>]) &#123;</div><div class="line">        <span class="comment">//replace with composite constraint</span></div><div class="line">        NSArray *children = @[constraint, newConstraint];</div><div class="line">        MASCompositeConstraint *compositeConstraint = [[MASCompositeConstraint alloc] <span class="string">initWithChildren:</span>children];</div><div class="line">        compositeConstraint.delegate = self;</div><div class="line">        [self <span class="string">constraint:</span>constraint <span class="string">shouldBeReplacedWithConstraint:</span>compositeConstraint];</div><div class="line">        <span class="keyword">return</span> compositeConstraint;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 对于 View 的依赖处理</span></div><div class="line">    <span class="keyword">if</span> (!constraint) &#123;</div><div class="line">        newConstraint.delegate = self;</div><div class="line">        [self.constraints <span class="string">addObject:</span>newConstraint];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> newConstraint;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
 <ul>
-<li>使主存中只保存活动区域，根据需要在磁盘和主存之间来回传输数据。</li>
-<li>为每个内存提供一致的地址空间。</li>
-<li>保护了每个进程的地址空间不被其他进程破坏。</li>
+<li><code>MASCompositeConstraint</code> 和 <code>MASViewConstraint</code> 都是 <code>MASConstraint</code> 的子类。</li>
+<li>方法会返回 <code>MASCompositeConstraint</code> 或 <code>MASViewConstraint</code></li>
+<li><code>constraint:addConstraintWithLayoutAttribute:</code> 是 <code>delegate</code> 的方法。<code>MASConstraintMaker</code> 的方法中将 <code>newConstraint.delegate = self;</code>, <code>compositeConstraint.delegate = self;</code>。使用在调用 <code>MASConstraint</code> 的 <code>left</code> 这样的属性时，最终还是会回到 <code>MASConstraintMaker</code> 的这个方法中。</li>
+<li><code>constraint:addConstraintWithLayoutAttribute:</code> 主要做了一件事，就是把 <code>MASCompositeConstraint</code> 或 <code>MASViewConstraint</code> 对象存入数组中。等 <code>mas_makeConstraints</code> 进行 <code>install</code> 。</li>
 </ul>
-<p><img src="../../../../../images/%E4%B8%80%E4%B8%AA%20Linux%20%E8%BF%9B%E7%A8%8B%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98.png" alt="一个 Linux 进程的虚拟内存"></p>
-<p>上图是一个 Linux 进程的虚拟内存。也就是说我们平时 <code>malloc</code> 得到的内存地址，其实是虚拟内存的地址。</p>
-<h2 id="动态内存分配"><a href="#动态内存分配" class="headerlink" title="动态内存分配"></a>动态内存分配</h2><p>其实系统为我们提供了 <code>mmap</code> 和 <code>munmap</code> 函数来创建和删除虚拟内存的区域。但很多时候直到程序实际运行才知道某些数据结构的大小。所以就有了动态内存分配器。</p>
-<p>动态内存分配器有两种基本类型：</p>
-<ul>
-<li><strong>显式分配器</strong>，需要显式释放。例如 C 和 C++ 。</li>
-<li><strong>隐式分配器</strong>，分配器检测已分配何时不再被程序所使用，那么就释放这个块。例如 Lisp、Java 等。</li>
-</ul>
-<h3 id="什么是内存泄漏"><a href="#什么是内存泄漏" class="headerlink" title="什么是内存泄漏"></a>什么是内存泄漏</h3><p>内存泄漏是常见的内存错误之一。我们知道 <code>malloc</code> 其实是从虚拟内存空间的堆中申请空闲的地址的。然而内存空间是有限的。程序在运行中 <code>malloc</code> 出来的内存空间使用完后，没有被 <code>free</code> 掉，这样我们就称之为<strong>内存泄漏</strong>。</p>
-<h2 id="ARC-机制"><a href="#ARC-机制" class="headerlink" title="ARC 机制"></a>ARC 机制</h2><p>iOS 上，不论是 Objective-C 还是 Swift 都是使用引用计数式的内存管理方式。<br>ARC 就是 Automatic Reference Counting， 其实 ARC 很简单，我们只需要弄清楚对象之间的持有关系。</p>
-<p>举个简单的例子：</p>
-<p><strong>场景一</strong></p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.<span class="keyword">textField</span>.<span class="keyword">text</span> = @"Sim<span class="string">";</span></div></pre></td></tr></table></figure>
-<p>下图简单的描述了，这段代码对象之间的持有关系。 <code>self.textField.text</code> 持有着 <code>@&quot;Sim&quot;</code>。<code>@&quot;Sim&quot;</code> 对象的 retainCount = 1。<br><img src="../../../../../images/1.png" alt="1"></p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.<span class="keyword">textField</span>.<span class="keyword">text</span> = @"SimCai<span class="string">";</span></div></pre></td></tr></table></figure>
-<p>这时，对象 <code>@&quot;Sim&quot;</code> 不再被 <code>self.textField.text</code> 持有，所以 <code>@&quot;Sim&quot;</code> 对象的 retainCount = 0，对象会被释放掉。</p>
-<p><img src="../../../../../images/2.png" alt="2"></p>
-<p><strong>场景二</strong></p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">self.textField<span class="meta">.text</span> = @<span class="string">"Sim"</span><span class="comment">;</span></div><div class="line">NSString *firstName = self.textField<span class="meta">.text</span><span class="comment">;</span></div></pre></td></tr></table></figure>
-<p>这段代码，<code>@&quot;Sim&quot;</code> 对象被 <code>firstName</code> 和 <code>self.textField.text</code> 同时持有。所以 <code>@&quot;Sim&quot;</code> 对象的 retainCount = 2 。</p>
-<p><img src="../../../../../images/3.png" alt="3"></p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">self.<span class="keyword">textField</span>.<span class="keyword">text</span> = @"SimCai<span class="string">";</span></div></pre></td></tr></table></figure>
-<p>这时 <code>self.textField.text</code> 不再持有 <code>@&quot;Sim&quot;</code> 对象，但是 <code>firstName</code> 依然持有 <code>@&quot;Sim&quot;</code> ，所以 <code>@&quot;Sim&quot;</code> 的 retainCount = 1 ，不会被释放。</p>
-<p><img src="../../../../../images/4.png" alt="4"></p>
-<p>直到 <code>firstName</code> 也不再持有 <code>@&quot;Sim&quot;</code> 对象，<code>@&quot;Sim&quot;</code> 才会被释放。</p>
-<p><img src="../../../../../images/5.png" alt="5"></p>
-<h3 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h3><p>ARC 整套机制看起来很简单，但会不会有什么特例，会造成内存无法被正常释放呢？<br>有，<strong>循环引用</strong>。</p>
-<p><code>ViewController</code> 持有 <code>TableView</code>，同时 <code>TableView</code> 也持有 <code>ViewController</code> 。 他们相互有引用关系。这就是<strong>循环引用</strong>。</p>
-<p><img src="../../../../../images/6.png" alt="6"></p>
-<p>为了打破这种引用的循环。我们可以通过 <code>weak</code> （弱引用） 来解决这个问题。</p>
-<p>一般情况下，<code>ViewController</code> 是会被个 <code>UINavigationController</code> 所持有。如果 <code>TableView</code> 也持有 <code>ViewController</code> ，这时 <code>ViewController</code> 的 retainCount = 2。</p>
-<p>而我们对 <code>self.vc</code> 使用了 <code>weak</code> 后，<code>self.vc = ViewController</code> ，这样的操作，不再会导致 retainCount 加1 。 这时 <code>ViewController</code> 依然还是 retainCount = 1。</p>
-<p><img src="../../../../../images/7.png" alt="7"></p>
-<p>而当 <code>ViewController</code> 被释放后 <code>self.vc</code> 建会指向 <code>nil</code> 。当然在这个例子，在 <code>ViewController</code> 释放后，<code>TableView</code> 自然也会别释放。</p>
-<p><img src="../../../../../images/8.png" alt="8"></p>
-<p>但在一些场景下使用 <code>weak</code> 需要比较注意的。例如，一个全局的定时器，如果持有了 <code>ViewController</code> 是弱引用。 那当 <code>ViewController</code> 被释放后，定时器再去访问 <code>ViewController</code> 就将引起 crash 。</p>
-<h3 id="常见的内存泄漏场景"><a href="#常见的内存泄漏场景" class="headerlink" title="常见的内存泄漏场景"></a>常见的内存泄漏场景</h3><ul>
-<li>使用时 block (需要格外小心)</li>
-<li>NSTimer 没有销毁</li>
-<li>KVO 没有移除</li>
-<li>NSNotification 没有移除</li>
-</ul>
-<p>当了解了 ARC 后，再我看来这些本质都是循环引用问题。</p>
-<ul>
-<li>block 会捕获变量</li>
-<li>NSTimer 需要持有对象，进行通知回调</li>
-<li>KVO 需要持有对象，进行通知回调</li>
-<li>NSNotification 需要持有对象，进行通知回调</li>
-</ul>
-<p>所以这些操作都容易造成内存泄漏。</p>
-<p>要避免内存泄漏，更重要的是需要了解 ARC 的机制。实际上，可能造成内存泄漏的场景还有很多。</p>
+</blockquote>
+<h3 id="offset"><a href="#offset" class="headerlink" title="offset"></a>offset</h3><p><code>MASConstraint</code> 还存在一类属性，是允许传入参数的。 <code>offset</code> 就是最典型的例子。</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">- (MASConstraint * (^)(CGFloat))<span class="built_in">offset</span> &#123;</div><div class="line"><span class="built_in">    return</span> ^<span class="built_in">id</span>(CGFloat <span class="built_in">offset</span>)&#123;</div><div class="line">        self.<span class="built_in">offset</span> = <span class="built_in">offset</span>;</div><div class="line"><span class="built_in">        return</span> self;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以，这类属性时通过 block 实现。设置完属性后返回 self 。这样使得链式调用可以继续。</p>
+<h2 id="宏"><a href="#宏" class="headerlink" title="宏"></a>宏</h2><h3 id="equalTo-amp-mas-equalTo"><a href="#equalTo-amp-mas-equalTo" class="headerlink" title="equalTo &amp; mas_equalTo"></a>equalTo &amp; mas_equalTo</h3><p>Masonry 定义了两个预编译宏。一个 <code>MAS_SHORTHAND</code> 用于控制可以使用 <code>makeConstraints</code> 方法调用。不需要 <code>mas_</code> 作为前缀。</p>
+<p>另一个是 <code>MAS_SHORTHAND_GLOBALS</code></p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">#define mas_equalTo(...)                 equalTo(<span class="name">MASBoxValue</span>((<span class="name">__VA_ARGS__</span>)))</div><div class="line">#define mas_greaterThanOrEqualTo(...)    greaterThanOrEqualTo(<span class="name">MASBoxValue</span>((<span class="name">__VA_ARGS__</span>)))</div><div class="line">#define mas_lessThanOrEqualTo(...)       lessThanOrEqualTo(<span class="name">MASBoxValue</span>((<span class="name">__VA_ARGS__</span>)))</div><div class="line"></div><div class="line">#define mas_offset(...)                  valueOffset(<span class="name">MASBoxValue</span>((<span class="name">__VA_ARGS__</span>)))</div><div class="line"></div><div class="line"></div><div class="line">#ifdef MAS_SHORTHAND_GLOBALS</div><div class="line"></div><div class="line">#define equalTo(...)                     mas_equalTo(<span class="name">__VA_ARGS__</span>)</div><div class="line">#define greaterThanOrEqualTo(...)        mas_greaterThanOrEqualTo(<span class="name">__VA_ARGS__</span>)</div><div class="line">#define lessThanOrEqualTo(...)           mas_lessThanOrEqualTo(<span class="name">__VA_ARGS__</span>)</div><div class="line"></div><div class="line">#define offset(...)                      mas_offset(<span class="name">__VA_ARGS__</span>)</div><div class="line"></div><div class="line">#endif</div></pre></td></tr></table></figure>
+<h3 id="equalTo-宏"><a href="#equalTo-宏" class="headerlink" title="equalTo 宏"></a>equalTo 宏</h3><p>如果 <code>MAS_SHORTHAND_GLOBALS</code> 定义了则 <code>equalTo</code> 等同与调用 <code>equalTo(MASBoxValue((__VA_ARGS__)))</code></p>
+<blockquote>
+<p>调用 <code>equalTo</code> 宏 -&gt; 调用 <code>mas_equalTo</code> 宏 -&gt; 调用 <code>equalTo(MASBoxValue((__VA_ARGS__)))</code></p>
+</blockquote>
+<p>但如果 <code>MAS_SHORTHAND_GLOBALS</code> 没定义调用的是 <code>MASConstraint</code> 的 <code>equalTo</code> 属性。</p>
+<h3 id="MASBoxValue"><a href="#MASBoxValue" class="headerlink" title="MASBoxValue"></a>MASBoxValue</h3><figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#define</span> <span class="selector-tag">MASBoxValue</span>(value) <span class="selector-tag">_MASBoxValue</span>(<span class="variable">@encode</span>(__typeof__((value))), (value))</div></pre></td></tr></table></figure>
+<p>而 <code>MASBoxValue</code> 最终调用了 <code>_MASBoxValue</code> 。做了一件事，就是把 <code>int</code> , <code>double</code> 等转换为 <code>NSNumber</code> ; 把 <code>CGPoint</code> , <code>CGSize</code>  转换为 <code>NSValue</code> 。</p>
+<p>为什么要做一层转换呢？看了 <code>equalTo</code> 属性的定义我们就明白了。</p>
+<h3 id="equalTo-属性"><a href="#equalTo-属性" class="headerlink" title="equalTo 属性"></a>equalTo 属性</h3><figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- <span class="params">(MASConstraint * (^)</span><span class="params">(id attr)</span>)equalTo;</div></pre></td></tr></table></figure>
+<p><code>equalTo</code> 属性的定义, 是个 block , 返回 <code>MASConstraint</code> , 接收一个 <code>id</code> 类型的入参。 而 <code>int</code> , <code>double</code> , <code>CGPoint</code> 这些并非对象, 所以 需要通过 <code>MASBoxValue</code> 做个转换。 </p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li><code>malloc</code> 得到的内存地址，实际是虚拟内存空间中的堆地址。并不是实际的物理地址。</li>
-<li>内存泄漏是指，内存资源没用了，但内存资源没被 <code>free</code>。（用完了，就别占着坑）</li>
-<li>在 iOS 中，所有内存泄漏问题，本质都是循环引用造成的。</li>
+<li>Masonry 的核心代码主要在 <code>MASConstraintMaker</code>、 <code>MASViewConstraint</code>、 <code>MASCompositeConstraint</code> 。</li>
+<li>Masonry 主要通过属性和 block 的方式实现链式调用，自定义了一套 DSL 。</li>
+<li>Masonry 定义了些宏，这些宏会改变 <code>equalTo</code> 这样的一些操作的行为。在使用是需要特别注意 。</li>
 </ul>
 </span>
       
@@ -329,8 +300,6 @@
           
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
-            <a href="/tags/ARC/" rel="tag">#ARC</a>
-          
         </div>
       
 
@@ -338,17 +307,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/17/2017-08-17/" rel="next" title="Spring Boot 框架快速入门">
-                <i class="fa fa-chevron-left"></i> Spring Boot 框架快速入门
+              <a href="/2017/09/24/2017-09-24/" rel="next" title="漫谈内存泄漏">
+                <i class="fa fa-chevron-left"></i> 漫谈内存泄漏
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/11/26/2017-11-26/" rel="prev" title="Masonry 源码解析">
-                Masonry 源码解析 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -484,7 +449,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是内存"><span class="nav-number">2.</span> <span class="nav-text">什么是内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟内存空间"><span class="nav-number">2.1.</span> <span class="nav-text">虚拟内存空间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态内存分配"><span class="nav-number">3.</span> <span class="nav-text">动态内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是内存泄漏"><span class="nav-number">3.1.</span> <span class="nav-text">什么是内存泄漏</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARC-机制"><span class="nav-number">4.</span> <span class="nav-text">ARC 机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#循环引用"><span class="nav-number">4.1.</span> <span class="nav-text">循环引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的内存泄漏场景"><span class="nav-number">4.2.</span> <span class="nav-text">常见的内存泄漏场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DSL"><span class="nav-number">1.</span> <span class="nav-text">DSL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mas-makeConstraints"><span class="nav-number">1.1.</span> <span class="nav-text">mas_makeConstraints</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#left"><span class="nav-number">1.2.</span> <span class="nav-text">left</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#addConstraintWithLayoutAttribute"><span class="nav-number">1.3.</span> <span class="nav-text">addConstraintWithLayoutAttribute:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#offset"><span class="nav-number">1.4.</span> <span class="nav-text">offset</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宏"><span class="nav-number">2.</span> <span class="nav-text">宏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#equalTo-amp-mas-equalTo"><span class="nav-number">2.1.</span> <span class="nav-text">equalTo & mas_equalTo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equalTo-宏"><span class="nav-number">2.2.</span> <span class="nav-text">equalTo 宏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MASBoxValue"><span class="nav-number">2.3.</span> <span class="nav-text">MASBoxValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equalTo-属性"><span class="nav-number">2.4.</span> <span class="nav-text">equalTo 属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -544,9 +509,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'simcai';
-      var disqus_identifier = '2017/09/24/2017-09-24/';
-      var disqus_title = '漫谈内存泄漏';
-      var disqus_url = 'http://yoursite.com/2017/09/24/2017-09-24/';
+      var disqus_identifier = '2017/11/26/2017-11-26/';
+      var disqus_title = 'Masonry 源码解析';
+      var disqus_url = 'http://yoursite.com/2017/11/26/2017-11-26/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
